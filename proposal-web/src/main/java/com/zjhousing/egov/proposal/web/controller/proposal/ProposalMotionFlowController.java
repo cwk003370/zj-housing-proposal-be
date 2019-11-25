@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @RestController
-@RequestMapping("/com/zjhousing/egov/proposal/business/mapper/proposal")
+@RequestMapping("/proposal")
 public class ProposalMotionFlowController implements FlowTransferController, FlowRevokeController, FLowRecoverController {
   @Resource
   private TodoTransferMng todoTransferMng;

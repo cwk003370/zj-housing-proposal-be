@@ -93,7 +93,7 @@ public class ProposalMngImpl implements ProposalMng {
       throw new BusinessException("登记提案议案失败");
     }
     //新增记录日志
-    this.operatorLogMng.insertOperatorLog("com/zjhousing/egov/proposal/business/mapper/proposal", "提案议案", proposal.getSubject(), DocLogConstant.LOG_ADD, proposal.getId());
+    this.operatorLogMng.insertOperatorLog("PROPOSALMOTION", "提案议案", proposal.getSubject(), DocLogConstant.LOG_ADD, proposal.getId());
 
     // 添加数据到solr
     try {
@@ -116,7 +116,7 @@ public class ProposalMngImpl implements ProposalMng {
 
     if (!"0".equals(proposal.getFlowStatus())) {
       //  操作日志-更新
-      this.operatorLogMng.insertOperatorLog("DISPATCH", "发文", oldProposal.getSubject(), DocLogConstant.LOG_UPDATE, oldProposal.getId());
+      this.operatorLogMng.insertOperatorLog("PROPOSALMOTION", "提案议案", oldProposal.getSubject(), DocLogConstant.LOG_UPDATE, oldProposal.getId());
       //添加-重要信息修改（异步）
       this.addProposalUpdateLog(proposal, oldProposal);
     }
@@ -150,7 +150,7 @@ public class ProposalMngImpl implements ProposalMng {
         this.proposalDao.updateProposalMotion(dispatch);
       }
       //记录发文删除操作
-      this.operatorLogMng.insertOperatorLog("DISPATCH", "发文", dispatch.getSubject(), DocLogConstant.LOG_DEL, dispatch.getId());
+      this.operatorLogMng.insertOperatorLog("PROPOSALMOTION", "提案议案", dispatch.getSubject(), DocLogConstant.LOG_DEL, dispatch.getId());
 
       // 从solr中删除数据
       try {

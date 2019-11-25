@@ -46,7 +46,7 @@ public interface ProposalMapper {
    * @return
    */
   Page<Proposal> getProposalMotion4Page(PagingRequest<Proposal>paging,
-                                        @Param("com/zjhousing/egov/proposal/business/mapper/proposal")Proposal proposal, @Param("word") String[] word );
+                                        @Param("proposal")Proposal proposal, @Param("word") String[] word );
   /**
    * 根据ID集合获取数据
    * @param list

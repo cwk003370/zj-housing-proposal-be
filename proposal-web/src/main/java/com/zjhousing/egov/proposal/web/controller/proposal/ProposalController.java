@@ -30,7 +30,7 @@ import java.util.List;
  * @date 2019/11/15
  **/
 @RestController
-@RequestMapping("/com/zjhousing/egov/proposal/business/mapper/proposal")
+@RequestMapping("/proposal")
 public class ProposalController {
   @Resource
   private ProposalMng proposalMng;

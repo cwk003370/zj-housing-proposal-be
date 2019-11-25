@@ -332,7 +332,7 @@ public class DisToOthersMngImpl implements DisToOthersMng {
     map.put(ArchiveConstant.PUBLIC_FLAT, disToOthersQuery.getPublicFlag());
     // 公开类别
     map.put(ArchiveConstant.PUBLIC_CATEGORY, proposal.getPublicCate());
-    map.put(ArchiveConstant.SOURCE, "com/zjhousing/egov/proposal/business/mapper/proposal");
+    map.put(ArchiveConstant.SOURCE, "PROPOSALMOTION");
     //文件字
     map.put(ArchiveConstant.DOC_WORD, proposal.getDocWord());
     //拟稿部门
