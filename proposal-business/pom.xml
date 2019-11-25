@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <artifactId>proposal-business</artifactId>
+  <packaging>jar</packaging>
+  <name>proposal-business</name>
+  <description>提案议案-business</description>
+
+  <parent>
+    <artifactId>proposal</artifactId>
+    <groupId>com.zjhousing.egov</groupId>
+    <version>1.0.1-SNAPSHOT</version>
+  </parent>
+
+  <dependencies>
+    <dependency>
+      <groupId>com.rongji.egov</groupId>
+      <artifactId>flow-util-business</artifactId>
+      <version>1.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.rongji.egov</groupId>
+      <artifactId>doc-config-business</artifactId>
+      <version>1.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.rongji.egov</groupId>
+      <artifactId>user-business</artifactId>
+      <version>1.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>com.rongji.egov</groupId>
+      <artifactId>solrData-business</artifactId>
+      <version>1.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
+      <groupId>dom4j</groupId>
+      <artifactId>dom4j</artifactId>
+      <version>1.6.1</version>
+    </dependency>
+    <dependency>
+      <groupId>redis.clients</groupId>
+      <artifactId>jedis</artifactId>
+      <version>2.9.0</version>
+    </dependency>
+    <dependency>
+      <groupId>com.oracle</groupId>
+      <artifactId>ojdbc14</artifactId>
+      <version>10.2.0.3.0</version>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-aop</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.springframework.security</groupId>
+      <artifactId>spring-security-test</artifactId>
+    </dependency>
+    <!-- 支持 @ConfigurationProperties 注解 -->
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-configuration-processor</artifactId>
+    </dependency>
+    <!--文号、保留号依赖-->
+    <dependency>
+      <groupId>com.rongji.egov</groupId>
+      <artifactId>doc-num</artifactId>
+      <version>1.0.1-SNAPSHOT</version>
+    </dependency>
+    <!--最大值依赖-->
+    <dependency>
+      <groupId>com.rongji.egov</groupId>
+      <artifactId>egov-maximun-no</artifactId>
+      <version>1.0.1-SNAPSHOT</version>
+    </dependency>
+    <!--流水号依赖-->
+    <dependency>
+      <groupId>com.rongji.egov</groupId>
+      <artifactId>common-sequence</artifactId>
+      <version>1.0.1-SNAPSHOT</version>
+    </dependency>
+  </dependencies>
+
+</project>

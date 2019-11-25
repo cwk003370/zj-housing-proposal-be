@@ -1,0 +1,921 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjhousing.egov.proposal.business.mapper.ProposalMapper">
+  <resultMap id="BaseResultMap" type="com.zjhousing.egov.proposal.business.model.Proposal">
+    <id column="ID" property="id"/>
+    <result column="SUBJECT" property="subject"/>
+    <result column="DOC_MARK_NUM" property="docMarkNum" javaType="java.lang.Integer"/>
+    <result column="DOC_MARK_YEAR" property="docMarkYear" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+    <result column="DOC_SEQUENCE" property="docSequence"/>
+    <result column="DOC_SEQUENCE_YEAR" property="docSequenceYear" javaType="java.lang.Integer" jdbcType="INTEGER"/>
+    <result column="DOC_WORD" property="docWord"/>
+    <result column="DOC_CATE" property="docCate"/>
+
+    <result column="FLOW_LABEL" property="flowLabel"/>
+    <result column="FLOW_VERSION" property="flowVersion"/>
+    <result column="FLOW_PID" property="flowPid"/>
+    <result column="FLOW_STATUS" property="flowStatus"/>
+    <result column="FLOW_DONE_USER" property="flowDoneUser"/>
+
+    <result column="DRAFT_DATE" property="draftDate"/>
+    <result column="DRAFT_USER_NO" property="draftUserNo"/>
+    <result column="DRAFT_USER_NAME" property="draftUserName"/>
+    <result column="DRAFT_DEPT" property="draftDept"/>
+    <result column="DRAFT_DEPT_NO" property="draftDeptNo"/>
+    <result column="DRAFT_UNIT" property="draftUnit"/>
+    <result column="DRAFT_UNIT_NO" property="draftUnitNo"/>
+
+    <result column="SIGN_USER_NO" property="signUserNo"/>
+    <result column="SIGN_USER_NAME" property="signUserName"/>
+    <result column="SIGN_DEPT" property="signDept"/>
+    <result column="SIGN_DEPT_NO" property="signDeptNo"/>
+    <result column="SIGN_UNIT" property="signUnit"/>
+    <result column="SIGN_UNIT_NO" property="signUnitNo"/>
+    <result column="SIGN_DATE" property="signDate"/>
+    <result column="SIGN_FLAG" property="signFlag"/>
+
+    <result column="PROPOSAL_PARENT_CLASS" property="parentClass"/>
+    <result column="PROPOSAL_CHILDREN_CLASS" property="childrenClass"/>
+    <result column="REFLECTION_CATEGORY" property="reflectionCategory"/>
+    <result column="MEETING_SESSION" property="meetingSession"/>
+    <result column="DOC_MARK" property="docMark"/>
+    <result column="REL_RECEIVAL_MARK" property="relReceivalMark"/>
+    <result column="LEADING_USER_NO" property="leadingNo"/>
+    <result column="LEADING_USER" property="leadingUser"/>
+    <result column="LEADING_USER_PHOTO" property="leadingPhoto"/>
+    <result column="LEADING_USER_PLACE" property="leadingPlace"/>
+    <result column="SECONDED_USERS_NO" property="secondedNo"/>
+    <result column="SECONDED_USERS" property="secondedUsers" javaType="java.util.Set" jdbcType="VARCHAR"/>
+    <result column="CAUSE_ACTION" property="causeAction"/>
+    <result column="MAIN_ORGANIZER" property="mainOrganizer" javaType="java.util.Set" jdbcType="VARCHAR"/>
+    <result column="ASSIST_ORGANIZER" property="assistOrganizer" javaType="java.util.Set" jdbcType="VARCHAR"/>
+    <result column="ASSIGNMENT_NUM" property="assignmentNum"/>
+    <result column="ASSIGNMENT_DATE" property="assignmentDate"/>
+    <result column="REQUEST_DATE" property="requestDate"/>
+    <result column="UNDERTAKE_DEPARTMENT" property="undertakeDepartment"/>
+    <result column="HANDLING_MODE" property="handlingMode"/>
+    <result column="URGENT_LEVEL" property="urgentLevel"/>
+    <result column="ASSIGNMENT_USER_NO" property="assignmentUserNo"/>
+    <result column="ASSIGNMENT_USER" property="assignmentUser"/>
+    <result column="ASSIGNMENT_PHOTO" property="assignmentPhoto"/>
+    <result column="IMPORT_LEVEL" property="importLevel"/>
+    <result column="ASSIGNMENT_REQUIREMENTS" property="assignmentRequirements"/>
+    <result column="MAIN_SEND" property="mainSend" javaType="java.util.Set" jdbcType="VARCHAR"/>
+    <result column="COPY_SEND" property="copySend" javaType="java.util.Set" jdbcType="VARCHAR"/>
+    <result column="HANDLE_USER_NO" property="handleUserNo"/>
+    <result column="HANDLE_USER" property="handleUser"/>
+    <result column="HANDLE_PHOTO" property="handlePhoto"/>
+    <result column="SERVICE_ATTITUDE" property="serviceAttitude"/>
+    <result column="REMARK" property="remark"/>
+
+    <result column="DEAL_FORM_ID" property="dealFormId"/>
+    <result column="SYSTEM_NO" property="systemNo"/>
+    <result column="READERS" property="readers" javaType="java.util.Set" jdbcType="VARCHAR"/>
+    <result column="SEC_LEVEL" property="secLevel"/>
+    <result column="TRANSFER_LIBRARY_TYPE" property="transferLibraryType"/>
+    <result column="ARCHIVE_TYPE" property="archiveType"
+            javaType="com.zjhousing.egov.proposal.business.enums.ArchiveTypeEnum"/>
+    <result column="ARCHIVE_FLAG" property="archiveFlag"/>
+    <result column="PAGE_NUM" property="pageNum"/>
+    <result column="PRINT_NUM" property="printNum"/>
+    <result property="taskFlag" column="TASK_FLAG" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="turnNum" column="TURN_NUM" javaType="java.lang.String" jdbcType="VARCHAR"/>
+  </resultMap>
+  <!-- 可重复利用的sql -->
+  <sql id="allColumns">
+		ID,
+		SUBJECT,
+		DOC_MARK_NUM,
+		DOC_MARK_YEAR,
+		DOC_SEQUENCE,
+		DOC_SEQUENCE_YEAR,
+		DOC_WORD,
+		DOC_CATE,
+		FLOW_LABEL,
+		FLOW_VERSION,
+		FLOW_PID,
+		FLOW_STATUS,
+		FLOW_DONE_USER,
+		DRAFT_DATE,
+		DRAFT_USER_NO,
+		DRAFT_USER_NAME,
+		DRAFT_DEPT,
+		DRAFT_DEPT_NO,
+		DRAFT_UNIT,
+		DRAFT_UNIT_NO,
+		SIGN_USER_NO,
+		SIGN_USER_NAME,
+		SIGN_DEPT,
+		SIGN_DEPT_NO,
+		SIGN_UNIT,
+		SIGN_UNIT_NO,
+		SIGN_DATE,
+		SIGN_FLAG,
+    PROPOSAL_PARENT_CLASS,
+    PROPOSAL_CHILDREN_CLASS,
+    REFLECTION_CATEGORY,
+    MEETING_SESSION,
+		DOC_MARK,
+    REL_RECEIVAL_MARK,
+    LEADING_USER_NO,
+    LEADING_USER,
+    LEADING_USER_PHOTO,
+    LEADING_USER_PLACE,
+    SECONDED_USERS_NO,
+    SECONDED_USERS,
+    CAUSE_ACTION,
+    MAIN_ORGANIZER,
+    ASSIST_ORGANIZER,
+    ASSIGNMENT_NUM,
+    ASSIGNMENT_DATE,
+    REQUEST_DATE,
+    UNDERTAKE_DEPARTMENT,
+    HANDLING_MODE,
+    URGENT_LEVEL,
+    ASSIGNMENT_USER_NO,
+    ASSIGNMENT_USER,
+    ASSIGNMENT_PHOTO
+    IMPORT_LEVEL,
+    ASSIGNMENT_REQUIREMENTS,
+    MAIN_SEND,
+    COPY_SEND,
+    HANDLE_USER_NO,
+    HANDLE_USER,
+    HANDLE_PHOTO,
+    SERVICE_ATTITUDE,
+    REMARK,
+    DEAL_FORM_ID,
+    SYSTEM_NO,
+    READERS,
+    SEC_LEVEL,
+    TRANSFER_LIBRARY_TYPE,
+    ARCHIVE_TYPE,
+    ARCHIVE_FLAG,
+    PAGE_NUM,
+    PRINT_NUM,
+    TASK_FLAG,
+    TURN_NUM
+	</sql>
+  <!-- 新增发文 -->
+  <insert id="insertProposalMotion" parameterType="com.zjhousing.egov.proposal.business.model.Proposal">
+    INSERT INTO EGOV_PROPOSAL_MOTION
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="subject != null">
+        SUBJECT,
+      </if>
+      <if test="docMarkNum != null">
+        DOC_MARK_NUM,
+      </if>
+      <if test="docMarkYear != null">
+        DOC_MARK_YEAR,
+      </if>
+      <if test="docSequence != null">
+        DOC_SEQUENCE,
+      </if>
+      <if test="docSequenceYear != null">
+        DOC_SEQUENCE_YEAR,
+      </if>
+      <if test="docWord != null">
+        DOC_WORD,
+      </if>
+      <if test="docCate != null">
+        DOC_CATE,
+      </if>
+      <if test="FlowPid != null">
+        FLOW_PID,
+      </if>
+      <if test="FlowLabel != null">
+        FLOW_LABEL,
+      </if>
+      <if test="FlowVersion != null">
+        FLOW_VERSION,
+      </if>
+      <if test="FlowStatus != null">
+        FLOW_STATUS,
+      </if>
+      <if test="FlowDoneUser != null">
+        FLOW_DONE_USER,
+      </if>
+      <if test="draftDate != null">
+        DRAFT_DATE,
+      </if>
+      <if test="draftUserNo != null">
+        DRAFT_USER_NO,
+      </if>
+      <if test="draftUserName != null">
+        DRAFT_USER_NAME,
+      </if>
+      <if test="draftDept != null">
+        DRAFT_DEPT,
+      </if>
+      <if test="draftDeptNo != null">
+        DRAFT_DEPT_NO,
+      </if>
+      <if test="draftUnit != null">
+        DRAFT_UNIT,
+      </if>
+      <if test="draftUnitNo != null">
+        DRAFT_UNIT_NO,
+      </if>
+      <if test="signUserNo != null">
+        SIGN_USER_NO,
+      </if>
+      <if test="signUserName != null">
+        SIGN_USER_NAME,
+      </if>
+      <if test="signDept != null">
+        SIGN_DEPT,
+      </if>
+      <if test="signDeptNo != null">
+        SIGN_DEPT_NO,
+      </if>
+      <if test="signUnit != null">
+        SIGN_UNIT,
+      </if>
+      <if test="signUnitNo != null">
+        SIGN_UNIT_NO,
+      </if>
+      <if test="signDate != null">
+        SIGN_DATE,
+      </if>
+      <if test="signFlag != null">
+        SIGN_FLAG,
+      </if>
+      <if test="parentClass != null">
+        PROPOSAL_PARENT_CLASS,
+      </if>
+      <if test="childrenClass != null">
+        PROPOSAL_CHILDREN_CLASS,
+      </if>
+      <if test="reflectionCategory != null">
+        REFLECTION_CATEGORY,
+      </if>
+      <if test="meetingSession != null">
+        MEETING_SESSION,
+      </if>
+      <if test="docMark != null">
+        DOC_MARK,
+      </if>
+      <if test="relReceivalMark != null">
+        REL_RECEIVAL_MARK,
+      </if>
+      <if test="leadingNo != null">
+        LEADING_USER_NO,
+      </if>
+      <if test="leadingUser != null">
+        LEADING_USER,
+      </if>
+      <if test="leadingPhoto != null">
+        LEADING_USER_PHOTO,
+      </if>
+      <if test="leadingPlace != null">
+        LEADING_USER_PLACE,
+      </if>
+      <if test="secondedNo !=null">
+        SECONDED_USERS_NO,
+      </if>
+      <if test="secondedUsers !=null">
+        SECONDED_USERS,
+      </if>
+      <if test="causeAction !=null">
+        CAUSE_ACTION,
+      </if>
+      <if test="mainOrganizer !=null">
+        MAIN_ORGANIZER,
+      </if>
+      <if test="assistOrganizer !=null">
+        ASSIST_ORGANIZER,
+      </if>
+      <if test="assignmentNum !=null">
+        ASSIGNMENT_NUM,
+      </if>
+      <if test="assignmentDate !=null">
+        ASSIGNMENT_DATE,
+      </if>
+      <if test="requestDate !=null">
+        REQUEST_DATE,
+      </if>
+      <if test="undertakeDepartment !=null">
+        UNDERTAKE_DEPARTMENT,
+      </if>
+      <if test="handlingMode !=null">
+        HANDLING_MODE,
+      </if>
+      <if test="urgentLevel !=null">
+        URGENT_LEVEL,
+      </if>
+      <if test="assignmentUserNo !=null">
+        ASSIGNMENT_USER_NO,
+      </if>
+      <if test="assignmentUser !=null">
+        ASSIGNMENT_USER,
+      </if>
+      <if test="assignmentPhoto!=null">
+        ASSIGNMENT_PHOTO,
+      </if>
+      <if test="importLevel !=null">
+        IMPORT_LEVEL,
+      </if>
+      <if test="assignmentRequirements !=null">
+        ASSIGNMENT_REQUIREMENTS,
+      </if>
+      <if test="mainSend !=null">
+        MAIN_SEND,
+      </if>
+      <if test="copySend !=null">
+        COPY_SEND,
+      </if>
+      <if test="handleUserNo !=null">
+        HANDLE_USER_NO,
+      </if>
+      <if test="handleUser !=null">
+        HANDLE_USER,
+      </if>
+      <if test="handlePhoto !=null">
+        HANDLE_PHOTO,
+      </if>
+      <if test="serviceAttitude!=null">
+        SERVICE_ATTITUDE,
+      </if>
+      <if test="remark !=null">
+        REMARK,
+      </if>
+      <if test="dealFormId !=null">
+        DEAL_FORM_ID,
+      </if>
+      <if test="systemNo !=null">
+        SYSTEM_NO,
+      </if>
+      <if test="readers !=null">
+        READERS,
+      </if>
+      <if test="secLevel !=null">
+        SEC_LEVEL,
+      </if>
+      <if test="transferLibraryType !=null">
+        TRANSFER_LIBRARY_TYPE,
+      </if>
+      <if test="archiveType !=null">
+        ARCHIVE_TYPE,
+      </if>
+      <if test="archiveFlag !=null">
+        ARCHIVE_FLAG,
+      </if>
+      <if test="pageNum !=null">
+        PAGE_NUM,
+      </if>
+      <if test="printNum !=null">
+        PRINT_NUM,
+      </if>
+      <if test="taskFlag !=null">
+        TASK_FLAG,
+      </if>
+      <if test="turnNum !=null">
+        TURN_NUM,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        #{id},
+      </if>
+      <if test="subject != null">
+        #{subject},
+      </if>
+      <if test="docMarkNum != null">
+        #{docMarkNum},
+      </if>
+      <if test="docMarkYear != null">
+        #{docMarkYear},
+      </if>
+      <if test="docSequence != null">
+        #{docSequence},
+      </if>
+      <if test="docSequenceYear != null">
+        #{docSequenceYear},
+      </if>
+      <if test="docWord != null">
+        #{docWord},
+      </if>
+      <if test="docCate != null">
+        #{docCate},
+      </if>
+      <if test="FlowPid != null">
+        #{FlowPid},
+      </if>
+      <if test="FlowLabel != null">
+        #{FlowLabel},
+      </if>
+      <if test="FlowVersion != null">
+        #{FlowVersion},
+      </if>
+      <if test="FlowStatus != null">
+        #{FlowStatus},
+      </if>
+      <if test="FlowDoneUser != null">
+        #{FlowDoneUser},
+      </if>
+      <if test="draftDate != null">
+        #{draftDate},
+      </if>
+      <if test="draftUserNo != null">
+        #{draftUserNo},
+      </if>
+      <if test="draftUserName != null">
+        #{draftUserName},
+      </if>
+      <if test="draftDept != null">
+        #{draftDept},
+      </if>
+      <if test="draftDeptNo != null">
+        #{draftDeptNo},
+      </if>
+      <if test="draftUnit != null">
+        #{draftUnit},
+      </if>
+      <if test="draftUnitNo != null">
+        #{draftUnitNo},
+      </if>
+      <if test="signUserNo != null">
+        #{signUserNo},
+      </if>
+      <if test="signUserName != null">
+        #{signUserName},
+      </if>
+      <if test="signDept != null">
+        #{signDept},
+      </if>
+      <if test="signDeptNo != null">
+        #{signDeptNo},
+      </if>
+      <if test="signUnit != null">
+        #{signUnit},
+      </if>
+      <if test="signUnitNo != null">
+        #{signUnitNo},
+      </if>
+      <if test="signDate != null">
+        #{signDate},
+      </if>
+      <if test="signFlag != null">
+        #{signFlag},
+      </if>
+      <if test="parentClass != null">
+        #{parentClass},
+      </if>
+      <if test="childrenClass != null">
+        #{childrenClass},
+      </if>
+      <if test="reflectionCategory != null">
+        #{reflectionCategory},
+      </if>
+      <if test="meetingSession != null">
+        #{meetingSession},
+      </if>
+      <if test="docMark != null">
+        #{docMark},
+      </if>
+      <if test="relReceivalMark != null">
+        #{relReceivalMark},
+      </if>
+      <if test="leadingNo != null">
+        #{leadingNo},
+      </if>
+      <if test="leadingUser != null">
+        #{leadingUser},
+      </if>
+      <if test="leadingPhoto != null">
+        #{leadingPhoto},
+      </if>
+      <if test="leadingPlace != null">
+        #{leadingPlace},
+      </if>
+      <if test="secondedNo !=null">
+        #{secondedNo},
+      </if>
+      <if test="secondedUsers !=null">
+        #{secondedUsers},
+      </if>
+      <if test="causeAction !=null">
+        #{causeAction},
+      </if>
+      <if test="mainOrganizer !=null">
+        #{mainOrganizer},
+      </if>
+      <if test="assistOrganizer !=null">
+        #{assistOrganizer},
+      </if>
+      <if test="assignmentNum !=null">
+        #{assignmentNum},
+      </if>
+      <if test="assignmentDate !=null">
+        #{assignmentDate },
+      </if>
+      <if test="requestDate !=null">
+        #{requestDate},
+      </if>
+      <if test="undertakeDepartment !=null">
+        #{undertakeDepartment},
+      </if>
+      <if test="handlingMode !=null">
+        #{handlingMode},
+      </if>
+      <if test="urgentLevel !=null">
+        #{urgentLevel},
+      </if>
+      <if test="assignmentUserNo !=null">
+        #{assignmentUserNo},
+      </if>
+      <if test="assignmentUser !=null">
+        #{assignmentUser},
+      </if>
+      <if test="assignmentPhoto!=null">
+        #{assignmentPhoto},
+      </if>
+      <if test="importLevel !=null">
+        #{importLevel},
+      </if>
+      <if test="assignmentRequirements !=null">
+        #{assignmentRequirements},
+      </if>
+      <if test="mainSend !=null">
+        #{mainSend},
+      </if>
+      <if test="copySend !=null">
+        #{copySend},
+      </if>
+      <if test="handleUserNo !=null">
+        #{handleUserNo},
+      </if>
+      <if test="handleUser !=null">
+        #{handleUser},
+      </if>
+      <if test="handlePhoto !=null">
+        #{handlePhoto},
+      </if>
+      <if test="serviceAttitude!=null">
+        #{serviceAttitude},
+      </if>
+      <if test="remark !=null">
+        #{remark},
+      </if>
+      <if test="dealFormId !=null">
+        #{dealFormId},
+      </if>
+      <if test="systemNo !=null">
+        #{systemNo},
+      </if>
+      <if test="readers !=null">
+        #{readers},
+      </if>
+      <if test="secLevel !=null">
+        #{secLevel},
+      </if>
+      <if test="transferLibraryType !=null">
+        #{transferLibraryType},
+      </if>
+      <if test="archiveType !=null">
+        #{archiveType},
+      </if>
+      <if test="archiveFlag !=null">
+        #{archiveFlag},
+      </if>
+      <if test="pageNum !=null">
+        #{pageNum},
+      </if>
+      <if test="printNum !=null">
+        #{printNum},
+      </if>
+      <if test="taskFlag !=null">
+        #{taskFlag},
+      </if>
+      <if test="turnNum !=null">
+        #{turnNum},
+      </if>
+    </trim>
+  </insert>
+  <!-- 新增发文 -->
+  <update id="updateProposalMotion" parameterType="com.zjhousing.egov.proposal.business.model.Proposal">
+    UPDATE EGOV_PROPOSAL_MOTION
+    <set>
+      <if test="subject != null">
+        SUBJECT = #{subject },
+      </if>
+      <if test="docMarkNum != null">
+        DOC_MARK_NUM = #{docMarkNum},
+      </if>
+      <if test="docMarkYear != null">
+        DOC_MARK_YEAR = #{docMarkYear},
+      </if>
+      <if test="docSequence != null">
+        DOC_SEQUENCE = #{docSequence},
+      </if>
+      <if test="docSequenceYear != null">
+        DOC_SEQUENCE_YEAR = #{docSequenceYear},
+      </if>
+      <if test="docWord != null">
+        DOC_WORD = #{docWord},
+      </if>
+      <if test="docCate != null">
+        DOC_CATE = #{docCate},
+      </if>
+      <if test="FlowPid != null">
+        FLOW_PID = #{FlowPid },
+      </if>
+      <if test="FlowLabel != null">
+        FLOW_LABEL = #{FlowLabel},
+      </if>
+      <if test="FlowVersion != null">
+        FLOW_VERSION = #{FlowVersion},
+      </if>
+      <if test="FlowStatus != null">
+        FLOW_STATUS = #{FlowStatus},
+      </if>
+      <if test="FlowDoneUser != null">
+        FLOW_DONE_USER = #{FlowDoneUser},
+      </if>
+      <if test="draftDate != null">
+        DRAFT_DATE = #{draftDate},
+      </if>
+      <if test="draftUserNo != null">
+        DRAFT_USER_NO = #{draftUserNo},
+      </if>
+      <if test="draftUserName != null">
+        DRAFT_USER_NAME = #{draftUserName},
+      </if>
+      <if test="draftDept != null">
+        DRAFT_DEPT = #{draftDept },
+      </if>
+      <if test="draftDeptNo != null">
+        DRAFT_DEPT_NO = #{draftDeptNo},
+      </if>
+      <if test="draftUnit != null">
+        DRAFT_UNIT = #{draftUnit},
+      </if>
+      <if test="draftUnitNo != null">
+        DRAFT_UNIT_NO = #{draftUnitNo},
+      </if>
+      <if test="signUserNo != null">
+        SIGN_USER_NO = #{signUserNo},
+      </if>
+      <if test="signUserName != null">
+        SIGN_USER_NAME = #{signUserName},
+      </if>
+      <if test="signDept != null">
+        SIGN_DEPT = #{signDept},
+      </if>
+      <if test="signDeptNo != null">
+        SIGN_DEPT_NO = #{signDeptNo},
+      </if>
+      <if test="signUnit != null">
+        SIGN_UNIT = #{signUnit},
+      </if>
+      <if test="signUnitNo != null">
+        SIGN_UNIT_NO = #{signUnitNo},
+      </if>
+      <choose>
+        <when test="signDateCleanFlag != null and signDateCleanFlag.name == 'CLEAN_UP'">
+          SIGN_DATE = null,
+        </when>
+        <when test="signDate != null">
+          SIGN_DATE = #{signDate,jdbcType=DATE},
+        </when>
+        <otherwise>
+
+        </otherwise>
+      </choose>
+      <if test="signFlag != null">
+        SIGN_FLAG = #{signFlag},
+      </if>
+      <if test="parentClass != null">
+        PROPOSAL_PARENT_CLASS = #{parentClass},
+      </if>
+      <if test="childrenClass != null">
+        PROPOSAL_CHILDREN_CLASS = #{childrenClass},
+      </if>
+      <if test="reflectionCategory != null">
+        REFLECTION_CATEGORY = #{reflectionCategory},
+      </if>
+      <if test="meetingSession != null">
+        MEETING_SESSION = #{meetingSession},
+      </if>
+      <if test="docMark != null">
+        DOC_MARK = #{docMark},
+      </if>
+      <if test="relReceivalMark != null">
+        REL_RECEIVAL_MARK = #{relReceivalMark},
+      </if>
+      <if test="leadingNo != null">
+        LEADING_USER_NO = #{leadingNo},
+      </if>
+      <if test="leadingUser != null">
+        LEADING_USER = #{leadingUser},
+      </if>
+      <if test="leadingPhoto != null">
+        LEADING_USER_PHOTO = #{leadingPhoto},
+      </if>
+      <if test="leadingPlace != null">
+        LEADING_USER_PLACE = #{leadingPlace},
+      </if>
+      <if test="secondedNo !=null">
+        SECONDED_USERS_NO = #{secondedNo},
+      </if>
+      <if test="secondedUsers !=null">
+        SECONDED_USERS = #{secondedUsers},
+      </if>
+      <if test="causeAction !=null">
+        CAUSE_ACTION = #{causeAction},
+      </if>
+      <if test="mainOrganizer !=null">
+        MAIN_ORGANIZER = #{mainOrganizer},
+      </if>
+      <if test="assistOrganizer !=null">
+        ASSIST_ORGANIZER = #{assistOrganizer},
+      </if>
+      <if test="assignmentNum !=null">
+        ASSIGNMENT_NUM = #{assignmentNum},
+      </if>
+      <if test="assignmentDate !=null">
+        ASSIGNMENT_DATE = #{assignmentDate},
+      </if>
+      <if test="requestDate !=null">
+        REQUEST_DATE = #{requestDate},
+      </if>
+      <if test="undertakeDepartment !=null">
+        UNDERTAKE_DEPARTMENT = #{undertakeDepartment},
+      </if>
+      <if test="handlingMode !=null">
+        HANDLING_MODE = #{handlingMode},
+      </if>
+      <if test="urgentLevel !=null">
+        URGENT_LEVEL = #{urgentLevel},
+      </if>
+      <if test="assignmentUserNo !=null">
+        ASSIGNMENT_USER_NO = #{assignmentUserNo},
+      </if>
+      <if test="assignmentUser !=null">
+        ASSIGNMENT_USER = #{assignmentUser},
+      </if>
+      <if test="assignmentPhoto !=null">
+        ASSIGNMENT_PHOTO = #{assignmentPhoto},
+      </if>
+      <if test="importLevel !=null">
+        IMPORT_LEVEL = #{importLevel},
+      </if>
+      <if test="assignmentRequirements !=null">
+        ASSIGNMENT_REQUIREMENTS = #{assignmentRequirements},
+      </if>
+      <if test="mainSend !=null">
+        MAIN_SEND = #{mainSend},
+      </if>
+      <if test="copySend !=null">
+        COPY_SEND = #{copySend},
+      </if>
+      <if test="handleUserNo !=null">
+        HANDLE_USER_NO = #{handleUserNo},
+      </if>
+      <if test="handleUser !=null">
+        HANDLE_USER = #{handleUser},
+      </if>
+      <if test="handlePhoto !=null">
+        HANDLE_PHOTO = #{handlePhoto},
+      </if>
+      <if test="serviceAttitude !=null">
+        SERVICE_ATTITUDE = #{serviceAttitude},
+      </if>
+      <if test="remark !=null">
+        REMARK = #{remark},
+      </if>
+      <if test="dealFormId !=null">
+        DEAL_FORM_ID = #{dealFormId},
+      </if>
+      <if test="systemNo !=null">
+        SYSTEM_NO = #{systemNo},
+      </if>
+      <if test="readers !=null">
+        READERS = #{readers},
+      </if>
+      <if test="secLevel !=null">
+        SEC_LEVEL = #{secLevel},
+      </if>
+      <if test="transferLibraryType !=null">
+        TRANSFER_LIBRARY_TYPE = #{transferLibraryType},
+      </if>
+      <if test="archiveType !=null">
+        ARCHIVE_TYPE = #{archiveType},
+      </if>
+      <if test="archiveFlag !=null">
+        ARCHIVE_FLAG = #{archiveFlag},
+      </if>
+      <if test="pageNum !=null">
+        PAGE_NUM = #{pageNum},
+      </if>
+      <if test="printNum !=null">
+        PRINT_NUM = #{printNum},
+      </if>
+      <if test="taskFlag != null">
+        TASK_FLAG = #{taskFlag},
+      </if>
+      <if test="turnNum != null">
+        TURN_NUM = #{turnNum},
+      </if>
+    </set>
+    <where>
+      <if test="id!=null and id!=''">
+        ID = #{id}
+      </if>
+    </where>
+  </update>
+  <!--批量删除-->
+  <delete id="delProposalMotion" parameterType="java.util.List">
+    DELETE from EGOV_PROPOSAL_MOTION where ID in
+    (
+    <foreach collection="list" item="id" separator=",">
+      #{id}
+    </foreach>
+    )
+  </delete>
+  <select id="getProposalMotionById" resultMap="BaseResultMap">
+    SELECT
+    <include refid="allColumns"/>
+    FROM EGOV_PROPOSAL_MOTION
+    WHERE ID = #{id}
+  </select>
+  <!--分页 获取发文数据-->
+  <select id="getProposalMotion4Page" resultMap="BaseResultMap">
+    SELECT
+    <include refid="allColumns"/>
+    FROM EGOV_PROPOSAL_MOTION
+    <where>
+      <if test="proposal.systemNo!=null and proposal.systemNo!=''">
+        AND SYSTEM_NO = #{proposal.systemNo}
+      </if>
+      <if test="proposal.draftUserNo!=null">
+        AND DRAFT_USER_NO = #{proposal.draftUserNo}
+      </if>
+      <if test="proposal.flowStatus!=null">
+        AND FLOW_STATUS = #{proposal.flowStatus}
+      </if>
+      <if test="proposal.secLevel != null and proposal.secLevel != ''">
+        AND SEC_LEVEL = #{proposal.secLevel}
+      </if>
+      <if test="proposal.docMark != null and proposal.docMark != ''">
+        <bind name="likeDocMark" value="'%'+ proposal.docMark + '%'"></bind>
+        AND DOC_MARK like #{likeDocMark}
+      </if>
+      <if test="proposal.subject != null">
+        <bind name="likeSubject" value="'%'+ proposal.subject + '%'"></bind>
+        AND SUBJECT like #{likeSubject}
+      </if>
+      <if test="proposal.draftUserName != null">
+        <bind name="likeDraftUserName" value="'%'+ proposal.draftUserName + '%'"></bind>
+        AND DRAFT_USER_NAME like #{likeDraftUserName}
+      </if>
+      <if test="proposal.docWord != null">
+        <bind name="likeDocWord" value="'%'+ proposal.docWord + '%'"></bind>
+        AND DOC_WORD like #{likeDocWord}
+      </if>
+      <if test="word!=null">
+        AND (
+        <foreach collection="word" item="item" separator="OR">
+          SUBJECT like concat(concat('%',#{item}),'%') OR DRAFT_USER_NAME like concat(concat('%',#{item}),'%') OR DOC_WORD like concat(concat('%',#{item}),'%') OR DOC_MARK like concat(concat('%',#{item}),'%') OR MAIN_SEND like concat(concat('%',#{item}),'%') OR DRAFT_DEPT like concat(concat('%',#{item}),'%')
+        </foreach>
+        )
+      </if>
+      <if test="proposal.transferLibraryType!=null">
+        AND TRANSFER_LIBRARY_TYPE = #{proposal.transferLibraryType}
+      </if>
+<!--      <if test="dispatch.meetingBeginTime!=null">-->
+<!--        <![CDATA[ AND  MEETING_BEGIN_TIME >= #{dispatch.meetingBeginTime} ]]>-->
+<!--      </if>-->
+<!--      <if test="dispatch.meetingEndTime!=null">-->
+<!--        <![CDATA[ AND MEETING_END_TIME <= #{dispatch.meetingEndTime} ]]>-->
+<!--      </if>-->
+
+    </where>
+    ORDER BY DRAFT_DATE DESC, ID ASC
+  </select>
+  <!-- 根据ID集合查询记录 -->
+  <select id="getProposalMotionListByIds" parameterType="java.util.List" resultMap="BaseResultMap">
+    SELECT
+    <include refid="allColumns"/>
+    FROM EGOV_PROPOSAL_MOTION
+    where ID in
+    (
+    <foreach collection="list" item="id" separator=",">
+      #{id}
+    </foreach>
+    )
+  </select>
+  <!-- 批量更新发文-关联文件字段值 -->
+  <update id="batchUpdateProposalRelReceivalMark">
+    <foreach collection="list" item="model" index="index" open="" close="" separator=";">
+      UPDATE EGOV_PROPOSAL_MOTION
+      SET
+      REL_RECEIVAL_MARK = #{model.relReceivalMark, jdbcType=VARCHAR}
+      WHERE ID = #{model.id}
+    </foreach>
+  </update>
+</mapper>

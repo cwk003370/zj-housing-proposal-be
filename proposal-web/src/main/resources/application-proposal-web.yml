@@ -1,0 +1,85 @@
+spring:
+  profiles:
+    active: dev
+  application:
+    name: zj-housing-oa
+  jackson:
+    default-property-inclusion: non_null
+    time-zone: GMT+8
+  session:
+    store-type: redis
+  cache:
+    type: redis
+  #mongoDb:存mongoDb ; dataBase: 存数据库
+  fileStorageType: mongoDb
+  http:
+    multipart:
+      max-file-size: 100Mb
+      max-request-size: 100Mb
+  boot:
+    admin:
+      context-path: /admin
+  data:
+    solr:
+      zk-host: ${spring.solr.ZkHost}
+management:
+  security:
+    enabled: false
+  context-path: /actuator
+mybatis:
+  configuration:
+    database-id: mysql
+flyway:
+  enabled: false
+eureka:
+  client:
+    enabled: false
+doc:
+  business:
+    ## 收文办结时，归历史公文库 todoTransferMng.submitProcessWithoutUsers->operator.UpdateDocByFlowStatusAndReader
+    ## ->recToOthersMng.recToOthers->withTokenRestTemplate.postForObject
+    request-prefix: http://localhost:${server.port}
+---
+spring:
+  profiles: dev
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.210.186:3306/zj-housing?characterEncoding=utf8&useSSL=false
+    useSSL: false
+    username: root
+    password: root
+  redis:
+    host: 192.168.210.147
+    port: 6579
+    database: 1
+  data:
+    mongodb:
+      uri: mongodb://192.168.210.186:27017/zj-housing
+      chunkSize: 8
+      fileCollection: fs
+      defaultCollection: zj-housing
+  solr:
+    DefaultCollection: zj-housing
+    ZkHost: 192.168.210.171:2166
+    ZkClientTimeout: 15000
+    ZkConnectTimeout: 50000
+  boot:
+    admin:
+      client:
+        enabled: false
+        prefer-ip: true
+server:
+  port: 6063
+logging:
+  level:
+    com.rongji.egov: debug
+  file: logfile
+elastic-job:
+  zk:
+    server-list: 192.168.210.171:2166
+    namespace: elastic-zj-housing
+user:
+  default-system: ROOT
+oa:
+  admin-name: OA
+  admin-pwd: 123456

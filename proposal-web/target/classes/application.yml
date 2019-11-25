@@ -1,0 +1,4 @@
+spring:
+  profiles:
+    include: proposal-web
+    active: dev

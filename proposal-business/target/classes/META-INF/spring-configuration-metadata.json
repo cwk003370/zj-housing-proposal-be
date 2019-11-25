@@ -1,0 +1,75 @@
+{
+  "hints": [],
+  "groups": [
+    {
+      "sourceType": "com.zjhousing.egov.proposal.business.util.DocBusinessProperties",
+      "name": "doc.business",
+      "type": "com.zjhousing.egov.proposal.business.util.DocBusinessProperties"
+    },
+    {
+      "sourceType": "com.zjhousing.egov.proposal.business.ProposalBusinessProperties",
+      "name": "proposal.business",
+      "type": "com.zjhousing.egov.proposal.business.ProposalBusinessProperties"
+    }
+  ],
+  "properties": [
+    {
+      "sourceType": "com.zjhousing.egov.proposal.business.util.DocBusinessProperties",
+      "name": "doc.business.archive-admin",
+      "description": "公文库管理员",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.zjhousing.egov.proposal.business.util.DocBusinessProperties",
+      "name": "doc.business.publish-articles-wsdl",
+      "description": "向指定栏目发布文章的wsdl地址",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.zjhousing.egov.proposal.business.util.DocBusinessProperties",
+      "name": "doc.business.request-prefix",
+      "description": "收发文转其他文请求ip",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.zjhousing.egov.proposal.business.util.DocBusinessProperties",
+      "name": "doc.business.to-file-wsdl",
+      "description": "归档案wsdl地址",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.zjhousing.egov.proposal.business.util.DocBusinessProperties",
+      "name": "doc.business.writ-sect",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.zjhousing.egov.proposal.business.ProposalBusinessProperties",
+      "name": "proposal.business.archive-admin",
+      "description": "公文库管理员",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.zjhousing.egov.proposal.business.ProposalBusinessProperties",
+      "name": "proposal.business.publish-articles-wsdl",
+      "description": "向指定栏目发布文章的wsdl地址",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.zjhousing.egov.proposal.business.ProposalBusinessProperties",
+      "name": "proposal.business.request-prefix",
+      "description": "收发文转其他文请求ip",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.zjhousing.egov.proposal.business.ProposalBusinessProperties",
+      "name": "proposal.business.to-file-wsdl",
+      "description": "归档案wsdl地址",
+      "type": "java.lang.String"
+    },
+    {
+      "sourceType": "com.zjhousing.egov.proposal.business.ProposalBusinessProperties",
+      "name": "proposal.business.writ-sect",
+      "type": "java.lang.String"
+    }
+  ]
+}

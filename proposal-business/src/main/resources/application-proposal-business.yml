@@ -1,0 +1,72 @@
+spring:
+  jackson:
+    default-property-inclusion: non_null
+    time-zone: GMT+8
+  session:
+    store-type: redis
+  cache:
+    type: redis
+  #mongoDb:存mongoDb ; dataBase: 存数据库
+  fileStorageType: mongoDb
+  http:
+    multipart:
+      max-file-size: 100Mb
+      max-request-size: 100Mb
+  boot:
+    admin:
+      context-path: /admin
+      url: http://localhost:${server.port}/admin
+  datasource:
+    druid:
+      aop-patterns: com.rongji.*
+  aop:
+    proxy-target-class: true
+  data:
+    solr:
+      zk-host: ${spring.solr.ZkHost}
+management:
+  security:
+    enabled: false
+  context-path: /actuator
+mybatis:
+  configuration:
+    database-id: mysql
+flyway:
+  enabled: false
+eureka:
+  client:
+    enabled: false
+swagger:
+  enabled: false
+proposal:
+  business:
+    request-prefix: http://192.168.210.158:6069
+---
+spring:
+  profiles: dev
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    url: jdbc:mysql://192.168.210.186:3306/zj-housing?characterEncoding=utf8&useSSL=false
+    useSSL: false
+    username: root
+    password: root
+  redis:
+    host: 192.168.210.147
+    port: 6579
+    database: 1
+  data:
+    mongodb:
+      uri: mongodb://192.168.210.186:27017/zj-housing
+      chunkSize: 8
+      fileCollection: fs
+      defaultCollection: zj-housing
+  solr:
+    DefaultCollection: zj-housing
+    ZkHost: 192.168.210.171:2166
+    ZkClientTimeout: 15000
+    ZkConnectTimeout: 50000
+logging:
+  level:
+    com.rongji: debug
+server:
+  port: 6063

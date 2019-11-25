@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjhousing.egov.proposal.business.mapper.EgovDocUpdateItemLogMapper">
+  <resultMap type="com.zjhousing.egov.proposal.business.model.EgovDocUpdateItemLog" id="EgovDocUpdateLogResultMap">
+    <result property="id" column="ID" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="docId" column="DOC_ID" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="operUserNo" column="OPER_USER_NO" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="operUserName" column="OPER_USER_NAME" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="updateTime" column="UPDATE_TIME" javaType="java.util.Date" jdbcType="TIMESTAMP"/>
+    <result property="updateItem" column="UPDATE_ITEM" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="oldValue" column="OLD_VALUE" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="newValue" column="NEW_VALUE" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="systemNo" column="SYSTEM_NO" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="moduleNo" column="MODULE_NO" javaType="java.lang.String" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <!-- 可重复利用的sql -->
+  <sql id="allColumns">
+        ID,
+        DOC_ID,
+        OPER_USER_NO,
+        OPER_USER_NAME,
+        UPDATE_TIME,
+        UPDATE_ITEM,
+        OLD_VALUE,
+        NEW_VALUE,
+        SYSTEM_NO,
+        MODULE_NO
+    </sql>
+
+  <!--变更记录分页-->
+  <select id="getEgovDocUpdateItemLog4Page" resultMap="EgovDocUpdateLogResultMap">
+    SELECT <include refid="allColumns"/>
+    FROM EGOV_DOC_UPDATE_ITEM_LOG
+    <where>
+      <if test="model.docId!=null and model.docId!=''">
+        AND DOC_ID = #{model.docId}
+      </if>
+      <if test="model.updateItem!=null and model.updateItem!=''">
+        AND UPDATE_ITEM like concat(concat('%',#{model.updateItem}),'%')
+      </if>
+      <if test="model.operUserName!=null and model.operUserName!=''">
+        AND OPER_USER_NAME like concat(concat('%',#{model.operUserName}),'%')
+      </if>
+      <if test="model.beginTime!=null and model.beginTime!=''">
+        <![CDATA[AND to_char(UPDATE_TIME, 'yyyy-mm-dd') >= #{model.beginTime}]]>
+      </if>
+      <if test="model.endTime!=null and model.endTime!=''">
+        <![CDATA[AND to_char(UPDATE_TIME, 'yyyy-mm-dd') <= #{model.endTime}]]>
+      </if>
+      <if test="model.systemNo!=null and model.systemNo!=''">
+        AND SYSTEM_NO = #{model.systemNo}
+      </if>
+      <if test="model.moduleNo!=null and model.moduleNo!=''">
+        AND MODULE_NO = #{model.moduleNo}
+      </if>
+      <if test="word!=null and word!=''">
+        <bind name="likeWord" value="'%'+ word + '%'"></bind>
+        AND UPDATE_ITEM like #{likeWord}
+      </if>
+    </where>
+    ORDER BY UPDATE_TIME DESC
+  </select>
+
+  <!--新增变更记录-->
+  <insert id="insertEgovDocUpdateItemLog" parameterType="com.zjhousing.egov.proposal.business.model.EgovDocUpdateItemLog">
+    INSERT INTO EGOV_DOC_UPDATE_ITEM_LOG (
+    <include refid="allColumns"/>
+    )
+    VALUES(
+    #{model.id,jdbcType=VARCHAR,javaType=java.lang.String },
+    #{model.docId,jdbcType=VARCHAR,javaType=java.lang.String },
+    #{model.operUserNo,jdbcType=VARCHAR,javaType=java.lang.String },
+    #{model.operUserName,jdbcType=VARCHAR,javaType=java.lang.String },
+    #{model.updateTime,jdbcType=TIMESTAMP,javaType=java.util.Date},
+    #{model.updateItem,jdbcType=VARCHAR,javaType=java.lang.String },
+    #{model.oldValue,jdbcType=VARCHAR,javaType=java.lang.String },
+    #{model.newValue,jdbcType=VARCHAR,javaType=java.lang.String },
+    #{model.systemNo,jdbcType=VARCHAR,javaType=java.lang.String },
+    #{model.moduleNo,jdbcType=VARCHAR,javaType=java.lang.String }
+    )
+  </insert>
+
+  <insert id="batchInsertEgovDocUpdateItemLog">
+    INSERT INTO EGOV_DOC_UPDATE_ITEM_LOG (
+    <include refid="allColumns"/>
+    )
+    <if test="_databaseId == 'oracle'">
+      select * from (
+      <foreach collection="list" item="model" separator=" union ">
+        select
+        #{model.id,jdbcType=VARCHAR,javaType=java.lang.String },
+        #{model.docId,jdbcType=VARCHAR,javaType=java.lang.String },
+        #{model.operUserNo,jdbcType=VARCHAR,javaType=java.lang.String },
+        #{model.operUserName,jdbcType=VARCHAR,javaType=java.lang.String },
+        #{model.updateTime,jdbcType=TIMESTAMP,javaType=java.util.Date},
+        #{model.updateItem,jdbcType=VARCHAR,javaType=java.lang.String },
+        #{model.oldValue,jdbcType=VARCHAR,javaType=java.lang.String },
+        #{model.newValue,jdbcType=VARCHAR,javaType=java.lang.String },
+        #{model.systemNo,jdbcType=VARCHAR,javaType=java.lang.String },
+        #{model.moduleNo,jdbcType=VARCHAR,javaType=java.lang.String }
+        from dual
+      </foreach>
+      ) A
+    </if>
+    <if test="_databaseId == 'sqlserver'">
+      INSERT INTO EGOV_DOC_UPDATE_ITEM_LOG (
+      <include refid="allColumns"/>
+      )
+      VALUES
+      <foreach collection="list" item="model" separator=",">
+        (
+        #{model.id,jdbcType=VARCHAR,javaType=java.lang.String },
+        #{model.docId,jdbcType=VARCHAR,javaType=java.lang.String },
+        #{model.operUserNo,jdbcType=VARCHAR,javaType=java.lang.String },
+        #{model.operUserName,jdbcType=VARCHAR,javaType=java.lang.String },
+        #{model.updateTime,jdbcType=TIMESTAMP,javaType=java.util.Date},
+        #{model.updateItem,jdbcType=VARCHAR,javaType=java.lang.String },
+        #{model.oldValue,jdbcType=VARCHAR,javaType=java.lang.String },
+        #{model.newValue,jdbcType=VARCHAR,javaType=java.lang.String },
+        #{model.systemNo,jdbcType=VARCHAR,javaType=java.lang.String },
+        #{model.moduleNo,jdbcType=VARCHAR,javaType=java.lang.String }
+        )
+      </foreach>
+    </if>
+  </insert>
+
+  <!--更新变更记录-->
+  <update id="updateEgovDocUpdateItemLog" parameterType="com.zjhousing.egov.proposal.business.model.EgovDocUpdateItemLog">
+    UPDATE EGOV_DOC_UPDATE_ITEM_LOG
+    <set>
+      <if test="model.operUserNo!=null ">
+        OPER_USER_NO = #{model.operUserNo},
+      </if>
+      <if test="model.updateTime!=null ">
+        UPDATE_TIME = to_timestamp(#{model.updateTime}, 'yyyy-mm-dd')
+      </if>
+      <if test="model.updateItem!=null ">
+        UPDATE_ITEM = #{model.updateItem},
+      </if>
+      <if test="model.oldValue!=null ">
+        OLD_VALUE = #{model.oldValue},
+      </if>
+      <if test="model.newValue!=null ">
+        NEW_VALUE = #{model.newValue},
+      </if>
+    </set>
+    <where>
+      <if test="model.id!=null and model.id!=''">
+        ID = #{model.id}
+      </if>
+    </where>
+  </update>
+
+  <!--删除变更记录-->
+  <delete id="deleteEgovDocUpdateItemById" parameterType="java.util.List">
+    DELETE FROM EGOV_DOC_UPDATE_ITEM_LOG WHERE ID IN (
+    <foreach collection="list" item="item" separator=",">
+      #{item}
+    </foreach>
+    )
+  </delete>
+
+  <!--根据文档id删除变更记录-->
+  <delete id="getEgovDocUpdateItemById" parameterType="java.util.List">
+    DELETE FROM EGOV_DOC_UPDATE_ITEM_LOG WHERE DOC_ID IN (
+    <foreach collection="list" item="item" separator=",">
+      #{item}
+    </foreach>
+    )
+  </delete>
+
+  <!--查询某条记录-->
+  <select id="deleteEgovDocUpdateItemByDocId" resultMap="EgovDocUpdateLogResultMap">
+    SELECT <include refid="allColumns"/>
+    FROM EGOV_DOC_UPDATE_ITEM_LOG
+    <where>
+      <if test="id!=null and id!=''">
+        ID = #{id}
+      </if>
+    </where>
+  </select>
+</mapper>

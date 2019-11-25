@@ -1,0 +1,587 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjhousing.egov.proposal.business.mapper.ReceivalMapper">
+  <resultMap id="ReceivalResultMap" type="com.zjhousing.egov.proposal.business.model.Receival">
+    <result property="id" column="ID" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="docStdId" column="DOC_STD_ID" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="docMark" column="DOC_MARK" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="docSequence" column="DOC_SEQUENCE" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="docSequenceYear" column="DOC_SEQUENCE_YEAR" javaType="java.lang.Integer"
+            jdbcType="INTEGER"/>
+    <result property="docSequenceNum" column="DOC_SEQUENCE_NUM" javaType="java.lang.Integer"
+            jdbcType="INTEGER"/>
+    <result property="handleOrView" column="HANDLE_OR_VIEW" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="fileCategory" column="FILE_CATEGORY" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="sourceUnit" column="SOURCE_UNIT" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="draftUser" column="DRAFT_USER" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="draftUserNo" column="DRAFT_USER_NO" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="draftUserDept" column="DRAFT_USER_DEPT" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="draftUserDeptNo" column="DRAFT_USER_DEPT_NO" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="draftUserUnit" column="DRAFT_USER_UNIT" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="draftUserUnitNo" column="DRAFT_USER_UNIT_NO" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="subject" column="SUBJECT" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="urgenLevel" column="URGEN_LEVEL" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="secLevel" column="SEC_LEVEL" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="dealContent" column="DEAL_CONTENT" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="copyNum" column="COPY_NUM" javaType="java.lang.Integer"
+            jdbcType="INTEGER"/>
+    <result property="pageNum" column="PAGE_NUM" javaType="java.lang.Integer"
+            jdbcType="INTEGER"/>
+    <result property="secureTerm" column="SECURE_TERM" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="archiveType" column="ARCHIVE_TYPE"
+            javaType="com.zjhousing.egov.proposal.business.enums.ArchiveTypeEnum" jdbcType="VARCHAR"/>
+    <result property="archiveFlag" column="ARCHIVE_FLAG" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="signDate" column="SIGN_DATE" javaType="java.util.Date" jdbcType="DATE"/>
+    <result property="draftDate" column="DRAFT_DATE" javaType="java.util.Date" jdbcType="DATE"/>
+    <result property="dealUnit" column="DEAL_UNIT" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="dealUnitNo" column="DEAL_UNIT_NO" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="dealDate" column="DEAL_DATE" javaType="java.util.Date" jdbcType="DATE"/>
+    <result property="docType" column="DOC_TYPE" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="deadLine" column="DEAD_LINE" javaType="java.util.Date" jdbcType="DATE"/>
+    <result property="handleLeader" column="HANDLE_LEADER" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="handleLeaderNo" column="HANDLE_LEADER_NO" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="handleUnit" column="HANDLE_UNIT" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="handleUnitNo" column="HANDLE_UNIT_NO" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="assistUnit" column="ASSIST_UNIT" javaType="java.util.List" jdbcType="VARCHAR"/>
+    <result property="assistUnitNo" column="ASSIST_UNIT_NO" javaType="java.util.List" jdbcType="VARCHAR"/>
+    <result property="viewUnit" column="VIEW_UNIT" javaType="java.util.List" jdbcType="VARCHAR"/>
+    <result property="viewUnitNo" column="VIEW_UNIT_NO" javaType="java.util.List" jdbcType="VARCHAR"/>
+    <result property="dispatchRange" column="DISPATCH_RANGE" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="dispatchRangeNo" column="DISPATCH_RANGE_NO" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="selectLevel" column="SELECT_LEVEL" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="returnFlag" column="RETURN_FLAG" javaType="com.zjhousing.egov.proposal.business.enums.ReturnFlagEnum"
+            jdbcType="VARCHAR"/>
+    <result property="remark" column="REMARK" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="abstracts" column="ABSTRACTS" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="readers" column="READERS" javaType="java.util.Set" jdbcType="VARCHAR"/>
+    <result property="dealFormId" column="DEAL_FORM_ID" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="docCate" column="DOC_CATE" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="secLevelBase" column="SEC_LEVEL_BASE" javaType="java.util.Set" jdbcType="VARCHAR"/>
+    <result property="retentionTerm" column="RETENTION_TERM" javaType="java.util.Date" jdbcType="DATE"/>
+    <result property="direction" column="DIRECTION" javaType="java.util.Set" jdbcType="VARCHAR"/>
+    <result property="docTrack" column="DOC_TRACK" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="relDocMark" column="REL_DOC_MARK" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="transData" column="TRANS_DATA" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="flowLabel" column="FLOW_LABEL" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="flowVersion" column="FLOW_VERSION" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="flowPid" column="FLOW_PID" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="flowStatus" column="FLOW_STATUS" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="flowDoneUser" column="FLOW_DONE_USER" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="swapId" column="SWAP_ID" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="swapReturn" column="SWAP_RETURN" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="systemNo" column="SYSTEM_NO" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="taskFlag" column="TASK_FLAG" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="turnNum" column="TURN_NUM" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="inReceivalReaders" column="IN_RECEIVAL_READERS" javaType="java.util.Set" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <!-- 可重复利用的sql -->
+  <sql id="allColumns">
+        ID,
+        DOC_STD_ID,
+        DOC_MARK,
+        DOC_SEQUENCE,
+        DOC_SEQUENCE_YEAR,
+        DOC_SEQUENCE_NUM,
+        HANDLE_OR_VIEW,
+        FILE_CATEGORY,
+        SOURCE_UNIT,
+        DRAFT_USER,
+        DRAFT_USER_NO,
+        DRAFT_USER_DEPT,
+        DRAFT_USER_DEPT_NO,
+        DRAFT_USER_UNIT,
+        DRAFT_USER_UNIT_NO,
+        SUBJECT,
+        URGEN_LEVEL,
+        SEC_LEVEL,
+		DEAL_CONTENT,
+        COPY_NUM,
+        PAGE_NUM,
+        SECURE_TERM,
+        ARCHIVE_TYPE,
+        ARCHIVE_FLAG,
+        SIGN_DATE,
+        DRAFT_DATE,
+        DEAL_UNIT,
+        DEAL_UNIT_NO,
+        DEAL_DATE,
+        DOC_TYPE,
+        DEAD_LINE,
+        HANDLE_LEADER,
+        HANDLE_LEADER_NO,
+        HANDLE_UNIT,
+        HANDLE_UNIT_NO,
+        ASSIST_UNIT,
+        ASSIST_UNIT_NO,
+        VIEW_UNIT,
+        VIEW_UNIT_NO,
+        DISPATCH_RANGE,
+        DISPATCH_RANGE_NO,
+        SELECT_LEVEL,
+        RETURN_FLAG,
+        REMARK,
+        ABSTRACTS,
+        READERS,
+        DEAL_FORM_ID,
+        DOC_CATE,
+        SEC_LEVEL_BASE,
+        RETENTION_TERM,
+        DIRECTION,
+        DOC_TRACK,
+        REL_DOC_MARK,
+        TRANS_DATA,
+        FLOW_LABEL,
+        FLOW_VERSION,
+        FLOW_PID,
+        FLOW_STATUS,
+       	FLOW_DONE_USER,
+       	SWAP_ID,
+        SWAP_RETURN,
+        SYSTEM_NO,
+        TASK_FLAG,
+        TURN_NUM,
+        IN_RECEIVAL_READERS
+    </sql>
+
+  <select id="isDuplicateWithModel" resultType="java.lang.String">
+    SELECT ID
+    FROM EGOV_RECEIVAL
+    <where>
+      <if test="docMark!=null and docMark!=''">
+        AND DOC_MARK = #{docMark}
+      </if>
+      <if test="subject!=null and subject!=''">
+        AND SUBJECT = #{subject}
+      </if>
+      <if test="systemNo!=null and systemNo!=''">
+        AND SYSTEM_NO = #{systemNo}
+      </if>
+      <if test="id!=null and id!=''">
+        AND ID != #{id}
+      </if>
+      AND FLOW_STATUS != '8'
+    </where>
+  </select>
+
+  <insert id="insertReceival" parameterType="com.zjhousing.egov.proposal.business.model.Receival">
+    INSERT INTO EGOV_RECEIVAL (
+    <include refid="allColumns"/>
+    )
+    VALUES(
+    #{id,jdbcType=VARCHAR},
+    #{docStdId,jdbcType=VARCHAR},
+    #{docMark,jdbcType=VARCHAR},
+    #{docSequence,jdbcType=VARCHAR},
+    #{docSequenceYear, javaType=java.lang.Integer, jdbcType=INTEGER},
+    #{docSequenceNum, javaType=java.lang.Integer, jdbcType=INTEGER},
+    #{handleOrView,jdbcType=VARCHAR},
+    #{fileCategory,jdbcType=VARCHAR},
+    #{sourceUnit,jdbcType=VARCHAR},
+    #{draftUser,jdbcType=VARCHAR},
+    #{draftUserNo,jdbcType=VARCHAR},
+    #{draftUserDept,jdbcType=VARCHAR},
+    #{draftUserDeptNo,jdbcType=VARCHAR},
+    #{draftUserUnit,jdbcType=VARCHAR},
+    #{draftUserUnitNo,jdbcType=VARCHAR},
+    #{subject,jdbcType=VARCHAR},
+    #{urgenLevel,jdbcType=VARCHAR},
+    #{secLevel,jdbcType=VARCHAR},
+    #{dealContent,jdbcType=VARCHAR},
+    #{copyNum,jdbcType=INTEGER},
+    #{pageNum,jdbcType=INTEGER},
+    #{secureTerm,jdbcType=VARCHAR},
+    #{archiveType,jdbcType=VARCHAR},
+    #{archiveFlag,jdbcType=VARCHAR},
+    #{signDate,jdbcType=DATE},
+    #{draftDate,jdbcType=DATE},
+    #{dealUnit,jdbcType=VARCHAR},
+    #{dealUnitNo,jdbcType=VARCHAR},
+    #{dealDate,jdbcType=DATE},
+    #{docType,jdbcType=VARCHAR},
+    #{deadLine,jdbcType=DATE},
+    #{handleLeader,jdbcType=VARCHAR},
+    #{handleLeaderNo,jdbcType=VARCHAR},
+    #{handleUnit,jdbcType=VARCHAR},
+    #{handleUnitNo,jdbcType=VARCHAR},
+    #{assistUnit,jdbcType=VARCHAR},
+    #{assistUnitNo,jdbcType=VARCHAR},
+    #{viewUnit,jdbcType=VARCHAR},
+    #{viewUnitNo,jdbcType=VARCHAR},
+    #{dispatchRange,jdbcType=VARCHAR},
+    #{dispatchRangeNo,jdbcType=VARCHAR},
+    #{selectLevel,jdbcType=VARCHAR},
+    #{returnFlag,jdbcType=VARCHAR},
+    #{remark,jdbcType=VARCHAR},
+    #{abstracts,jdbcType=VARCHAR},
+    #{readers,jdbcType=VARCHAR,javaType=java.util.Set},
+    #{dealFormId,jdbcType=VARCHAR},
+    #{docCate,jdbcType=VARCHAR},
+    #{secLevelBase,jdbcType=VARCHAR},
+    #{retentionTerm,javaType=java.util.Date,jdbcType=DATE},
+    #{direction,jdbcType=VARCHAR},
+    #{docTrack,jdbcType=VARCHAR},
+    #{relDocMark,jdbcType=VARCHAR},
+    #{transData,jdbcType=VARCHAR},
+    #{flowLabel,jdbcType=VARCHAR},
+    #{flowVersion,jdbcType=VARCHAR},
+    #{flowPid,jdbcType=VARCHAR},
+    #{flowStatus,jdbcType=VARCHAR},
+    #{flowDoneUser,jdbcType=VARCHAR},
+    #{swapId,jdbcType=VARCHAR},
+    #{swapReturn,jdbcType=VARCHAR},
+    #{systemNo,jdbcType=VARCHAR,javaType=java.lang.String },
+    #{taskFlag,jdbcType=VARCHAR,javaType=java.lang.String },
+    #{turnNum,jdbcType=VARCHAR,javaType=java.lang.String },
+    #{inReceivalReaders,jdbcType=VARCHAR,javaType=java.util.Set}
+    )
+  </insert>
+
+  <delete id="deleteReceival">
+    DELETE FROM EGOV_RECEIVAL
+    <where>
+      ID IN (
+      <foreach item="id" collection="list" separator=",">
+        #{id}
+      </foreach>
+      )
+    </where>
+  </delete>
+
+  <update id="updateReceival" parameterType="com.zjhousing.egov.proposal.business.model.Receival">
+    UPDATE EGOV_RECEIVAL
+    <set>
+      <if test="docStdId!=null">
+        DOC_STD_ID = #{docStdId},
+      </if>
+      <if test="docMark!=null">
+        DOC_MARK = #{docMark},
+      </if>
+      <if test="docSequence!=null">
+        DOC_SEQUENCE = #{docSequence},
+      </if>
+      <if test="docSequenceYear!=null and docSequenceYear != -1">
+        DOC_SEQUENCE_YEAR = #{docSequenceYear},
+      </if>
+      <if test="docSequenceYear == -1">
+        DOC_SEQUENCE_YEAR = null,
+      </if>
+      <if test="docSequenceNum != null and docSequenceNum != -1">
+        DOC_SEQUENCE_NUM = #{docSequenceNum},
+      </if>
+      <if test="docSequenceNum == -1">
+        DOC_SEQUENCE_NUM = null,
+      </if>
+      <if test="handleOrView!=null">
+        HANDLE_OR_VIEW = #{handleOrView},
+      </if>
+      <if test="fileCategory!=null">
+        FILE_CATEGORY = #{fileCategory},
+      </if>
+      <if test="sourceUnit!=null">
+        SOURCE_UNIT = #{sourceUnit},
+      </if>
+      <if test="draftUser!=null">
+        DRAFT_USER = #{draftUser},
+      </if>
+      <if test="draftUserNo!=null">
+        DRAFT_USER_NO = #{draftUserNo},
+      </if>
+      <if test="draftUserDept!=null">
+        DRAFT_USER_DEPT = #{draftUserDept},
+      </if>
+      <if test="draftUserDeptNo!=null">
+        DRAFT_USER_DEPT_NO = #{draftUserDeptNo},
+      </if>
+      <if test="draftUserUnit!=null">
+        DRAFT_USER_UNIT = #{draftUserUnit},
+      </if>
+      <if test="draftUserUnitNo!=null">
+        DRAFT_USER_UNIT_NO = #{draftUserUnitNo},
+      </if>
+      <if test="subject!=null">
+        SUBJECT = #{subject},
+      </if>
+      <if test="urgenLevel!=null">
+        URGEN_LEVEL = #{urgenLevel},
+      </if>
+      <if test="secLevel!=null ">
+        SEC_LEVEL = #{secLevel},
+      </if>
+      <if test="dealContent!=null ">
+        DEAL_CONTENT = #{dealContent},
+      </if>
+      <if test="copyNum!=null">
+        COPY_NUM = #{copyNum},
+      </if>
+      <if test="pageNum!=null">
+        PAGE_NUM = #{pageNum},
+      </if>
+      <if test="secureTerm!=null">
+        SECURE_TERM = #{secureTerm},
+      </if>
+      <if test="archiveType!=null">
+        ARCHIVE_TYPE = #{archiveType},
+      </if>
+      <if test="archiveFlag!=null">
+        ARCHIVE_FLAG = #{archiveFlag},
+      </if>
+      <if test="signDate!=null">
+        SIGN_DATE = #{signDate},
+      </if>
+      <if test="draftDate!=null">
+        DRAFT_DATE = #{draftDate},
+      </if>
+      <if test="dealUnit!=null">
+        DEAL_UNIT = #{dealUnit},
+      </if>
+      <if test="dealUnitNo!=null">
+        DEAL_UNIT_NO = #{dealUnitNo},
+      </if>
+      <if test="dealDate!=null">
+        DEAL_DATE = #{dealDate},
+      </if>
+      <if test="docType!=null">
+        DOC_TYPE = #{docType},
+      </if>
+      <if test="deadLine!=null">
+        DEAD_LINE = #{deadLine},
+      </if>
+      <if test="handleLeader!=null">
+        HANDLE_LEADER = #{handleLeader},
+      </if>
+      <if test="handleLeaderNo!=null">
+        HANDLE_LEADER_NO = #{handleLeaderNo},
+      </if>
+      <if test="handleUnit!=null">
+        HANDLE_UNIT = #{handleUnit},
+      </if>
+      <if test="handleUnitNo!=null">
+        HANDLE_UNIT_NO = #{handleUnitNo},
+      </if>
+      <if test="assistUnit!=null">
+        ASSIST_UNIT = #{assistUnit},
+      </if>
+      <if test="assistUnitNo!=null">
+        ASSIST_UNIT_NO = #{assistUnitNo},
+      </if>
+      <if test="viewUnit!=null">
+        VIEW_UNIT = #{viewUnit},
+      </if>
+      <if test="viewUnitNo!=null">
+        VIEW_UNIT_NO = #{viewUnitNo},
+      </if>
+      <if test="dispatchRange!=null">
+        DISPATCH_RANGE = #{dispatchRange},
+      </if>
+      <if test="dispatchRangeNo!=null">
+        DISPATCH_RANGE_NO = #{dispatchRangeNo},
+      </if>
+      <if test="selectLevel!=null">
+        SELECT_LEVEL = #{selectLevel},
+      </if>
+      <if test="returnFlag!=null">
+        RETURN_FLAG = #{returnFlag},
+      </if>
+      <if test="direction!=null">
+        DIRECTION = #{direction},
+      </if>
+      <if test="remark!=null">
+        REMARK = #{remark},
+      </if>
+      <if test="abstracts!=null">
+        ABSTRACTS = #{abstracts},
+      </if>
+      <if test="readers!=null">
+        READERS = #{readers},
+      </if>
+      <if test="flowStatus!=null">
+        FLOW_STATUS = #{flowStatus},
+      </if>
+      <if test="flowLabel!=null">
+        FLOW_LABEL = #{flowLabel},
+      </if>
+      <if test="flowVersion!=null">
+        FLOW_VERSION = #{flowVersion},
+      </if>
+      <if test="flowPid!=null">
+        FLOW_PID = #{flowPid},
+      </if>
+      <if test="dealFormId!=null">
+        DEAL_FORM_ID = #{dealFormId},
+      </if>
+      <if test="docCate != null">
+        DOC_CATE = #{docCate},
+      </if>
+      <if test="secLevelBase != null">
+        SEC_LEVEL_BASE = #{secLevelBase},
+      </if>
+      <if test="retentionTerm != null">
+        RETENTION_TERM = #{retentionTerm},
+      </if>
+      <if test="docTrack != null">
+        DOC_TRACK = #{docTrack},
+      </if>
+      <if test="relDocMark != null">
+        REL_DOC_MARK = #{relDocMark},
+      </if>
+      <if test="flowDoneUser != null">
+        FLOW_DONE_USER = #{flowDoneUser},
+      </if>
+      <if test="transData != null">
+        TRANS_DATA = #{transData},
+      </if>
+      <if test="swapId!=null">
+        SWAP_ID = #{swapId},
+      </if>
+      <if test="swapReturn!=null">
+        SWAP_RETURN = #{swapReturn},
+      </if>
+      <if test="taskFlag != null">
+        TASK_FLAG = #{taskFlag},
+      </if>
+      <if test="turnNum != null">
+        TURN_NUM = #{turnNum},
+      </if>
+      <if test="inReceivalReaders != null">
+        IN_RECEIVAL_READERS = #{inReceivalReaders},
+      </if>
+    </set>
+    <where>
+      <if test="id!=null and id!=''">
+        ID = #{id}
+      </if>
+    </where>
+  </update>
+
+  <update id="updateFlowStatus">
+    UPDATE EGOV_RECEIVAL
+    <set>
+      <if test="flowStatus!=null">
+        FLOW_STATUS = #{flowStatus},
+      </if>
+    </set>
+    where ID = #{id}
+  </update>
+
+  <update id="updateReturnFlagByIds">
+    UPDATE EGOV_RECEIVAL
+    <set>
+      RETURN_FLAG = '1',
+    </set>
+    <where>
+      ID IN (
+      <foreach item="id" collection="list" separator=",">
+        #{id}
+      </foreach>
+      )
+    </where>
+  </update>
+
+  <select id="getReceivalById" parameterType="java.lang.String" resultMap="ReceivalResultMap">
+    SELECT
+    <include refid="allColumns"/>
+    FROM EGOV_RECEIVAL
+    <where>
+      <if test="id!=null and id!=''">
+        ID = #{id}
+      </if>
+    </where>
+  </select>
+
+  <!--根据文件字号得到收文-->
+  <select id="getReceival4docMark" parameterType="java.lang.String" resultMap="ReceivalResultMap">
+		SELECT  id  FROM EGOV_RECEIVAL
+        WHERE DOC_MARK = #{docMark}
+	</select>
+
+  <!--收文分页列表-->
+  <select id="getReceival4Page" resultMap="ReceivalResultMap">
+    SELECT
+    <include refid="allColumns"/>
+    FROM EGOV_RECEIVAL
+    <where>
+      <if test="receival.flowStatus!=null and receival.flowStatus!=''">
+        AND FLOW_STATUS = #{receival.flowStatus}
+      </if>
+      <if test="receival.draftUserNo!=null and receival.draftUserNo!=''">
+        AND DRAFT_USER_NO = #{receival.draftUserNo}
+      </if>
+      <if test="receival.returnFlag!=null">
+        AND RETURN_FLAG = #{receival.returnFlag}
+      </if>
+      <if test="receival.subject!=null and receival.subject!=''">
+        <bind name="likeSubject" value="'%'+ receival.subject + '%'"></bind>
+        AND SUBJECT LIKE #{likeSubject}
+      </if>
+      <if test="receival.sourceUnit!=null and receival.sourceUnit!=''">
+        <bind name="likeSourceUnit" value="'%'+ receival.sourceUnit + '%'"></bind>
+        AND SOURCE_UNIT LIKE #{likeSourceUnit}
+      </if>
+      <if test="receival.docMark!=null and receival.docMark!=''">
+        <bind name="likeDocMark" value="'%'+ receival.docMark + '%'"></bind>
+        AND DOC_MARK LIKE #{likeDocMark}
+      </if>
+      <if test="word!=null">
+        AND (
+        <foreach collection="word" item="item" separator="OR">
+          SUBJECT LIKE concat(concat('%',#{item}),'%') OR DOC_MARK LIKE concat(concat('%',#{item}),'%') OR SOURCE_UNIT LIKE concat(concat('%',#{item}),'%')
+        </foreach>
+        )
+      </if>
+      <if test="receival.front_RangeStartDate != null">
+        <![CDATA[ AND  DRAFT_DATE >= #{receival.front_RangeStartDate,jdbcType=DATE,javaType=java.util.Date} ]]>
+      </if>
+      <if test="receival.front_RangeEndDate != null">
+        <![CDATA[ AND DRAFT_DATE <= #{receival.front_RangeEndDate,jdbcType=DATE,javaType=java.util.Date} ]]>
+      </if>
+
+      <if test="receival.beginDate != null">
+        <![CDATA[ AND  DRAFT_DATE >= #{receival.beginDate,jdbcType=DATE,javaType=java.util.Date} ]]>
+      </if>
+      <if test="receival.endDate != null">
+        <![CDATA[ AND DRAFT_DATE <= #{receival.endDate,jdbcType=DATE,javaType=java.util.Date} ]]>
+      </if>
+      <if test="receival.systemNo!=null and receival.systemNo!=''">
+        AND SYSTEM_NO = #{receival.systemNo}
+      </if>
+    </where>
+    order by DRAFT_DATE DESC, ID ASC
+  </select>
+
+  <update id="updateSwapReturnById">
+    UPDATE EGOV_RECEIVAL
+    <set>
+      <if test="swapReturn!=null">
+        SWAP_RETURN = #{swapReturn},
+      </if>
+    </set>
+    <where>
+      <if test="id!=null and id!=''">
+        ID = #{id}
+      </if>
+    </where>
+  </update>
+
+  <update id="batchUpdateReceivalRelDocMark">
+    <foreach collection="list" item="model" index="index" open="" close="" separator=";">
+      UPDATE EGOV_RECEIVAL
+      SET REL_DOC_MARK = #{model.relDocMark, jdbcType=VARCHAR}
+      WHERE ID = #{model.id}
+    </foreach>
+  </update>
+
+  <select id="getReceivalByIdList" resultMap="ReceivalResultMap">
+    SELECT
+    <include refid="allColumns"/>
+    FROM EGOV_RECEIVAL
+    <where>
+      ID IN (
+      <foreach item="id" collection="list" separator=",">
+        #{id}
+      </foreach>
+      )
+    </where>
+  </select>
+</mapper>
