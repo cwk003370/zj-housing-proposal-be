@@ -1,4 +1,4 @@
-package com.zjhousing.egov.proposal.web.controller.proposal;
+package com.zjhousing.egov.proposal.web.controller.external;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
@@ -30,7 +30,7 @@ import java.util.HashMap;
 import java.util.List;
 
 @RestController
-@RequestMapping("/proposal")
+@RequestMapping("/proposalmotion")
 public class ProposalMotionFlowController implements FlowTransferController, FlowRevokeController, FLowRecoverController {
   @Resource
   private TodoTransferMng todoTransferMng;
@@ -52,30 +52,21 @@ public class ProposalMotionFlowController implements FlowTransferController, Flo
 
   @Override
   public String initProcess(String label, String version, String docId) {
-    String aid;
     Proposal proposal = this.proposalMng.getProposalMotionById(docId);
-    if(StringUtils.isNotBlank(proposal.getFlowPid())) {
+    if (StringUtils.isNotBlank(proposal.getFlowPid())) {
       throw new BusinessException("该文件已启用流程");
+    } else {
+      //SecurityUser user = SecurityUtils.getPrincipal();
+      HashMap<String, Object> proposalMap = proposal.toMap();
+
+      try {
+        String aid = this.todoTransferMng.initProcess(label, version, this.proposalFlowOperator, proposalMap);
+        return aid;
+      } catch (Exception var10) {
+        throw new BusinessException(var10.getMessage());
+      }
     }
-    SecurityUser user = SecurityUtils.getPrincipal();
-    String systemNo = user.getSystemNo();
-
-    //获取流水号id
-    String sequenceId = this.disFileWordMng.getDocSequenceByDocWord(proposal.getDocWord(), systemNo);
-    HashMap<String, Object> map = this.commonSequenceMng.generateCommonSequence(sequenceId, user.getOrgNo());
-
-    HashMap<String, Object> proposalMap = proposal.toMap();
-    proposalMap.put(ModuleFiledConst.SEQUENCE_MAP, map);
-    proposalMap.put(ModuleFiledConst.DOC_SEQUENCE, map.get("docSequence"));
-
-    try {
-      aid = this.todoTransferMng.initProcess(label, version, this.proposalFlowOperator, proposalMap);
-    } catch (Exception e) {
-      throw new BusinessException(e.getMessage());
-    }
-    return aid;
   }
-
   @Override
   public boolean setProcessDone(@RequestBody List<String> finishInfo) {
     return this.processManageMng.setProcessDone(finishInfo, this.proposalFlowOperator);

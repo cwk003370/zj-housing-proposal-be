@@ -44,7 +44,7 @@ public interface ProposalMng {
   Proposal getProposalMotionById(String id);
 
   /**
-   * 根据ID查询发文详细信息
+   * 根据ID查询提案详细信息
    *
    * @param docId
    * @param aid
@@ -72,7 +72,7 @@ public interface ProposalMng {
   void cleanUpNum(String docWord, Integer docMarkNum, Integer docMarkYear, String systemNo);
 
   /**
-   * 批量更新发文-关联文件字段值
+   * 批量更新提案-关联文件字段值
    *
    * @param list
    * @return

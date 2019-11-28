@@ -22,7 +22,7 @@ import java.util.List;
  */
 @RequestMapping("/proposalmotion")
 @RestController
-public class DocEgovAttController extends EgovAttController {
+public class ProposalMotionEgovAttController extends EgovAttController {
 
   @Override
   public List<EgovAtt> getEgovAttByDocId(String docId, String type, boolean isCotainFile) {

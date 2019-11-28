@@ -205,11 +205,13 @@ public class Proposal extends FlowObject implements Serializable {
   /**
    * 交办时间-ASSIGNMENT_DATE
    */
+  @JsonFormat(pattern = "yyyy-MM-dd")
   @DateTimeFormat(pattern = "yyyy-MM-dd")
   private Date assignmentDate;
   /**
    * 要求反馈时间时间-REQUEST_DATE
    */
+  @JsonFormat(pattern = "yyyy-MM-dd")
   @DateTimeFormat(pattern = "yyyy-MM-dd")
   private Date requestDate;
   /**
@@ -319,6 +321,10 @@ public class Proposal extends FlowObject implements Serializable {
    */
   private String turnNum;
   /**
+   * 内部传阅-IN_READERS
+   */
+  private Set<String> inReaders;
+  /**
    * 归档需要
    * 文件种类
    */
@@ -336,7 +342,8 @@ public class Proposal extends FlowObject implements Serializable {
     this.id = id;
     this.relReceivalMark = relReceivalMark;
   }
-  public Proposal(String id, String subject, String docMark, Integer docMarkNum, Integer docMarkYear, String docSequence, Integer docSequenceYear, String docWord, String docCate, Date draftDate, String draftUserNo, String draftUserName, String draftDept, String draftDeptNo, String draftUnit, String draftUnitNo, String signUserNo, String signUserName, String signDept, String signDeptNo, String signUnit, String signUnitNo, Date signDate, CleanFlagEnum signDateCleanFlag, String signFlag, String parentClass, String childrenClass, String reflectionCategory, String meetingSession, String proposalNum, String relReceivalMark, String leadingNo, String leadingUser, String leadingPhoto, String leadingPlace, String secondedNo, Set<String> secondedUsers, String secondedNum, String causeAction, Set<String> mainOrganizer, Set<String> assistOrganizer, String attachDesc, String assignmentNum, Date assignmentDate, Date requestDate, String undertakeDepartment, String handlingMode, String urgentLevel, String assignmentUserNo, String assignmentUser, String assignmentPhoto, String importLevel, String assignmentRequirements, Set<String> mainSend, Set<String> copySend, String handleUserNo, String handleUser, String handlePhoto, String serviceAttitude, String remark, String dealFormId, String systemNo, Set<String> readers, String secLevel, TransferLibraryTypeEnum transferLibraryType, ArchiveTypeEnum archiveType, String archiveFlag, Integer pageNum, Integer printNum, String taskFlag, String turnNum, String docType, String publicCate) {
+
+  public Proposal(String id, String subject, String docMark, Integer docMarkNum, Integer docMarkYear, String docSequence, Integer docSequenceYear, String docWord, String docCate, Date draftDate, String draftUserNo, String draftUserName, String draftDept, String draftDeptNo, String draftUnit, String draftUnitNo, String signUserNo, String signUserName, String signDept, String signDeptNo, String signUnit, String signUnitNo, Date signDate, CleanFlagEnum signDateCleanFlag, String signFlag, String parentClass, String childrenClass, String reflectionCategory, String meetingSession, String proposalNum, String relReceivalMark, String leadingNo, String leadingUser, String leadingPhoto, String leadingPlace, String secondedNo, Set<String> secondedUsers, String secondedNum, String causeAction, Set<String> mainOrganizer, Set<String> assistOrganizer, String attachDesc, String assignmentNum, Date assignmentDate, Date requestDate, String undertakeDepartment, String handlingMode, String urgentLevel, String assignmentUserNo, String assignmentUser, String assignmentPhoto, String importLevel, String assignmentRequirements, Set<String> mainSend, Set<String> copySend, String handleUserNo, String handleUser, String handlePhoto, String serviceAttitude, String remark, String dealFormId, String systemNo, Set<String> readers, String secLevel, TransferLibraryTypeEnum transferLibraryType, ArchiveTypeEnum archiveType, String archiveFlag, Integer pageNum, Integer printNum, String taskFlag, String turnNum, Set<String> inReaders) {
     this.id = id;
     this.subject = subject;
     this.docMark = docMark;
@@ -408,8 +415,7 @@ public class Proposal extends FlowObject implements Serializable {
     this.printNum = printNum;
     this.taskFlag = taskFlag;
     this.turnNum = turnNum;
-    this.docType = docType;
-    this.publicCate = publicCate;
+    this.inReaders = inReaders;
   }
 
   @Override
@@ -482,14 +488,23 @@ public class Proposal extends FlowObject implements Serializable {
     sb.append(", transferLibraryType=").append(transferLibraryType);
     sb.append(", archiveType=").append(archiveType);
     sb.append(", archiveFlag='").append(archiveFlag).append('\'');
-    sb.append(", pageNum='").append(pageNum).append('\'');
+    sb.append(", pageNum=").append(pageNum);
     sb.append(", printNum=").append(printNum);
     sb.append(", taskFlag='").append(taskFlag).append('\'');
     sb.append(", turnNum='").append(turnNum).append('\'');
+    sb.append(", inReaders=").append(inReaders);
     sb.append(", docType='").append(docType).append('\'');
     sb.append(", publicCate='").append(publicCate).append('\'');
     sb.append('}');
     return sb.toString();
+  }
+
+  public Set<String> getInReaders() {
+    return inReaders;
+  }
+
+  public void setInReaders(Set<String> inReaders) {
+    this.inReaders = inReaders;
   }
 
   public String getTaskFlag() {

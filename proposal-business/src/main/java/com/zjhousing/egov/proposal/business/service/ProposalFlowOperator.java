@@ -9,7 +9,7 @@ import com.rongji.egov.wflow.business.service.engine.manage.ProcessManageMng;
 import com.zjhousing.egov.proposal.business.constant.ExternalToOthersConstant;
 import com.zjhousing.egov.proposal.business.enums.TransferLibraryTypeEnum;
 import com.zjhousing.egov.proposal.business.model.Proposal;
-import com.zjhousing.egov.proposal.business.query.DisToOthersQuery;
+import com.zjhousing.egov.proposal.business.query.ProToOthersQuery;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +25,7 @@ public class ProposalFlowOperator implements ModuleOperator {
   private ProposalMng proposalMng;
 
   @Resource
-  private DisToOthersMng disToOthersMng;
+  private ProToOthersMng proToOthersMng;
 
   @Resource
   private ProcessManageMng processManageMng;
@@ -45,8 +45,8 @@ public class ProposalFlowOperator implements ModuleOperator {
     proposal.setFlowLabel(label);
     proposal.setFlowVersion(version);
     //初始化流水号
-    proposal.setDocSequence(sequenceMap.get("docSequence").toString());
-    proposal.setDocSequenceYear(Integer.parseInt(sequenceMap.get("docSequenceYear").toString()));
+//    proposal.setDocSequence(sequenceMap.get("docSequence").toString());
+//    proposal.setDocSequenceYear(Integer.parseInt(sequenceMap.get("docSequenceYear").toString()));
 
     //将流程状态设置为启用
     proposal.setFlowStatus("1");
@@ -121,13 +121,13 @@ public class ProposalFlowOperator implements ModuleOperator {
    */
   public void disToOthers(Proposal proposal) {
     if (TransferLibraryTypeEnum.FILE_DONE_TRANSFER.equals(proposal.getTransferLibraryType())) {
-      DisToOthersQuery disToOthersQuery = new DisToOthersQuery();
+      ProToOthersQuery disToOthersQuery = new ProToOthersQuery();
       disToOthersQuery.setType(ExternalToOthersConstant.TO_ARCHIVE);
       disToOthersQuery.setDocId(proposal.getId());
       disToOthersQuery.setPublicFlag("PUBLIC");
       Set<String> readers = new HashSet<>();
       disToOthersQuery.setReaders(readers);
-      this.disToOthersMng.disToOthers(disToOthersQuery);
+      this.proToOthersMng.proToOthers(disToOthersQuery);
     }
   }
 

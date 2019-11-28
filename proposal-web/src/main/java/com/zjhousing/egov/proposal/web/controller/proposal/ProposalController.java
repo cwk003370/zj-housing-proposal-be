@@ -12,6 +12,7 @@ import com.rongji.egov.utils.api.paging.PagingRequest;
 import com.rongji.egov.utils.exception.BusinessException;
 import com.rongji.egov.utils.spring.validation.InsertValidate;
 import com.rongji.egov.utils.spring.validation.UpdateValidate;
+import com.rongji.egov.wflow.business.model.dto.temp.ReadSend;
 import com.rongji.egov.wflow.business.service.engine.manage.ProcessManageMng;
 import com.zjhousing.egov.proposal.business.model.Proposal;
 import com.zjhousing.egov.proposal.business.service.ProposalMng;
@@ -21,6 +22,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.HashSet;
 import java.util.List;
 
 /**
@@ -106,29 +108,29 @@ public class ProposalController {
   /**
    * 更新发文
    *
-   * @param dispatch
+   * @param proposal
    * @param bindingResult 验证对象
    * @return
    */
   @PostMapping("/updateProposalMotion")
-  public Proposal updateRegProposal(@RequestBody @Validated({UpdateValidate.class}) Proposal dispatch, BindingResult bindingResult) {
+  public Proposal updateRegProposal(@RequestBody @Validated({UpdateValidate.class}) Proposal proposal, BindingResult bindingResult) {
     //验证表单数据
     if (bindingResult.hasErrors()) {
       throw new BusinessException(bindingResult.getFieldError().getDefaultMessage());
     }
-    Proposal old = this.proposalMng.getProposalMotionById(dispatch.getId());
-    if (!old.getFlowStatus().equals(dispatch.getFlowStatus())) {
+    Proposal old = this.proposalMng.getProposalMotionById(proposal.getId());
+    if (!old.getFlowStatus().equals(proposal.getFlowStatus())) {
       throw new BusinessException("流程状态已被修改！");
     }
     final String FLOW_STATUS = "0";
-    if (!FLOW_STATUS.equals(dispatch.getFlowStatus())) {
-      this.processManageMng.updateTodo(dispatch.toMap());
+    if (!FLOW_STATUS.equals(proposal.getFlowStatus())) {
+      this.processManageMng.updateTodo(proposal.toMap());
     }
-    int updateResult = this.proposalMng.updateProposalMotion(dispatch);
+    int updateResult = this.proposalMng.updateProposalMotion(proposal);
     if (updateResult != 1) {
       throw new BusinessException("文件更新出错");
     } else {
-      return this.proposalMng.getProposalMotionById(dispatch.getId());
+      return this.proposalMng.getProposalMotionById(proposal.getId());
     }
   }
   /**
@@ -141,7 +143,7 @@ public class ProposalController {
    * @return
    */
   @GetMapping("/proposalMotionPageJson")
-  public Page<Proposal> dispatchPageJson(@CurrentUser SecurityUser user, PagingRequest<Proposal> paging, Proposal proposal, String word) {
+  public Page<Proposal> proposalPageJson(@CurrentUser SecurityUser user, PagingRequest<Proposal> paging, Proposal proposal, String word) {
     List<RmsRole> roles = userDao.listUserRole(user.getUserNo(), user.getSystemNo());
     Boolean manage = false;
     for (RmsRole role : roles) {
@@ -159,5 +161,38 @@ public class ProposalController {
       strings = word.trim().split("\\s+");
     }
     return this.proposalMng.getProposalMotion4Page(paging, proposal, strings);
+  }
+  /**
+   * 内部分发（内部传阅）
+   *
+   * @param readSend
+   * @return
+   * @throws Exception
+   */
+  @PostMapping({"/innerDistribute"})
+  boolean innerDistribute(@RequestBody ReadSend readSend) throws Exception {
+    Boolean noUsers = readSend.getUsers() == null || readSend.getUsers().isEmpty();
+    Boolean noGroupNos = readSend.getGroupNos() == null || readSend.getGroupNos().isEmpty();
+    Boolean noOrgNos = readSend.getOrgNos() == null || readSend.getOrgNos().isEmpty();
+    if (StringUtils.isBlank(readSend.getDocId())) {
+      throw new BusinessException("文档ID不能为空");
+    } else if (noUsers && noGroupNos && noOrgNos) {
+      throw new BusinessException("新增传阅对象不能为空");
+    } else {
+      boolean innerDistributeFlag = this.processManageMng.innerDistribute(readSend);
+      if (innerDistributeFlag) {
+        Proposal proposal = this.proposalMng.getProposalMotionById(readSend.getDocId());
+        HashSet<String> strings = new HashSet<>(readSend.getOrgNos());
+        if (readSend.getGroupNos() != null && readSend.getGroupNos().size() > 0) {
+          strings.addAll(readSend.getGroupNos());
+        }
+        for (ReadSend.User user : readSend.getUsers()) {
+          strings.add(user.getUserNo());
+        }
+        proposal.setInReaders(strings);
+        this.proposalMng.updateProposalMotion(proposal);
+      }
+      return innerDistributeFlag;
+    }
   }
 }

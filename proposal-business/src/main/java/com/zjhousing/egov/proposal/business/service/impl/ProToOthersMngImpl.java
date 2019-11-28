@@ -13,7 +13,6 @@ import com.rongji.egov.user.business.model.UmsUser;
 import com.rongji.egov.user.business.util.SecurityUtils;
 import com.rongji.egov.utils.common.IdUtil;
 import com.rongji.egov.utils.exception.BusinessException;
-import com.rongji.egov.wflow.business.dao.engine.FlowWorkTodoDao;
 import com.zjhousing.egov.proposal.business.constant.ArchiveConstant;
 import com.zjhousing.egov.proposal.business.constant.DepartmentConstant;
 import com.zjhousing.egov.proposal.business.constant.TaskLibraryConstant;
@@ -21,9 +20,9 @@ import com.zjhousing.egov.proposal.business.enums.TransferLibraryTypeEnum;
 import com.zjhousing.egov.proposal.business.model.Proposal;
 import com.zjhousing.egov.proposal.business.query.CommonToOthersQuery;
 import com.zjhousing.egov.proposal.business.query.DealForm;
-import com.zjhousing.egov.proposal.business.query.DisToOthersQuery;
+import com.zjhousing.egov.proposal.business.query.ProToOthersQuery;
 import com.zjhousing.egov.proposal.business.service.ComToOthersMng;
-import com.zjhousing.egov.proposal.business.service.DisToOthersMng;
+import com.zjhousing.egov.proposal.business.service.ProToOthersMng;
 import com.zjhousing.egov.proposal.business.service.ProposalMng;
 import com.zjhousing.egov.proposal.business.util.DocBusinessProperties;
 import com.zjhousing.egov.proposal.business.util.WebServiceUtil;
@@ -46,7 +45,7 @@ import static com.zjhousing.egov.proposal.business.constant.ExternalToOthersCons
  */
 @Service
 @Transactional(rollbackFor = Exception.class)
-public class DisToOthersMngImpl implements DisToOthersMng {
+public class ProToOthersMngImpl implements ProToOthersMng {
 
   @Resource
   private ProposalMng proposalMng;
@@ -59,35 +58,33 @@ public class DisToOthersMngImpl implements DisToOthersMng {
   @Resource
   private DocBusinessProperties docBusinessProperties;
   @Resource
-  private FlowWorkTodoDao flowWorkTodoDao;
-  @Resource
   private UserDao userDao;
   @Resource
   private ComToOthersMng comToOthersMng;
 
   @Override
-  public boolean disToOthers(DisToOthersQuery disToOthersQuery) {
+  public boolean proToOthers(ProToOthersQuery proToOthersQuery) {
     HashMap<String, Object> map;
     boolean fianl = true;
     JSONObject result;
-    Proposal dis = null;
+    Proposal pro = null;
     String docId = "";
     JSONObject turnNumJson = new JSONObject();
     //  转重要文件、转工作提醒次数 json格式的字符串"{ExternalToOthersConstant.TO_WORK_REMINDER: 转工作提醒次数, ExternalToOthersConstant.TO_VITAL_DOCUMENT: 转重要文件次数}"
     String turnNum = null;
     int turnNumInt = -1;
-    final String MODULE_NO = "DISPATCH";
-    if (!disToOthersQuery.getType().equals(CANCLE_TO_DEPARTMENT)) {
-      docId = disToOthersQuery.getDocId();
-      dis = this.proposalMng.getProposalMotionById(docId);
-      if (null == dis) {
+    final String MODULE_NO = "PROPSOALMOTION";
+    if (!proToOthersQuery.getType().equals(CANCLE_TO_DEPARTMENT)) {
+      docId = proToOthersQuery.getDocId();
+      pro = this.proposalMng.getProposalMotionById(docId);
+      if (null == pro) {
         throw new BusinessException("文件不存在");
       }
-      turnNum = dis.getTurnNum();
+      turnNum = pro.getTurnNum();
     }
-    switch (disToOthersQuery.getType()) {
+    switch (proToOthersQuery.getType()) {
       case TO_ARCHIVE:
-        map = this.getDisToArchiveHashMap(dis, disToOthersQuery);
+        map = this.getDisToArchiveHashMap(pro, proToOthersQuery);
         result = this.withTokenRestTemplate.postForObject(this.docBusinessProperties.getRequestPrefix() + "/archive/insertOthersToArchive", map, JSONObject.class);
         if (ExCommon.getFlag(result)) {
           Proposal proposal = new Proposal();
@@ -99,7 +96,7 @@ public class DisToOthersMngImpl implements DisToOthersMng {
         }
         break;
       case TO_DEPARTMENT:
-        map = this.getToDepartmentHashMap(dis, disToOthersQuery);
+        map = this.getToDepartmentHashMap(pro, proToOthersQuery);
         JSONObject jsonObject = this.withTokenRestTemplate.postForObject(this.docBusinessProperties.getRequestPrefix() + "/deptReceival/insertFileToDeptReceival", map, JSONObject.class);
         boolean res = ExCommon.getFlag(jsonObject);
         if (!res) {
@@ -108,7 +105,7 @@ public class DisToOthersMngImpl implements DisToOthersMng {
         fianl = res;
         break;
       case CANCLE_TO_DEPARTMENT:
-        JSONObject jo = this.withTokenRestTemplate.postForObject(this.docBusinessProperties.getRequestPrefix() + "/deptReceival/deleteDeptReceivalByIdList", disToOthersQuery.getIdList(), JSONObject.class);
+        JSONObject jo = this.withTokenRestTemplate.postForObject(this.docBusinessProperties.getRequestPrefix() + "/deptReceival/insertFileToDeptReceival", proToOthersQuery.getIdList(), JSONObject.class);
         boolean flag = ExCommon.getFlag(jo);
         if (!flag) {
           throw new BusinessException(jo.getString("msg"));
@@ -121,12 +118,12 @@ public class DisToOthersMngImpl implements DisToOthersMng {
         break;
       case TO_FILE:
         //保存办理单为附件
-        if (disToOthersQuery.getDealForm() != null && disToOthersQuery.getDealForm().size() > 0) {
+        if (proToOthersQuery.getDealForm() != null && proToOthersQuery.getDealForm().size() > 0) {
           SecurityUser user = SecurityUtils.getPrincipal();
-          CommonToOthersQuery dealFormCtq = new CommonToOthersQuery(docId, MODULE_NO, user, disToOthersQuery.getDealForm().get(0));
+          CommonToOthersQuery dealFormCtq = new CommonToOthersQuery(docId, MODULE_NO, user, proToOthersQuery.getDealForm().get(0));
           this.comToOthersMng.insertDealFormToAtt(dealFormCtq);
         }
-        HashMap<String, Object> hashMap = this.getDisToFileXml(dis, disToOthersQuery);
+        HashMap<String, Object> hashMap = this.getDisToFileXml(pro, proToOthersQuery);
         String xml = (String) hashMap.get("xml");
         System.out.println("发送的数据：\n\r" + xml);
         String toFileWsdl = this.docBusinessProperties.getToFileWsdl();
@@ -141,7 +138,7 @@ public class DisToOthersMngImpl implements DisToOthersMng {
           }
         } catch (Exception e) {
           e.printStackTrace();
-          throw new BusinessException("发文归档案异常");
+          throw new BusinessException("提案归档案异常");
         } finally {
           List<String> attachId = (ArrayList) hashMap.get("attachId");
           if (null != attachId && attachId.size() > 0) {
@@ -150,23 +147,23 @@ public class DisToOthersMngImpl implements DisToOthersMng {
         }
         break;
       case TO_TASK_LIBRARY:
-        if(StringUtils.isBlank(dis.getTaskFlag()) || !("1".equals(dis.getTaskFlag().trim()))) {
+        if(StringUtils.isBlank(pro.getTaskFlag()) || !("1".equals(pro.getTaskFlag().trim()))) {
           String targetId = IdUtil.getUID();
           //拷贝正式文
           String[] strings = {"main_pdf", "main_ofd", "main_trace", "main_doc"};
           for(int i = 0, j = 0, k = strings.length; i < 1 && j < k; j++) {
-            i = this.egovAttMng.copyEgovAttByDocId(dis.getId(), targetId, strings[j], strings[j]);
+            i = this.egovAttMng.copyEgovAttByDocId(pro.getId(), targetId, strings[j], strings[j]);
           }
           //拷贝普通附件
-          this.egovAttMng.copyEgovAttByDocId(dis.getId(), targetId, "attach", "attach");
+          this.egovAttMng.copyEgovAttByDocId(pro.getId(), targetId, "attach", "attach");
 
           //保存办理单为附件
-          if (disToOthersQuery.getDealForm() != null && disToOthersQuery.getDealForm().size() > 0) {
+          if (proToOthersQuery.getDealForm() != null && proToOthersQuery.getDealForm().size() > 0) {
             SecurityUser user = SecurityUtils.getPrincipal();
-            CommonToOthersQuery dealFormCtq = new CommonToOthersQuery(targetId, MODULE_NO, user, disToOthersQuery.getDealForm().get(0));
+            CommonToOthersQuery dealFormCtq = new CommonToOthersQuery(targetId, MODULE_NO, user, proToOthersQuery.getDealForm().get(0));
             this.comToOthersMng.insertDealFormToAtt(dealFormCtq);
           }
-          map = this.getDisToTaskLibraryHashMap(dis);
+          map = this.getProToTaskLibraryHashMap(pro);
           // 目标文件id
           map.put(TaskLibraryConstant.TARGET_ID, targetId);
           // 关注领导编码
@@ -175,7 +172,7 @@ public class DisToOthersMngImpl implements DisToOthersMng {
           map.put(TaskLibraryConstant.FOLLOW_LEADER_NAME, "");
           // 签发意见
           map.put(TaskLibraryConstant.SPECIFIC_CONTENT_OPINION, "");
-          Set<String> readers = disToOthersQuery.getReaders();
+          Set<String> readers = proToOthersQuery.getReaders();
           Iterator<String> iterator = readers.iterator();
           while (iterator.hasNext()) {
             String next = iterator.next();
@@ -212,27 +209,21 @@ public class DisToOthersMngImpl implements DisToOthersMng {
 
         String targetId = IdUtil.getUID();
         //拷贝签章文件
-        this.egovAttMng.copyEgovAttByDocId(dis.getId(), targetId, "main_sign", "main_sign");
+        this.egovAttMng.copyEgovAttByDocId(pro.getId(), targetId, "main_sign", "main_sign");
         //拷贝普通附件
-        this.egovAttMng.copyEgovAttByDocId(dis.getId(), targetId, "attach", "attach");
-        //保存办理单为附件
-                /*if (disToOthersQuery.getDealForm() != null && disToOthersQuery.getDealForm().size() > 0) {
-                    SecurityUser user = SecurityUtils.getPrincipal();
-                    CommonToOthersQuery dealFormCtq = new CommonToOthersQuery(targetId, MODULE_NO, user, disToOthersQuery.getDealForm().get(0));
-                    this.comToOthersMng.insertDealFormToAtt(dealFormCtq);
-                }*/
+        this.egovAttMng.copyEgovAttByDocId(pro.getId(), targetId, "attach", "attach");
         map = new HashMap<>();
         map.put("id", targetId);
-        map.put("subject", dis.getSubject());
-        map.put("draftUser", dis.getDraftUserName());
-        map.put("draftUserNo", dis.getDraftUserNo());
-        map.put("draftDept", dis.getDraftDept());
-        map.put("draftDeptNo", dis.getDraftDeptNo());
-        map.put("draftDate", dis.getDraftDate());
-        map.put("relateId", dis.getId());
-        map.put("systemNo", dis.getSystemNo());
+        map.put("subject", pro.getSubject());
+        map.put("draftUser", pro.getDraftUserName());
+        map.put("draftUserNo", pro.getDraftUserNo());
+        map.put("draftDept", pro.getDraftDept());
+        map.put("draftDeptNo", pro.getDraftDeptNo());
+        map.put("draftDate", pro.getDraftDate());
+        map.put("relateId", pro.getId());
+        map.put("systemNo", pro.getSystemNo());
         map.put("moduleNo", MODULE_NO);
-        map.put("category", disToOthersQuery.getIdList().get(0));
+        map.put("category", proToOthersQuery.getIdList().get(0));
 //                HttpHeaders header = new HttpHeaders();
         result = this.withTokenRestTemplate.postForObject(this.docBusinessProperties.getRequestPrefix() + "/workReminder/toWorkReminder", map, JSONObject.class);
         if (result != null && "1".equals(result.getString("status"))) {
@@ -268,10 +259,10 @@ public class DisToOthersMngImpl implements DisToOthersMng {
         }
         map = new HashMap<>();
         map.put("sourceCategory", "发文");
-        map.put("sourceId", dis.getId());
-        map.put("subject", dis.getSubject());
-        map.put("dealForm", disToOthersQuery.getDealForm());
-        map.put("sort", disToOthersQuery.getIdList().get(0));
+        map.put("sourceId", pro.getId());
+        map.put("subject", pro.getSubject());
+        map.put("dealForm", proToOthersQuery.getDealForm());
+        map.put("sort", proToOthersQuery.getIdList().get(0));
         map.put("source", "本级重要文件");
         result= this.withTokenRestTemplate.postForObject(this.docBusinessProperties.getRequestPrefix() + "/vitalDocument/transformationFile", map, JSONObject.class);
         if (result != null && result.getBooleanValue("flag")) {
@@ -302,10 +293,10 @@ public class DisToOthersMngImpl implements DisToOthersMng {
    * 格式转换：转历史公文库
    *
    * @param proposal         发文对象
-   * @param disToOthersQuery
+   * @param proToOthersQuery
    * @return
    */
-  public HashMap<String, Object> getDisToArchiveHashMap(Proposal proposal, DisToOthersQuery disToOthersQuery) {
+  public HashMap<String, Object> getDisToArchiveHashMap(Proposal proposal, ProToOthersQuery proToOthersQuery) {
     HashMap<String, Object> map = new HashMap<>(16);
     // 文档id
     map.put(ArchiveConstant.RESOURCE_ID, proposal.getId());
@@ -329,7 +320,7 @@ public class DisToOthersMngImpl implements DisToOthersMng {
     // 描述
     map.put(ArchiveConstant.DESCRIPT, proposal.getRemark());
     // 公开属性
-    map.put(ArchiveConstant.PUBLIC_FLAT, disToOthersQuery.getPublicFlag());
+    map.put(ArchiveConstant.PUBLIC_FLAT, proToOthersQuery.getPublicFlag());
     // 公开类别
     map.put(ArchiveConstant.PUBLIC_CATEGORY, proposal.getPublicCate());
     map.put(ArchiveConstant.SOURCE, "PROPOSALMOTION");
@@ -355,7 +346,7 @@ public class DisToOthersMngImpl implements DisToOthersMng {
       map.put(ArchiveConstant.READER, new HashSet<>());
     } else {
       //手动转（公开 或 指定权限转）
-      map.put(ArchiveConstant.READER, disToOthersQuery.getReaders());
+      map.put(ArchiveConstant.READER, proToOthersQuery.getReaders());
     }
 
     //归档日期
@@ -380,7 +371,7 @@ public class DisToOthersMngImpl implements DisToOthersMng {
    * @param proposal         发文对象
    * @return
    */
-  public HashMap<String, Object> getDisToTaskLibraryHashMap(Proposal proposal) {
+  public HashMap<String, Object> getProToTaskLibraryHashMap(Proposal proposal) {
     HashMap<String, Object> map = new HashMap<>(16);
         /*Calendar cale = Calendar.getInstance();
         // 年份
@@ -441,8 +432,8 @@ public class DisToOthersMngImpl implements DisToOthersMng {
    * @param proposal 发文对象
    * @return
    */
-  public HashMap<String, Object> getToDepartmentHashMap(Proposal proposal, DisToOthersQuery disToOthersQuery) {
-    String deptNo = disToOthersQuery.getDeptNo();
+  public HashMap<String, Object> getToDepartmentHashMap(Proposal proposal, ProToOthersQuery proToOthersQuery) {
+    String deptNo = proToOthersQuery.getDeptNo();
     if (StringUtils.isBlank(deptNo)) {
       throw new BusinessException("请选择部门");
     }
@@ -464,7 +455,7 @@ public class DisToOthersMngImpl implements DisToOthersMng {
 //        String id = ExternalUtil.getDealFormIdFromJson(dealFormId, "id");
 
     // file：阅办单html字符串，fileName: 阅办单名称， fileSuffix：阅办单文件后缀（默认为html）
-    List<DealForm> dealForm = disToOthersQuery.getDealForm();
+    List<DealForm> dealForm = proToOthersQuery.getDealForm();
     JSONArray dealFromJsonArr = JSONArray.parseArray(JSON.toJSONString(dealForm));
     map.put(DepartmentConstant.DEAL_FORM, dealFromJsonArr);
     map.put(DepartmentConstant.FILE_LINK, "");
@@ -477,7 +468,7 @@ public class DisToOthersMngImpl implements DisToOthersMng {
    * @param proposal 发文对象
    * @return map
    */
-  public HashMap<String, Object> getDisToFileXml(Proposal proposal, DisToOthersQuery disToOthersQuery) {
+  public HashMap<String, Object> getDisToFileXml(Proposal proposal, ProToOthersQuery proToOthersQuery) {
     String xml;
     Element list = DocumentHelper.createElement("list");
     Element writ = list.addElement("writ");
@@ -598,20 +589,20 @@ public class DisToOthersMngImpl implements DisToOthersMng {
         } else {
           writ.addElement("file").addAttribute("name", StringUtils.defaultString(egovAtt.getFileName()) + "." + StringUtils.defaultString(egovAtt.getFileSuffix()))
             .addAttribute("kind", "附件")
-            .setText(ExCommon.getRequestUrl(this.rmsParamDao, "attachDownloadUrl") + egovAtt.getId() + "&x-auth-token=" + disToOthersQuery.getIdList().get(0));
+            .setText(ExCommon.getRequestUrl(this.rmsParamDao, "attachDownloadUrl") + egovAtt.getId() + "&x-auth-token=" + proToOthersQuery.getIdList().get(0));
         }
       }
       // 遍历添加正文
       for (int i = 0; i < mainEgovAttsNum; i++) {
         writ.addElement("file").addAttribute("name", StringUtils.defaultString(egovAtts[i].getFileName()) + "." + StringUtils.defaultString(egovAtts[i].getFileSuffix()))
           .addAttribute("kind", "正文")
-          .setText(ExCommon.getRequestUrl(this.rmsParamDao, "attachDownloadUrl") + egovAtts[i].getId() + "&x-auth-token=" + disToOthersQuery.getIdList().get(0));
+          .setText(ExCommon.getRequestUrl(this.rmsParamDao, "attachDownloadUrl") + egovAtts[i].getId() + "&x-auth-token=" + proToOthersQuery.getIdList().get(0));
       }
       // 遍历取阅办单 从后往前取
       for (int i = 0; i < dealFormEgovAttsNum; i++) {
         writ.addElement("file").addAttribute("name", StringUtils.defaultString(egovAtts[egovAttSize -1 -i].getFileName()) + "." + StringUtils.defaultString(egovAtts[egovAttSize -1 -i].getFileSuffix()))
           .addAttribute("kind", "阅办单")
-          .setText(ExCommon.getRequestUrl(this.rmsParamDao, "attachDownloadUrl") + egovAtts[egovAttSize -1 -i].getId() + "&x-auth-token=" + disToOthersQuery.getIdList().get(0));
+          .setText(ExCommon.getRequestUrl(this.rmsParamDao, "attachDownloadUrl") + egovAtts[egovAttSize -1 -i].getId() + "&x-auth-token=" + proToOthersQuery.getIdList().get(0));
       }
     }
 //        List<EgovAtt> egovAttList = this.egovAttMng.getEgovAttsByDocId(proposal.getId(), false);
@@ -627,7 +618,7 @@ public class DisToOthersMngImpl implements DisToOthersMng {
     //todo 发文办理单
 //        List<String> attachId = new ArrayList<>();
 //        // file：阅办单html字符串，fileName: 阅办单名称， fileSuffix：阅办单文件后缀（默认为html）
-//        List<DealForm> dealForms = disToOthersQuery.getDealForm();
+//        List<DealForm> dealForms = proToOthersQuery.getDealForm();
 //        for (DealForm dealForm : dealForms) {
 //            EgovAtt egovAtt = AttachUtil.createEgovAtt(dealForm, user.getSystemNo());
 //            int result = this.egovAttMng.insertEgovAtt(egovAtt, user);

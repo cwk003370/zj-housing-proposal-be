@@ -80,6 +80,7 @@
     <result column="PRINT_NUM" property="printNum"/>
     <result property="taskFlag" column="TASK_FLAG" javaType="java.lang.String" jdbcType="VARCHAR"/>
     <result property="turnNum" column="TURN_NUM" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="inReaders" column="IN_READERS" javaType="java.util.Set" jdbcType="VARCHAR"/>
   </resultMap>
   <!-- 可重复利用的sql -->
   <sql id="allColumns">
@@ -134,7 +135,7 @@
     URGENT_LEVEL,
     ASSIGNMENT_USER_NO,
     ASSIGNMENT_USER,
-    ASSIGNMENT_PHOTO
+    ASSIGNMENT_PHOTO,
     IMPORT_LEVEL,
     ASSIGNMENT_REQUIREMENTS,
     MAIN_SEND,
@@ -154,7 +155,8 @@
     PAGE_NUM,
     PRINT_NUM,
     TASK_FLAG,
-    TURN_NUM
+    TURN_NUM,
+    IN_READERS
 	</sql>
   <!-- 新增发文 -->
   <insert id="insertProposalMotion" parameterType="com.zjhousing.egov.proposal.business.model.Proposal">
@@ -376,6 +378,9 @@
       <if test="turnNum !=null">
         TURN_NUM,
       </if>
+      <if test="inReaders !=null">
+        IN_READERS,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -593,6 +598,9 @@
       </if>
       <if test="turnNum !=null">
         #{turnNum},
+      </if>
+      <if test="inReaders !=null">
+        #{inReaders},
       </if>
     </trim>
   </insert>
@@ -820,6 +828,9 @@
       </if>
       <if test="turnNum != null">
         TURN_NUM = #{turnNum},
+      </if>
+      <if test="inReaders !=null">
+        IN_READERS = #{inReaders},
       </if>
     </set>
     <where>

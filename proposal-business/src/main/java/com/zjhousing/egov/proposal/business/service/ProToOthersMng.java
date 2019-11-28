@@ -1,6 +1,6 @@
 package com.zjhousing.egov.proposal.business.service;
 
-import com.zjhousing.egov.proposal.business.query.DisToOthersQuery;
+import com.zjhousing.egov.proposal.business.query.ProToOthersQuery;
 
 /**
  * 发文转其他文 mng
@@ -8,13 +8,13 @@ import com.zjhousing.egov.proposal.business.query.DisToOthersQuery;
  * @author lindongmei
  * @date 2018/10/31
  */
-public interface DisToOthersMng {
+public interface ProToOthersMng {
 
   /**
    * 发文转其他文
    *
-   * @param disToOthersQuery
+   * @param proToOthersQuery
    * @return
    */
-  boolean disToOthers(DisToOthersQuery disToOthersQuery);
+  boolean proToOthers(ProToOthersQuery proToOthersQuery);
 }

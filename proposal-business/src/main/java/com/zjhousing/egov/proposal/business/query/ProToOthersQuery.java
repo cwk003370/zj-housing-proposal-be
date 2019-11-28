@@ -4,12 +4,12 @@ import java.util.List;
 import java.util.Set;
 
 /**
- * 收文转其他文 query
+ * 发文转其他文 query
  *
  * @author lindongmei
- * @date 2018/11/9
+ * @date 2018/11/1
  */
-public class RecToOthersQuery {
+public class ProToOthersQuery {
 
   /**
    * 操作类型
@@ -38,7 +38,7 @@ public class RecToOthersQuery {
   private List<String> idList;
 
   public List<String> getIdList() {
-    return idList;
+    return this.idList;
   }
 
   public void setIdList(List<String> idList) {
