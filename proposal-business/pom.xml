@@ -17,6 +17,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.zjhousing.egov</groupId>
+      <artifactId>doc-business</artifactId>
+      <version>1.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <groupId>com.rongji.egov</groupId>
       <artifactId>flow-util-business</artifactId>
       <version>1.0.1-SNAPSHOT</version>

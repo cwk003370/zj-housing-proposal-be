@@ -7,6 +7,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rj.SolrCloudClient.util.ATOMIC;
 import com.rongji.egov.attachutil.model.EgovAtt;
 import com.rongji.egov.attachutil.service.EgovAttMng;
+import com.rongji.egov.doc.business.constant.DocLogConstant;
+import com.rongji.egov.doc.business.external.model.EgovDocUpdateItemLog;
+import com.rongji.egov.doc.business.external.service.EgovDocUpdateItemLogMng;
+import com.rongji.egov.doc.business.receival.model.Receival;
+import com.rongji.egov.doc.business.receival.service.ReceivalMng;
 import com.rongji.egov.docconfig.business.service.DocOperatorLogMng;
 import com.rongji.egov.flowutil.business.service.DocResourceMng;
 import com.rongji.egov.solrData.business.dao.SolrDataDao;
@@ -19,14 +24,12 @@ import com.rongji.egov.utils.api.paging.PagingRequest;
 import com.rongji.egov.utils.common.IdUtil;
 import com.rongji.egov.utils.exception.BusinessException;
 import com.rongji.egov.wflow.business.service.engine.transfer.TodoTransferMng;
-import com.zjhousing.egov.proposal.business.constant.DocLogConstant;
+
 import com.zjhousing.egov.proposal.business.dao.ProposalDao;
-import com.zjhousing.egov.proposal.business.model.EgovDocUpdateItemLog;
+
 import com.zjhousing.egov.proposal.business.model.Proposal;
-import com.zjhousing.egov.proposal.business.model.Receival;
-import com.zjhousing.egov.proposal.business.service.EgovDocUpdateItemLogMng;
+
 import com.zjhousing.egov.proposal.business.service.ProposalMng;
-import com.zjhousing.egov.proposal.business.service.ReceivalMng;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -247,19 +250,19 @@ public class ProposalMngImpl implements ProposalMng {
       String oldSubject = oldProposal.getSubject();
       String newSubject = newProposal.getSubject();
       if (!StringUtils.equals(oldSubject, newSubject)) {
-        EgovDocUpdateItemLog egovDocUpdateItemLog = new EgovDocUpdateItemLog(docId, "标题", oldSubject, newSubject, DocLogConstant.DISPATCH_MODULE_NO);
+        EgovDocUpdateItemLog egovDocUpdateItemLog = new EgovDocUpdateItemLog(docId, "标题", oldSubject, newSubject, "PROPOSALMOTION");
         list.add(egovDocUpdateItemLog);
       }
       String oldSecLevel = oldProposal.getSecLevel();
       String newSecLevel = newProposal.getSecLevel();
       if (!StringUtils.equals(oldSecLevel, newSecLevel)) {
-        EgovDocUpdateItemLog egovDocUpdateItemLog = new EgovDocUpdateItemLog(docId, "密级", oldSecLevel, newSecLevel, DocLogConstant.DISPATCH_MODULE_NO);
+        EgovDocUpdateItemLog egovDocUpdateItemLog = new EgovDocUpdateItemLog(docId, "密级", oldSecLevel, newSecLevel, "PROPOSALMOTION");
         list.add(egovDocUpdateItemLog);
       }
       String oldDocWord = oldProposal.getDocWord();
       String newDocWord = newProposal.getDocWord();
       if (!StringUtils.equals(oldDocWord, newDocWord)) {
-        EgovDocUpdateItemLog egovDocUpdateItemLog = new EgovDocUpdateItemLog(docId, "机关代字", oldDocWord, newDocWord, DocLogConstant.DISPATCH_MODULE_NO);
+        EgovDocUpdateItemLog egovDocUpdateItemLog = new EgovDocUpdateItemLog(docId, "机关代字", oldDocWord, newDocWord, "PROPOSALMOTION");
         list.add(egovDocUpdateItemLog);
       }
 

@@ -1,6 +1,7 @@
 package com.zjhousing.egov.proposal.business;
 
 import com.rongji.egov.commonsequence.CommonSequenceConfiguration;
+import com.rongji.egov.doc.business.constant.ExternalToOthersConstant;
 import com.rongji.egov.docconfig.business.DocConfigBusinessConfiguration;
 import com.rongji.egov.docnum.DocNumConfiguration;
 import com.rongji.egov.flowutil.business.FlowUtilBusinessConfiguration;
@@ -10,7 +11,6 @@ import com.rongji.egov.user.business.UserBusinessConfiguration;
 import com.rongji.egov.utils.mybatis.configuration.MybatisConfiguration;
 import com.rongji.egov.utils.spring.wrapper.EnumBasePackageWrapper;
 import com.rongji.egov.wflow.business.WflowBusinessConfiguration;
-import com.zjhousing.egov.proposal.business.constant.ExternalToOthersConstant;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;

@@ -1,12 +1,12 @@
 package com.zjhousing.egov.proposal.business.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.rongji.egov.doc.business.constant.ExternalToOthersConstant;
 import com.rongji.egov.docconfig.business.annotation.DocReadLogAn;
 import com.rongji.egov.user.business.model.SecurityUser;
 import com.rongji.egov.user.business.util.SecurityUtils;
 import com.rongji.egov.wflow.business.service.ModuleOperator;
 import com.rongji.egov.wflow.business.service.engine.manage.ProcessManageMng;
-import com.zjhousing.egov.proposal.business.constant.ExternalToOthersConstant;
 import com.zjhousing.egov.proposal.business.enums.TransferLibraryTypeEnum;
 import com.zjhousing.egov.proposal.business.model.Proposal;
 import com.zjhousing.egov.proposal.business.query.ProToOthersQuery;

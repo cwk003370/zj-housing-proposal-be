@@ -1,6 +1,7 @@
 package com.zjhousing.egov.proposal.business.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.rongji.egov.doc.business.util.ToSolrMapUtil;
 import com.rongji.egov.utils.spring.validation.InsertValidate;
 import com.rongji.egov.utils.spring.validation.UpdateValidate;
 import com.rongji.egov.wflow.business.constant.ModuleFiledConst;
@@ -8,7 +9,7 @@ import com.rongji.egov.wflow.business.model.FlowObject;
 import com.zjhousing.egov.proposal.business.enums.ArchiveTypeEnum;
 import com.zjhousing.egov.proposal.business.enums.CleanFlagEnum;
 import com.zjhousing.egov.proposal.business.enums.TransferLibraryTypeEnum;
-import com.zjhousing.egov.proposal.business.util.ToSolrMapUtil;
+
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
