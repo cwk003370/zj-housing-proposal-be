@@ -4,7 +4,10 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.rongji.egov.commonsequence.service.CommonSequenceMng;
 import com.rongji.egov.docconfig.business.service.DisFileWordMng;
+import com.rongji.egov.user.business.model.SecurityUser;
+import com.rongji.egov.user.business.util.SecurityUtils;
 import com.rongji.egov.utils.exception.BusinessException;
+import com.rongji.egov.wflow.business.constant.ModuleFiledConst;
 import com.rongji.egov.wflow.business.model.dto.transfer.SubmitParam;
 import com.rongji.egov.wflow.business.service.engine.manage.ProcessManageMng;
 import com.rongji.egov.wflow.business.service.engine.transfer.AtdoTransferMng;
@@ -14,9 +17,12 @@ import com.rongji.egov.wflow.web.flow.FLowRecoverController;
 import com.rongji.egov.wflow.web.flow.FlowRevokeController;
 import com.rongji.egov.wflow.web.flow.FlowTransferController;
 import com.zjhousing.egov.proposal.business.model.Proposal;
+import com.zjhousing.egov.proposal.business.model.ProposalSequence;
+import com.zjhousing.egov.proposal.business.service.ProSequenceMng;
 import com.zjhousing.egov.proposal.business.service.ProposalFlowOperator;
 import com.zjhousing.egov.proposal.business.service.ProposalMng;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,8 +49,8 @@ public class ProposalMotionFlowController implements FlowTransferController, Flo
   private ProposalFlowOperator proposalFlowOperator;
   @Resource
   private CommonSequenceMng commonSequenceMng;
-  @Resource
-  private DisFileWordMng disFileWordMng;
+  @Autowired
+  private ProSequenceMng proSequenceMng;
 
 
   @Override
@@ -53,8 +59,16 @@ public class ProposalMotionFlowController implements FlowTransferController, Flo
     if (StringUtils.isNotBlank(proposal.getFlowPid())) {
       throw new BusinessException("该文件已启用流程");
     } else {
-      //SecurityUser user = SecurityUtils.getPrincipal();
+
+      //初始化编号
+      SecurityUser user = SecurityUtils.getPrincipal();
+      String systemNo = user.getSystemNo();
+      HashMap<String, Object> map = this.proSequenceMng.getSequenceNum(proposal.getDocCate(), systemNo);
+      proposal.setDocMark(map.get("docSequence").toString().replaceFirst("^0*", ""));
+      proposalMng.updateProposalMotion(proposal);
       HashMap<String, Object> proposalMap = proposal.toMap();
+      proposalMap.put(ModuleFiledConst.SEQUENCE_MAP, map);
+      proposalMap.put(ModuleFiledConst.DOC_SEQUENCE, map.get("docSequence"));
 
       try {
         String aid = this.todoTransferMng.initProcess(label, version, this.proposalFlowOperator, proposalMap);

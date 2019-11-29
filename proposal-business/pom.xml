@@ -81,12 +81,7 @@
       <artifactId>egov-maximun-no</artifactId>
       <version>1.0.1-SNAPSHOT</version>
     </dependency>
-    <!--流水号依赖-->
-    <dependency>
-      <groupId>com.rongji.egov</groupId>
-      <artifactId>common-sequence</artifactId>
-      <version>1.0.1-SNAPSHOT</version>
-    </dependency>
+
   </dependencies>
 
 </project>
