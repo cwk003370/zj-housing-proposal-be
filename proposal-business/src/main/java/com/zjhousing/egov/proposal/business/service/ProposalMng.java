@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.rongji.egov.utils.api.paging.Page;
 import com.rongji.egov.utils.api.paging.PagingRequest;
 import com.zjhousing.egov.proposal.business.model.Proposal;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 /**
@@ -78,4 +79,20 @@ public interface ProposalMng {
    * @return
    */
   int batchUpdateProposalRelReceivalMark(List<Proposal> list);
+
+  /**
+   * 子流程-新增子流程文档
+   *
+   * @param proposal
+   * @return
+   */
+  int insertSubProposalMotion(Proposal proposal, String userNo,String userOrgNo,String docCate,String userName);
+
+  /**
+   * 子流程-主流程重启
+   *
+   * @param assistDocId 子文档ID
+   * @return
+   */
+  boolean setProcessRestart(@Param("assistDocId")String assistDocId);
 }

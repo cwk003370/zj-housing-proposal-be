@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.zjhousing.egov.proposal.business.mapper.ProSequenceMapper">
+  <resultMap id="SequenceResultMap" type="com.zjhousing.egov.proposal.business.model.ProposalSequence">
+    <result property="id" column="ID"/>
+    <result property="sequenceName" column="SEQUENCE_NAME"/>
+    <result property="sequenceLength" column="SEQUENCE_LENGTH"/>
+    <result property="initValue" column="INIT_VALUE"/>
+    <result property="sequenceMode" column="SEQUENCE_MODE"/>
+    <result property="docCate" column="DOC_CATE"/>
+    <result property="status" column="STATUS"/>
+    <result property="sequenceCate" column="SEQUENCE_CATE"/>
+    <result property="dealFormId" column="DEAL_FORM_ID"/>
+    <result property="transportId" column="TRANSPORT_ID"/>
+    <result property="errorId" column="ERROR_ID"/>
+    <result property="sortNo" column="SORT_NO"/>
+    <result property="systemNo" column="SYSTEM_NO" javaType="java.lang.String" jdbcType="VARCHAR"/>
+  </resultMap>
+
+  <sql id="allColumns">
+        ID,
+        SEQUENCE_NAME,
+        SEQUENCE_LENGTH,
+        INIT_VALUE,
+        SEQUENCE_MODE,
+        DOC_CATE,
+        STATUS,
+        SEQUENCE_CATE,
+        DEAL_FORM_ID,
+        TRANSPORT_ID,
+        ERROR_ID,
+        SORT_NO,
+        SYSTEM_NO
+    </sql>
+
+  <insert id="insertSequence" parameterType="com.zjhousing.egov.proposal.business.model.ProposalSequence">
+    INSERT INTO EGOV_PROPOSAL_MOTION_SEQUENCE (
+    <include refid="allColumns"/>
+    )
+    VALUES(
+    #{id,jdbcType=VARCHAR},
+    #{sequenceName,jdbcType=VARCHAR},
+    #{sequenceLength,jdbcType=INTEGER},
+    #{initValue,jdbcType=INTEGER},
+    #{sequenceMode,jdbcType=VARCHAR},
+    #{docCate,jdbcType=VARCHAR},
+    #{status,jdbcType=VARCHAR},
+    #{sequenceCate,jdbcType=VARCHAR},
+    #{dealFormId,jdbcType=VARCHAR},
+    #{transportId,jdbcType=VARCHAR},
+    #{errorId,jdbcType=VARCHAR},
+    #{sortNo,jdbcType=INTEGER},
+    #{systemNo,jdbcType=VARCHAR,javaType=java.lang.String }
+    )
+  </insert>
+
+  <update id="updateSequence" parameterType="com.zjhousing.egov.proposal.business.model.ProposalSequence">
+    UPDATE EGOV_PROPOSAL_MOTION_SEQUENCE
+    <set>
+      <if test="sequenceName != null ">
+        SEQUENCE_NAME = #{sequenceName},
+      </if>
+      <if test="docCate != null ">
+        DOC_CATE = #{docCate},
+      </if>
+      <if test="sequenceCate != null ">
+        SEQUENCE_CATE = #{sequenceCate},
+      </if>
+      <if test="sequenceLength!=null ">
+        SEQUENCE_LENGTH = #{sequenceLength},
+      </if>
+      <if test="initValue != null ">
+        INIT_VALUE = #{initValue},
+      </if>
+      <if test="sequenceMode!=null ">
+        SEQUENCE_MODE = #{sequenceMode},
+      </if>
+      <if test="status!=null ">
+        STATUS = #{status},
+      </if>
+      <if test="dealFormId!=null ">
+        DEAL_FORM_ID = #{dealFormId},
+      </if>
+      <if test="transportId!=null ">
+        TRANSPORT_ID = #{transportId},
+      </if>
+      <if test="errorId != null ">
+        ERROR_ID = #{errorId},
+      </if>
+      <if test="sortNo!=null ">
+        SORT_NO = #{sortNo},
+      </if>
+    </set>
+    <where>
+      <if test="id!=null and id!=''">
+        ID = #{id}
+      </if>
+    </where>
+  </update>
+
+  <delete id="deleteSequence">
+    DELETE FROM EGOV_PROPOSAL_MOTION_SEQUENCE
+    <where>
+      ID IN (
+      <foreach item="id" collection="list" separator=",">
+        #{id}
+      </foreach>
+      )
+    </where>
+  </delete>
+
+  <select id="getSequenceById" parameterType="java.lang.String" resultMap="SequenceResultMap">
+    SELECT
+    <include refid="allColumns"/>
+    FROM EGOV_PROPOSAL_MOTION_SEQUENCE
+    <where>
+      <if test="id!=null and id!=''">
+        ID = #{id}
+      </if>
+    </where>
+  </select>
+
+  <select id="getSequenceByDocCateAndDealReadCate" parameterType="java.lang.String"
+          resultMap="SequenceResultMap">
+    SELECT
+    <include refid="allColumns"/>
+    FROM EGOV_PROPOSAL_MOTION_SEQUENCE
+    <where>
+      <if test="docCate!=null and docCate!=''">
+        AND DOC_CATE=#{docCate}
+      </if>
+      <if test="_databaseId=='oracle'">
+        AND rownum=1
+      </if>
+      <if test="systemNo!=null">
+        AND SYSTEM_NO =#{systemNo}
+      </if>
+    </where>
+    <if test="_databaseId!='oracle'">
+      limit 1
+    </if>
+  </select>
+
+  <select id="getSequenceList" parameterType="com.zjhousing.egov.proposal.business.model.ProposalSequence"
+          resultMap="SequenceResultMap">
+    SELECT
+    <include refid="allColumns"/>
+    FROM EGOV_PROPOSAL_MOTION_SEQUENCE
+    <where>
+      <if test="docCate != null">AND DOC_CATE = #{docCate}</if>
+      <if test="sequenceCate != null">AND SEQUENCE_CATE = #{sequenceCate}</if>
+      <if test="systemNo!=null">AND SYSTEM_NO = #{systemNo}</if>
+    </where>
+    ORDER BY SORT_NO ASC
+  </select>
+
+  <select id="getSequence4Page" resultMap="SequenceResultMap">
+    SELECT
+    <include refid="allColumns"/>
+    FROM EGOV_PROPOSAL_MOTION_SEQUENCE
+    <where>
+      <if test="sequence.systemNo!=null">
+        AND SYSTEM_NO = #{sequence.systemNo}
+      </if>
+      <if test="sequence.docCate!=null">
+        AND DOC_CATE = #{sequence.docCate}
+      </if>
+      <if test="sequence.sequenceName!=null">
+        <bind name="likeSequenceName" value="'%'+ sequence.sequenceName + '%'"></bind>
+        AND SEQUENCE_NAME like #{likeSequenceName}
+      </if>
+      <if test="sequence.sequenceMode!=null">
+        <bind name="likeSequenceMode" value="'%'+ sequence.sequenceMode + '%'"></bind>
+        AND SEQUENCE_MODE like #{likeSequenceMode}
+      </if>
+      <if test="word!=null and word!=''">
+        <bind name="likeWord" value="'%'+ word + '%'"></bind>
+        AND (SEQUENCE_NAME like #{likeWord} OR SEQUENCE_MODE like #{likeWord})
+      </if>
+    </where>
+    ORDER BY SORT_NO ASC
+  </select>
+
+  <select id="isDuplicateSequenceByType" parameterType="java.lang.String" resultType="java.lang.Integer">
+    select count(*) from EGOV_PROPOSAL_MOTION_SEQUENCE
+    <where>
+      <if test="docCate!=null">
+        AND DOC_CATE=#{docCate}
+      </if>
+      <if test="systemNo!=null">
+        AND SYSTEM_NO=#{systemNo}
+      </if>
+      <if test="id!=null">
+        AND ID!=#{id}
+      </if>
+    </where>
+  </select>
+</mapper>

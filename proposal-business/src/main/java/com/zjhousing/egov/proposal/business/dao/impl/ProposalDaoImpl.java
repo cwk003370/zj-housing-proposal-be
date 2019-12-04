@@ -5,6 +5,7 @@ import com.rongji.egov.utils.api.paging.PagingRequest;
 import com.zjhousing.egov.proposal.business.dao.ProposalDao;
 import com.zjhousing.egov.proposal.business.mapper.ProposalMapper;
 import com.zjhousing.egov.proposal.business.model.Proposal;
+import com.zjhousing.egov.proposal.business.model.ProposalAssigned;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;
@@ -38,6 +39,8 @@ public class ProposalDaoImpl implements ProposalDao {
 
   @Override
   public Page<Proposal> getProposalMotion4Page(PagingRequest<Proposal> paging, Proposal proposal, String[] word) {
+    System.out.println("22222222222222");
+    System.out.println(proposal.getDraftUserNo());
     return this.mapper.getProposalMotion4Page(paging, proposal, word);
   }
 
@@ -49,6 +52,21 @@ public class ProposalDaoImpl implements ProposalDao {
   @Override
   public int batchUpdateProposalRelReceivalMark(List<Proposal> list) {
     return this.mapper.batchUpdateProposalRelReceivalMark(list);
+  }
+
+  @Override
+  public int insertProposalMotionAssigned(ProposalAssigned proposalAssigned) {
+    return mapper.insertProposalMotionAssigned(proposalAssigned);
+  }
+
+  @Override
+  public String selectProposalDocIdByAssistDocId(String assistDocId) {
+    return mapper.selectProposalDocIdByAssistDocId(assistDocId);
+  }
+
+  @Override
+  public List<Proposal> getSubProposalById(String id) {
+    return mapper.getSubProposalById(id);
   }
 
 }

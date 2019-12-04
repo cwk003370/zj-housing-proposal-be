@@ -15,7 +15,9 @@ import com.rongji.egov.doc.business.receival.service.ReceivalMng;
 import com.rongji.egov.docconfig.business.service.DocOperatorLogMng;
 import com.rongji.egov.flowutil.business.service.DocResourceMng;
 import com.rongji.egov.solrData.business.dao.SolrDataDao;
+import com.rongji.egov.user.business.dao.UmsUserOrgRelateDao;
 import com.rongji.egov.user.business.model.SecurityUser;
+import com.rongji.egov.user.business.model.UmsUserOrgRelate;
 import com.rongji.egov.user.business.model.vo.DraftUser;
 import com.rongji.egov.user.business.util.SecurityUtils;
 import com.rongji.egov.user.business.util.UserDraftUtils;
@@ -23,17 +25,20 @@ import com.rongji.egov.utils.api.paging.Page;
 import com.rongji.egov.utils.api.paging.PagingRequest;
 import com.rongji.egov.utils.common.IdUtil;
 import com.rongji.egov.utils.exception.BusinessException;
+import com.rongji.egov.wflow.business.service.engine.manage.ProcessManageMng;
 import com.rongji.egov.wflow.business.service.engine.transfer.TodoTransferMng;
 
 import com.zjhousing.egov.proposal.business.dao.ProposalDao;
 
 import com.zjhousing.egov.proposal.business.model.Proposal;
 
+import com.zjhousing.egov.proposal.business.model.ProposalAssigned;
 import com.zjhousing.egov.proposal.business.service.ProposalMng;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.sql.SQLOutput;
 import java.util.*;
 
 
@@ -56,6 +61,10 @@ public class ProposalMngImpl implements ProposalMng {
   private DocResourceMng docResourceMng;
   @Resource
   private ReceivalMng receivalMng;
+  @Resource
+  private ProcessManageMng processManageMng;
+  @Resource
+  private UmsUserOrgRelateDao umsUserOrgRelateDao;
 
 
   @Override
@@ -231,6 +240,92 @@ public class ProposalMngImpl implements ProposalMng {
   @Override
   public int batchUpdateProposalRelReceivalMark(List<Proposal> list) {
     return this.proposalDao.batchUpdateProposalRelReceivalMark(list);
+  }
+
+  @Override
+  public int insertSubProposalMotion(Proposal proposal, String userNo, String userOrgNo,String docCate,String userName) {
+    List<UmsUserOrgRelate> userList = umsUserOrgRelateDao.listUmsOrgByUserNo(userNo);
+    UmsUserOrgRelate umsUserOrgRelate =null;
+    for(UmsUserOrgRelate u : userList){
+      if(userOrgNo!=null&&userOrgNo.equals(u.getOrgNo())){
+        umsUserOrgRelate=u;
+      }
+    }
+    if (umsUserOrgRelate == null) {
+      throw new BusinessException("指定人员不存在");
+    }
+
+    String mainDocId = proposal.getId();
+    //初始化流程信息
+    proposal.setId(IdUtil.getUID());
+    proposal.setFlowDoneUser(null);
+    proposal.setFlowLabel(null);
+    proposal.setFlowPid(null);
+    proposal.setFlowStatus(null);
+    proposal.setFlowVersion(null);
+    proposal.setDraftUserNo(umsUserOrgRelate.getUserNo());
+    proposal.setDraftUserName(userName);
+    proposal.setDraftDeptNo(umsUserOrgRelate.getOrgNo());
+    proposal.setDraftDept(umsUserOrgRelate.getOrgName());
+    proposal.setDocCate(docCate);
+    proposal.setFlowStatus("0");
+    proposal.setSignFlag("0");
+
+    if (StringUtils.isBlank(proposal.getDocMark())) {
+      proposal.setDocMark("");
+    }
+
+    // 添加查阅用户
+    HashSet<String> readers = new HashSet<>();
+    readers.add(proposal.getDraftUserNo());
+    proposal.setReaders(readers);
+
+    //过滤头尾空格
+    if (StringUtils.isNotBlank(proposal.getSubject())) {
+      proposal.setSubject(StringUtils.trim(proposal.getSubject()));
+    }
+    int result = this.proposalDao.insertProposalMotion(proposal);
+    if (result < 1) {
+      throw new BusinessException("登记提案议案失败");
+    }
+    //添加交办关系
+    ProposalAssigned proposalAssigned = new ProposalAssigned();
+    proposalAssigned.setId(IdUtil.getUID());
+    proposalAssigned.setMainDocId(mainDocId);
+    proposalAssigned.setAssistDocId(proposal.getId());
+    this.proposalDao.insertProposalMotionAssigned(proposalAssigned);
+    //新增记录日志
+    this.operatorLogMng.insertOperatorLog("PROPOSALMOTION", "提案议案", proposal.getSubject(), DocLogConstant.LOG_ADD, proposal.getId());
+
+    // 添加数据到solr
+    try {
+      this.solrDataDao.add(proposal.toSolrMap());
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new BusinessException("solr数据添加失败");
+    }
+    return result;
+  }
+
+  @Override
+  public boolean setProcessRestart(String assistDocId) {
+    String id = proposalDao.selectProposalDocIdByAssistDocId(assistDocId);
+
+    List<Proposal> proposalList = proposalDao.getSubProposalById(id);
+    if(proposalList == null || proposalList.size() == 0){
+      return false;
+    }
+    for(Proposal p : proposalList){
+      if(!"9".equals(p.getFlowStatus())){
+        return false;
+      }
+    }
+
+    Proposal proposal = proposalDao.getProposalMotionById(id);
+    List<String> pidList = new ArrayList<>();
+    pidList.add(proposal.getFlowPid());
+    System.out.println(pidList.toString());
+    return processManageMng.setProcessRestart(pidList);
   }
 
   /**

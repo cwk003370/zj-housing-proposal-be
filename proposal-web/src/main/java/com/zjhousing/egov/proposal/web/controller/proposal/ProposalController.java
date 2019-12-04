@@ -14,14 +14,19 @@ import com.rongji.egov.utils.spring.validation.InsertValidate;
 import com.rongji.egov.utils.spring.validation.UpdateValidate;
 import com.rongji.egov.wflow.business.model.dto.temp.ReadSend;
 import com.rongji.egov.wflow.business.service.engine.manage.ProcessManageMng;
+import com.rongji.egov.wflow.business.service.engine.transfer.TodoTransferMng;
 import com.zjhousing.egov.proposal.business.model.Proposal;
+import com.zjhousing.egov.proposal.business.service.ProSequenceMng;
+import com.zjhousing.egov.proposal.business.service.ProposalFlowOperator;
 import com.zjhousing.egov.proposal.business.service.ProposalMng;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -40,12 +45,18 @@ public class ProposalController {
   private UserDao userDao;
   @Resource
   private ProcessManageMng processManageMng;
+  @Autowired
+  private ProSequenceMng proSequenceMng;
+  @Resource
+  private TodoTransferMng todoTransferMng;
+  @Resource
+  private ProposalFlowOperator proposalFlowOperator;
 
   /**
-   * 根据ID得到发文信息
+   * 根据ID得到提案议案信息
    * 注：参数docId必须放在第一个位置，否则日志注解利用反射机制无法取到文档id
    *
-   * @param docId 发文ID
+   * @param docId 提案议案ID
    * @return
    */
   @GetMapping("/getProposalMotionById")
@@ -55,7 +66,7 @@ public class ProposalController {
   }
 
   /**
-   * 根据ID得到发文详细信息
+   * 根据ID得到提案议案详细信息
    * 注：参数docId必须放在第一个位置，否则日志注解利用反射机制无法取到文档id
    *
    * @return
@@ -67,7 +78,7 @@ public class ProposalController {
   }
 
   /**
-   * 登记发文<br/>
+   * 登记提案议案<br/>
    * 注1：字段“文件标题（subject）”不能为空
    *
    * @param proposal
@@ -83,7 +94,7 @@ public class ProposalController {
     proposal.setSystemNo(user.getSystemNo());
     int insertResult = this.proposalMng.insertProposalMotion(proposal);
     if (insertResult != 1) {
-      throw new BusinessException("文件登记出错");
+      throw new BusinessException("提案登记出错");
     } else {
       return this.proposalMng.getProposalMotionById(proposal.getId());
     }
@@ -94,19 +105,19 @@ public class ProposalController {
    * @param list 稿件ID集合
    */
   @PostMapping("/deleteProposalMotion")
-  @DocReadLogAn(moduleId = "DISPATCH", operator = "delete")
+  @DocReadLogAn(moduleId = "PROPOSALMOTIO", operator = "delete")
   public void deleteProposal(@RequestBody List<String> list) {
     if (list == null || list.size() == 0) {
       throw new BusinessException("参数list为空");
     }
     int deleteResult = this.proposalMng.delProposalMotion(list);
     if (deleteResult < 1) {
-      throw new BusinessException("删除发文稿件出错");
+      throw new BusinessException("删除提案议案稿件出错");
     }
   }
 
   /**
-   * 更新发文
+   * 更新提案议案
    *
    * @param proposal
    * @param bindingResult 验证对象
@@ -169,7 +180,7 @@ public class ProposalController {
    * @return
    * @throws Exception
    */
-  @PostMapping({"/innerDistribute"})
+  @PostMapping("/innerDistribute")
   boolean innerDistribute(@RequestBody ReadSend readSend) throws Exception {
     Boolean noUsers = readSend.getUsers() == null || readSend.getUsers().isEmpty();
     Boolean noGroupNos = readSend.getGroupNos() == null || readSend.getGroupNos().isEmpty();
@@ -193,6 +204,47 @@ public class ProposalController {
         this.proposalMng.updateProposalMotion(proposal);
       }
       return innerDistributeFlag;
+    }
+  }
+  /**
+   * 子流程-提案登记
+   *
+   * @param
+   * @return
+   * @throws Exception
+   */
+  @GetMapping("/subprocess/insertProposalMotion")
+  public Proposal insertProposal(@RequestParam("docId") String docId, @RequestParam("userNo") String userNo, @RequestParam("userOrgNo") String userOrgNo, @RequestParam("docCate") String docCate, @RequestParam("userName") String userName) {
+    Proposal proposal = this.proposalMng.getProposalMotionById(docId);
+    int insertResult = this.proposalMng.insertSubProposalMotion(proposal,userNo,userOrgNo,docCate,userName);
+    if (insertResult != 1) {
+      throw new BusinessException("子流程提案登记失败");
+    } else {
+      return this.proposalMng.getProposalMotionById(proposal.getId());
+    }
+  }
+  /**
+   * 子流程-流程初始化
+   * @param label 流程标识
+   * @param version 流程版本
+   * @param docId   文档ID
+   * @param userNo 启用用户的编码
+   * @param userOrgNo 启用用户的组织编码
+   * @throws Exception
+   */
+  @GetMapping("/subprocess/initProcess")
+  public String initProcess(String label, String version, String docId,String userNo,String userOrgNo) {
+    Proposal proposal = this.proposalMng.getProposalMotionById(docId);
+    if (StringUtils.isNotBlank(proposal.getFlowPid())) {
+      throw new BusinessException("该文件已启用流程");
+    } else {
+      HashMap<String, Object> proposalMap = proposal.toMap();
+      try {
+        String aid = this.todoTransferMng.initProcess(label, version, this.proposalFlowOperator, proposalMap,userNo,userOrgNo);
+        return aid;
+      } catch (Exception var10) {
+        throw new BusinessException(var10.getMessage());
+      }
     }
   }
 }

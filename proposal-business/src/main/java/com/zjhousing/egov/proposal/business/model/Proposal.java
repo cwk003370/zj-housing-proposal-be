@@ -335,7 +335,13 @@ public class Proposal extends FlowObject implements Serializable {
    * 公开类别
    */
   private String publicCate ;
-
+  /**
+   * 高级搜索起始日期
+   */
+  @DateTimeFormat(pattern = "yyyy-MM-dd")
+  private Date beginDate;
+  @DateTimeFormat(pattern = "yyyy-MM-dd")
+  private Date endDate;
 
   public Proposal() {
   }
@@ -344,7 +350,7 @@ public class Proposal extends FlowObject implements Serializable {
     this.relReceivalMark = relReceivalMark;
   }
 
-  public Proposal(String id, String subject, String docMark, Integer docMarkNum, Integer docMarkYear, String docSequence, Integer docSequenceYear, String docWord, String docCate, Date draftDate, String draftUserNo, String draftUserName, String draftDept, String draftDeptNo, String draftUnit, String draftUnitNo, String signUserNo, String signUserName, String signDept, String signDeptNo, String signUnit, String signUnitNo, Date signDate, CleanFlagEnum signDateCleanFlag, String signFlag, String parentClass, String childrenClass, String reflectionCategory, String meetingSession, String proposalNum, String relReceivalMark, String leadingNo, String leadingUser, String leadingPhoto, String leadingPlace, String secondedNo, Set<String> secondedUsers, String secondedNum, String causeAction, Set<String> mainOrganizer, Set<String> assistOrganizer, String attachDesc, String assignmentNum, Date assignmentDate, Date requestDate, String undertakeDepartment, String handlingMode, String urgentLevel, String assignmentUserNo, String assignmentUser, String assignmentPhoto, String importLevel, String assignmentRequirements, Set<String> mainSend, Set<String> copySend, String handleUserNo, String handleUser, String handlePhoto, String serviceAttitude, String remark, String dealFormId, String systemNo, Set<String> readers, String secLevel, TransferLibraryTypeEnum transferLibraryType, ArchiveTypeEnum archiveType, String archiveFlag, Integer pageNum, Integer printNum, String taskFlag, String turnNum, Set<String> inReaders) {
+  public Proposal(String id, String subject, String docMark, Integer docMarkNum, Integer docMarkYear, String docSequence, Integer docSequenceYear, String docWord, String docCate, Date draftDate, String draftUserNo, String draftUserName, String draftDept, String draftDeptNo, String draftUnit, String draftUnitNo, String signUserNo, String signUserName, String signDept, String signDeptNo, String signUnit, String signUnitNo, Date signDate, CleanFlagEnum signDateCleanFlag, String signFlag, String parentClass, String childrenClass, String reflectionCategory, String meetingSession, String proposalNum, String relReceivalMark, String leadingNo, String leadingUser, String leadingPhoto, String leadingPlace, String secondedNo, Set<String> secondedUsers, String secondedNum, String causeAction, Set<String> mainOrganizer, Set<String> assistOrganizer, String attachDesc, String assignmentNum, Date assignmentDate, Date requestDate, String undertakeDepartment, String handlingMode, String urgentLevel, String assignmentUserNo, String assignmentUser, String assignmentPhoto, String importLevel, String assignmentRequirements, Set<String> mainSend, Set<String> copySend, String handleUserNo, String handleUser, String handlePhoto, String serviceAttitude, String remark, String dealFormId, String systemNo, Set<String> readers, String secLevel, TransferLibraryTypeEnum transferLibraryType, ArchiveTypeEnum archiveType, String archiveFlag, Integer pageNum, Integer printNum, String taskFlag, String turnNum, Set<String> inReaders, String docType, String publicCate, Date beginDate, Date endDate) {
     this.id = id;
     this.subject = subject;
     this.docMark = docMark;
@@ -417,6 +423,10 @@ public class Proposal extends FlowObject implements Serializable {
     this.taskFlag = taskFlag;
     this.turnNum = turnNum;
     this.inReaders = inReaders;
+    this.docType = docType;
+    this.publicCate = publicCate;
+    this.beginDate = beginDate;
+    this.endDate = endDate;
   }
 
   @Override
@@ -496,8 +506,26 @@ public class Proposal extends FlowObject implements Serializable {
     sb.append(", inReaders=").append(inReaders);
     sb.append(", docType='").append(docType).append('\'');
     sb.append(", publicCate='").append(publicCate).append('\'');
+    sb.append(", beginDate=").append(beginDate);
+    sb.append(", endDate=").append(endDate);
     sb.append('}');
     return sb.toString();
+  }
+
+  public Date getBeginDate() {
+    return beginDate;
+  }
+
+  public void setBeginDate(Date beginDate) {
+    this.beginDate = beginDate;
+  }
+
+  public Date getEndDate() {
+    return endDate;
+  }
+
+  public void setEndDate(Date endDate) {
+    this.endDate = endDate;
   }
 
   public Set<String> getInReaders() {

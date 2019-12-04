@@ -1,7 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.zjhousing.egov.proposal.business.mapper.ProposalMapper">
-  <resultMap id="BaseResultMap" type="com.zjhousing.egov.proposal.business.model.Proposal">
+  <resultMap id="FlowObjectResult" type="com.rongji.egov.wflow.business.model.FlowObject">
+    <result column="FLOW_LABEL" property="flowLabel"/>
+    <result column="FLOW_VERSION" property="flowVersion"/>
+    <result column="FLOW_PID" property="flowPid"/>
+    <result column="FLOW_STATUS" property="flowStatus"/>
+    <result column="FLOW_DONE_USER" property="flowDoneUser"/>
+  </resultMap>
+
+  <resultMap id="BaseResultMap" type="com.zjhousing.egov.proposal.business.model.Proposal" extends="FlowObjectResult">
     <id column="ID" property="id"/>
     <result column="SUBJECT" property="subject"/>
     <result column="DOC_MARK_NUM" property="docMarkNum" javaType="java.lang.Integer"/>
@@ -10,12 +18,6 @@
     <result column="DOC_SEQUENCE_YEAR" property="docSequenceYear" javaType="java.lang.Integer" jdbcType="INTEGER"/>
     <result column="DOC_WORD" property="docWord"/>
     <result column="DOC_CATE" property="docCate"/>
-
-    <result column="FLOW_LABEL" property="flowLabel"/>
-    <result column="FLOW_VERSION" property="flowVersion"/>
-    <result column="FLOW_PID" property="flowPid"/>
-    <result column="FLOW_STATUS" property="flowStatus"/>
-    <result column="FLOW_DONE_USER" property="flowDoneUser"/>
 
     <result column="DRAFT_DATE" property="draftDate"/>
     <result column="DRAFT_USER_NO" property="draftUserNo"/>
@@ -898,12 +900,12 @@
       <if test="proposal.transferLibraryType!=null">
         AND TRANSFER_LIBRARY_TYPE = #{proposal.transferLibraryType}
       </if>
-<!--      <if test="dispatch.meetingBeginTime!=null">-->
-<!--        <![CDATA[ AND  MEETING_BEGIN_TIME >= #{dispatch.meetingBeginTime} ]]>-->
-<!--      </if>-->
-<!--      <if test="dispatch.meetingEndTime!=null">-->
-<!--        <![CDATA[ AND MEETING_END_TIME <= #{dispatch.meetingEndTime} ]]>-->
-<!--      </if>-->
+      <if test="proposal.beginDate!=null">
+        <![CDATA[ AND  DRAFT_DATE >= #{proposal.beginDate} ]]>
+      </if>
+      <if test="proposal.endDate!=null">
+        <![CDATA[ AND DRAFT_DATE <= #{proposal.endDate} ]]>
+      </if>
 
     </where>
     ORDER BY DRAFT_DATE DESC, ID ASC
@@ -929,4 +931,124 @@
       WHERE ID = #{model.id}
     </foreach>
   </update>
+
+  <!-- 新增交办关系 -->
+  <insert id="insertProposalMotionAssigned" parameterType="com.zjhousing.egov.proposal.business.model.ProposalAssigned">
+  INSERT INTO EGOV_PROPOSAL_MOTION_ASSIGNED
+    <trim prefix="(" suffix=")" suffixOverrides=",">
+      <if test="id != null">
+        ID,
+      </if>
+      <if test="mainDocId != null">
+        MAIN_DOC_ID,
+      </if>
+      <if test="assistDocId != null">
+        ASSIST_DOC_ID,
+      </if>
+      <if test="createTime != null">
+        CREATE_TIME,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides=",">
+      <if test="id !=null">
+        #{id},
+      </if>
+      <if test="mainDocId !=null">
+        #{mainDocId},
+      </if>
+      <if test="assistDocId !=null">
+        #{assistDocId},
+      </if>
+      <if test="createTime !=null">
+        #{createTime},
+      </if>
+    </trim>
+  </insert>
+
+  <select id="selectProposalDocIdByAssistDocId" resultType="java.lang.String" parameterType="java.lang.String">
+    SELECT
+    MAIN_DOC_ID
+    FROM EGOV_PROPOSAL_MOTION_ASSIGNED
+    WHERE ASSIST_DOC_ID = #{assistDocId}
+  </select>
+
+  <select id="getSubProposalById" resultMap="BaseResultMap">
+    SELECT
+    assist.ID as ID,
+    SUBJECT,
+		DOC_MARK_NUM,
+		DOC_MARK_YEAR,
+		DOC_SEQUENCE,
+		DOC_SEQUENCE_YEAR,
+		DOC_WORD,
+		DOC_CATE,
+		FLOW_LABEL,
+		FLOW_VERSION,
+		FLOW_PID,
+		FLOW_STATUS,
+		FLOW_DONE_USER,
+		DRAFT_DATE,
+		DRAFT_USER_NO,
+		DRAFT_USER_NAME,
+		DRAFT_DEPT,
+		DRAFT_DEPT_NO,
+		DRAFT_UNIT,
+		DRAFT_UNIT_NO,
+		SIGN_USER_NO,
+		SIGN_USER_NAME,
+		SIGN_DEPT,
+		SIGN_DEPT_NO,
+		SIGN_UNIT,
+		SIGN_UNIT_NO,
+		SIGN_DATE,
+		SIGN_FLAG,
+    PROPOSAL_PARENT_CLASS,
+    PROPOSAL_CHILDREN_CLASS,
+    REFLECTION_CATEGORY,
+    MEETING_SESSION,
+		DOC_MARK,
+    REL_RECEIVAL_MARK,
+    LEADING_USER_NO,
+    LEADING_USER,
+    LEADING_USER_PHOTO,
+    LEADING_USER_PLACE,
+    SECONDED_USERS_NO,
+    SECONDED_USERS,
+    CAUSE_ACTION,
+    MAIN_ORGANIZER,
+    ASSIST_ORGANIZER,
+    ASSIGNMENT_NUM,
+    ASSIGNMENT_DATE,
+    REQUEST_DATE,
+    UNDERTAKE_DEPARTMENT,
+    HANDLING_MODE,
+    URGENT_LEVEL,
+    ASSIGNMENT_USER_NO,
+    ASSIGNMENT_USER,
+    ASSIGNMENT_PHOTO,
+    IMPORT_LEVEL,
+    ASSIGNMENT_REQUIREMENTS,
+    MAIN_SEND,
+    COPY_SEND,
+    HANDLE_USER_NO,
+    HANDLE_USER,
+    HANDLE_PHOTO,
+    SERVICE_ATTITUDE,
+    REMARK,
+    DEAL_FORM_ID,
+    SYSTEM_NO,
+    READERS,
+    SEC_LEVEL,
+    TRANSFER_LIBRARY_TYPE,
+    ARCHIVE_TYPE,
+    ARCHIVE_FLAG,
+    PAGE_NUM,
+    PRINT_NUM,
+    TASK_FLAG,
+    TURN_NUM,
+    IN_READERS
+    FROM  EGOV_PROPOSAL_MOTION_ASSIGNED mta JOIN EGOV_PROPOSAL_MOTION assist
+    ON mta.ASSIST_DOC_ID = assist.ID
+    WHERE mta.MAIN_DOC_ID = #{id}
+  </select>
 </mapper>

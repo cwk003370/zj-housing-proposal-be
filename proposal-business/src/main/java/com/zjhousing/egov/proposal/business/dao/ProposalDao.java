@@ -3,6 +3,8 @@ package com.zjhousing.egov.proposal.business.dao;
 import com.rongji.egov.utils.api.paging.Page;
 import com.rongji.egov.utils.api.paging.PagingRequest;
 import com.zjhousing.egov.proposal.business.model.Proposal;
+import com.zjhousing.egov.proposal.business.model.ProposalAssigned;
+import org.apache.ibatis.annotations.Param;
 
 
 import java.util.List;
@@ -61,7 +63,28 @@ public interface ProposalDao {
    * @return
    */
   int batchUpdateProposalRelReceivalMark(List<Proposal> list);
+  /**
+   * 子流程-新增交办关系
+   *
+   * @param proposalAssigned
+   * @return
+   */
+  int insertProposalMotionAssigned(ProposalAssigned proposalAssigned);
+  /**
+   * 子流程-通过子文档ID查询主文档ID
+   *
+   * @param assistDocId 文档Id
+   * @return
+   */
+  String selectProposalDocIdByAssistDocId(@Param("assistDocId") String assistDocId);
 
+  /**
+   * 子流程-通过文档ID查询所有子文档数据
+   *
+   * @param id 文档Id
+   * @return
+   */
+  List<Proposal> getSubProposalById(@Param("id") String id);
 
 
 }

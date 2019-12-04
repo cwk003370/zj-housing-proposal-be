@@ -2,8 +2,6 @@ package com.zjhousing.egov.proposal.web.controller.external;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.rongji.egov.commonsequence.service.CommonSequenceMng;
-import com.rongji.egov.docconfig.business.service.DisFileWordMng;
 import com.rongji.egov.user.business.model.SecurityUser;
 import com.rongji.egov.user.business.util.SecurityUtils;
 import com.rongji.egov.utils.exception.BusinessException;
@@ -17,7 +15,6 @@ import com.rongji.egov.wflow.web.flow.FLowRecoverController;
 import com.rongji.egov.wflow.web.flow.FlowRevokeController;
 import com.rongji.egov.wflow.web.flow.FlowTransferController;
 import com.zjhousing.egov.proposal.business.model.Proposal;
-import com.zjhousing.egov.proposal.business.model.ProposalSequence;
 import com.zjhousing.egov.proposal.business.service.ProSequenceMng;
 import com.zjhousing.egov.proposal.business.service.ProposalFlowOperator;
 import com.zjhousing.egov.proposal.business.service.ProposalMng;
@@ -47,8 +44,6 @@ public class ProposalMotionFlowController implements FlowTransferController, Flo
   private ProposalMng proposalMng;
   @Resource
   private ProposalFlowOperator proposalFlowOperator;
-  @Resource
-  private CommonSequenceMng commonSequenceMng;
   @Autowired
   private ProSequenceMng proSequenceMng;
 
@@ -125,7 +120,11 @@ public class ProposalMotionFlowController implements FlowTransferController, Flo
   @Override
   public Boolean submitProcessWithoutUsers(@RequestBody SubmitParam submitParam) throws Exception {
     Proposal proposal = this.proposalMng.getProposalMotionById(submitParam.getDocId());
-    return this.todoTransferMng.submitProcessWithoutUsers(submitParam.getAid(), proposal.toMap(), this.proposalFlowOperator);
+    Boolean reslut = this.todoTransferMng.submitProcessWithoutUsers(submitParam.getAid(), proposal.toMap(), this.proposalFlowOperator);
+    if(reslut){
+      proposalMng.setProcessRestart(submitParam.getDocId());
+    }
+    return reslut;
   }
 
   @Override

@@ -1,7 +1,5 @@
 package com.zjhousing.egov.proposal.web.controller.external;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
 import com.rongji.egov.flowutil.business.model.EgovTemplateFile;
 import com.rongji.egov.flowutil.business.service.EgovTemplateFileMng;
 import com.rongji.egov.user.business.model.SecurityUser;
@@ -142,41 +140,6 @@ public class ProposalSequenceController {
     return this.proSequenceMng.getTemplateFileByDocCate(docCate, type, os, systemNo);
   }
 
-//  /**
-//   * 获取文件、办阅件级联数据(浙江)
-//   *
-//   * @return
-//   */
-//  @GetMapping("/receival/sequence/getCascadDataToDealForm")
-//  public JSONArray getCascadDataToDealForm() {
-//    JSONArray jsonArray = new JSONArray();
-//    List<ProposalSequence> sequences = this.proSequenceMng.getSequenceList(null);
-//
-//    JSONObject json;
-//    for (ProposalSequence sequence : sequences) {
-//      json = new JSONObject();
-//      json.put("label", sequence.getSequenceName());
-//      json.put("value", sequence.getDocCate());
-//
-//      //子级
-//      JSONArray childArray = new JSONArray();
-//      JSONObject childJson;
-//      for (String cate : sequence.getDealReadCate()) {
-//        childJson = new JSONObject();
-//        if ("1".equals(cate)) {
-//          childJson.put("label", "办件");
-//        }
-//        if ("2".equals(cate)) {
-//          childJson.put("label", "阅件");
-//        }
-//        childJson.put("value", cate);
-//        childArray.add(childJson);
-//      }
-//      json.put("children", childArray);
-//      jsonArray.add(json);
-//    }
-//    return jsonArray;
-//  }
 
   /**
    * 根据文件类型、办阅件获取阅办单集合
