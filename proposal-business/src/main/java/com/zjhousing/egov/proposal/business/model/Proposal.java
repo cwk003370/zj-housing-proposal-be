@@ -196,6 +196,10 @@ public class Proposal extends FlowObject implements Serializable {
    */
   private Set<String> assistOrganizer;
   /**
+   * 主要内容-MAIN_CONTENT
+   */
+  private String mainContent;
+  /**
    * 附件***
    */
   private String attachDesc;
@@ -248,6 +252,22 @@ public class Proposal extends FlowObject implements Serializable {
    */
   private String assignmentRequirements;
   /**
+   * 办公室领导意见-OFFICE_OPINIONS
+   */
+  private String officeOpinions;
+  /**
+   * 局领导意见-BUREAU_OPINIONS
+   */
+  private String bureauOpinions;
+  /**
+   * 办理结果-HANDLE_RESULT
+   */
+  private String handleResult;
+  /**
+   * 备注-REMARK
+   */
+  private String remark;
+  /**
    * 主送-MAIN_SEND
    */
   private Set<String> mainSend;
@@ -268,13 +288,13 @@ public class Proposal extends FlowObject implements Serializable {
    */
   private String handlePhoto;
   /**
+   * 服务意见-RESULT_ATTITUDE
+   */
+  private String resultAttitude;
+  /**
    * 服务意见-SERVICE_ATTITUDE
    */
   private String serviceAttitude;
-  /**
-   * 备注-REMARK
-   */
-  private String remark;
   /**
    * 阅办单ID  DEAL_FORM_ID
    */
@@ -343,6 +363,16 @@ public class Proposal extends FlowObject implements Serializable {
   @DateTimeFormat(pattern = "yyyy-MM-dd")
   private Date endDate;
 
+  /**
+   * solr作业使用 开始时间
+   */
+  private Date front_RangeStartDate;
+
+  /**
+   * solr作业使用 结束时间
+   */
+  private Date front_RangeEndDate;
+
   public Proposal() {
   }
   public Proposal(String id, String relReceivalMark) {
@@ -350,7 +380,7 @@ public class Proposal extends FlowObject implements Serializable {
     this.relReceivalMark = relReceivalMark;
   }
 
-  public Proposal(String id, String subject, String docMark, Integer docMarkNum, Integer docMarkYear, String docSequence, Integer docSequenceYear, String docWord, String docCate, Date draftDate, String draftUserNo, String draftUserName, String draftDept, String draftDeptNo, String draftUnit, String draftUnitNo, String signUserNo, String signUserName, String signDept, String signDeptNo, String signUnit, String signUnitNo, Date signDate, CleanFlagEnum signDateCleanFlag, String signFlag, String parentClass, String childrenClass, String reflectionCategory, String meetingSession, String proposalNum, String relReceivalMark, String leadingNo, String leadingUser, String leadingPhoto, String leadingPlace, String secondedNo, Set<String> secondedUsers, String secondedNum, String causeAction, Set<String> mainOrganizer, Set<String> assistOrganizer, String attachDesc, String assignmentNum, Date assignmentDate, Date requestDate, String undertakeDepartment, String handlingMode, String urgentLevel, String assignmentUserNo, String assignmentUser, String assignmentPhoto, String importLevel, String assignmentRequirements, Set<String> mainSend, Set<String> copySend, String handleUserNo, String handleUser, String handlePhoto, String serviceAttitude, String remark, String dealFormId, String systemNo, Set<String> readers, String secLevel, TransferLibraryTypeEnum transferLibraryType, ArchiveTypeEnum archiveType, String archiveFlag, Integer pageNum, Integer printNum, String taskFlag, String turnNum, Set<String> inReaders, String docType, String publicCate, Date beginDate, Date endDate) {
+  public Proposal(String id, String subject, String docMark, Integer docMarkNum, Integer docMarkYear, String docSequence, Integer docSequenceYear, String docWord, String docCate, Date draftDate, String draftUserNo, String draftUserName, String draftDept, String draftDeptNo, String draftUnit, String draftUnitNo, String signUserNo, String signUserName, String signDept, String signDeptNo, String signUnit, String signUnitNo, Date signDate, CleanFlagEnum signDateCleanFlag, String signFlag, String parentClass, String childrenClass, String reflectionCategory, String meetingSession, String proposalNum, String relReceivalMark, String leadingNo, String leadingUser, String leadingPhoto, String leadingPlace, String secondedNo, Set<String> secondedUsers, String secondedNum, String causeAction, Set<String> mainOrganizer, Set<String> assistOrganizer, String mainContent, String attachDesc, String assignmentNum, Date assignmentDate, Date requestDate, String undertakeDepartment, String handlingMode, String urgentLevel, String assignmentUserNo, String assignmentUser, String assignmentPhoto, String importLevel, String assignmentRequirements, String officeOpinions, String bureauOpinions, String handleResult, String remark, Set<String> mainSend, Set<String> copySend, String handleUserNo, String handleUser, String handlePhoto, String resultAttitude, String serviceAttitude, String dealFormId, String systemNo, Set<String> readers, String secLevel, TransferLibraryTypeEnum transferLibraryType, ArchiveTypeEnum archiveType, String archiveFlag, Integer pageNum, Integer printNum, String taskFlag, String turnNum, Set<String> inReaders, String docType, String publicCate, Date beginDate, Date endDate) {
     this.id = id;
     this.subject = subject;
     this.docMark = docMark;
@@ -392,6 +422,7 @@ public class Proposal extends FlowObject implements Serializable {
     this.causeAction = causeAction;
     this.mainOrganizer = mainOrganizer;
     this.assistOrganizer = assistOrganizer;
+    this.mainContent = mainContent;
     this.attachDesc = attachDesc;
     this.assignmentNum = assignmentNum;
     this.assignmentDate = assignmentDate;
@@ -404,13 +435,17 @@ public class Proposal extends FlowObject implements Serializable {
     this.assignmentPhoto = assignmentPhoto;
     this.importLevel = importLevel;
     this.assignmentRequirements = assignmentRequirements;
+    this.officeOpinions = officeOpinions;
+    this.bureauOpinions = bureauOpinions;
+    this.handleResult = handleResult;
+    this.remark = remark;
     this.mainSend = mainSend;
     this.copySend = copySend;
     this.handleUserNo = handleUserNo;
     this.handleUser = handleUser;
     this.handlePhoto = handlePhoto;
+    this.resultAttitude = resultAttitude;
     this.serviceAttitude = serviceAttitude;
-    this.remark = remark;
     this.dealFormId = dealFormId;
     this.systemNo = systemNo;
     this.readers = readers;
@@ -473,6 +508,7 @@ public class Proposal extends FlowObject implements Serializable {
     sb.append(", causeAction='").append(causeAction).append('\'');
     sb.append(", mainOrganizer=").append(mainOrganizer);
     sb.append(", assistOrganizer=").append(assistOrganizer);
+    sb.append(", mainContent='").append(mainContent).append('\'');
     sb.append(", attachDesc='").append(attachDesc).append('\'');
     sb.append(", assignmentNum='").append(assignmentNum).append('\'');
     sb.append(", assignmentDate=").append(assignmentDate);
@@ -485,13 +521,17 @@ public class Proposal extends FlowObject implements Serializable {
     sb.append(", assignmentPhoto='").append(assignmentPhoto).append('\'');
     sb.append(", importLevel='").append(importLevel).append('\'');
     sb.append(", assignmentRequirements='").append(assignmentRequirements).append('\'');
+    sb.append(", officeOpinions='").append(officeOpinions).append('\'');
+    sb.append(", bureauOpinions='").append(bureauOpinions).append('\'');
+    sb.append(", handleResult='").append(handleResult).append('\'');
+    sb.append(", remark='").append(remark).append('\'');
     sb.append(", mainSend=").append(mainSend);
     sb.append(", copySend=").append(copySend);
     sb.append(", handleUserNo='").append(handleUserNo).append('\'');
     sb.append(", handleUser='").append(handleUser).append('\'');
     sb.append(", handlePhoto='").append(handlePhoto).append('\'');
+    sb.append(", resultAttitude='").append(resultAttitude).append('\'');
     sb.append(", serviceAttitude='").append(serviceAttitude).append('\'');
-    sb.append(", remark='").append(remark).append('\'');
     sb.append(", dealFormId='").append(dealFormId).append('\'');
     sb.append(", systemNo='").append(systemNo).append('\'');
     sb.append(", readers=").append(readers);
@@ -510,6 +550,62 @@ public class Proposal extends FlowObject implements Serializable {
     sb.append(", endDate=").append(endDate);
     sb.append('}');
     return sb.toString();
+  }
+
+  public Date getFront_RangeStartDate() {
+    return front_RangeStartDate;
+  }
+
+  public void setFront_RangeStartDate(Date front_RangeStartDate) {
+    this.front_RangeStartDate = front_RangeStartDate;
+  }
+
+  public Date getFront_RangeEndDate() {
+    return front_RangeEndDate;
+  }
+
+  public void setFront_RangeEndDate(Date front_RangeEndDate) {
+    this.front_RangeEndDate = front_RangeEndDate;
+  }
+
+  public String getMainContent() {
+    return mainContent;
+  }
+
+  public void setMainContent(String mainContent) {
+    this.mainContent = mainContent;
+  }
+
+  public String getOfficeOpinions() {
+    return officeOpinions;
+  }
+
+  public void setOfficeOpinions(String officeOpinions) {
+    this.officeOpinions = officeOpinions;
+  }
+
+  public String getBureauOpinions() {
+    return bureauOpinions;
+  }
+
+  public void setBureauOpinions(String bureauOpinions) {
+    this.bureauOpinions = bureauOpinions;
+  }
+
+  public String getHandleResult() {
+    return handleResult;
+  }
+
+  public void setHandleResult(String handleResult) {
+    this.handleResult = handleResult;
+  }
+
+  public String getResultAttitude() {
+    return resultAttitude;
+  }
+
+  public void setResultAttitude(String resultAttitude) {
+    this.resultAttitude = resultAttitude;
   }
 
   public Date getBeginDate() {
@@ -1160,7 +1256,23 @@ public class Proposal extends FlowObject implements Serializable {
     if (StringUtils.isNotBlank(this.getFlowStatus())) {
       map.put("S_flowStatus", this.getFlowStatus());
     }
+    if (!StringUtils.equals(this.getFlowStatus(), "8")) {
+      Set<String> strings = new HashSet();
+      strings.add("sys_manager");
+      strings.add("dispatch_manager");
+      if (this.readers != null && this.readers.size() > 0) {
+        strings.addAll(this.readers);
+      }
 
+      if (this.inReaders != null && this.inReaders.size() > 0) {
+        strings.addAll(this.inReaders);
+        map.put("R_inDispatchReaders", this.inReaders.toArray(new String[this.inReaders.size()]));
+      }
+
+      map.put("R_readers", strings.toArray(new String[strings.size()]));
+    } else {
+      map.put("R_readers", (Object)null);
+    }
     if (this.mainSend != null && this.mainSend.size() > 0) {
       map.put("R_mainSend", this.mainSend.toArray(new String[this.mainSend.size()]));
     }
@@ -1190,11 +1302,12 @@ public class Proposal extends FlowObject implements Serializable {
     if (StringUtils.isNotBlank(this.draftUserName)) {
       map.put("S_draftUserName", this.draftUserName);
     }
-
+    if (StringUtils.isNotBlank(this.systemNo)) {
+      map.put("S_systemNo", this.systemNo);
+    }
     if (StringUtils.isNotBlank(this.signFlag)) {
       map.put("S_signFlag", this.signFlag);
     }
-
 
     if (this.draftDate != null) {
       // 写入时间 年月

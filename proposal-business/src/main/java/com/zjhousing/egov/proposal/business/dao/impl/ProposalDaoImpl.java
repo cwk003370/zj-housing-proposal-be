@@ -39,8 +39,6 @@ public class ProposalDaoImpl implements ProposalDao {
 
   @Override
   public Page<Proposal> getProposalMotion4Page(PagingRequest<Proposal> paging, Proposal proposal, String[] word) {
-    System.out.println("22222222222222");
-    System.out.println(proposal.getDraftUserNo());
     return this.mapper.getProposalMotion4Page(paging, proposal, word);
   }
 

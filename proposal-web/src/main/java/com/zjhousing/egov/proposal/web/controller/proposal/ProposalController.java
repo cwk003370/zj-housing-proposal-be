@@ -2,6 +2,7 @@ package com.zjhousing.egov.proposal.web.controller.proposal;
 
 
 import com.alibaba.fastjson.JSONObject;
+import com.rongji.egov.doc.business.dispatch.model.Dispatch;
 import com.rongji.egov.docconfig.business.annotation.DocReadLogAn;
 import com.rongji.egov.user.business.dao.UserDao;
 import com.rongji.egov.user.business.model.RmsRole;
@@ -20,6 +21,7 @@ import com.zjhousing.egov.proposal.business.service.ProSequenceMng;
 import com.zjhousing.egov.proposal.business.service.ProposalFlowOperator;
 import com.zjhousing.egov.proposal.business.service.ProposalMng;
 import org.apache.commons.lang.StringUtils;
+import org.apache.solr.common.SolrDocument;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
@@ -207,6 +209,26 @@ public class ProposalController {
     }
   }
   /**
+   * 发文solr分页查询
+   *
+   * @param paging     分页对象
+   * @param proposal   提案对象
+   * @param draftYear  起草年份
+   * @param draftMonth 起草月份
+   * @param draftDay   起草日
+   * @param word       关键字模糊查询
+   * @return
+   */
+  @GetMapping("/proposalMotionSolrPageJson")
+  public Page<SolrDocument> dispatchSolrPageJson(@CurrentUser SecurityUser user, PagingRequest<Proposal> paging, Proposal proposal,
+                                                 @RequestParam(name = "draftYear", required = false) Integer draftYear,
+                                                 @RequestParam(name = "draftMonth", required = false) Integer draftMonth,
+                                                 @RequestParam(name = "draftDay", required = false) Integer draftDay,
+                                                 String word) {
+    proposal.setSystemNo(user.getSystemNo());
+    return this.proposalMng.getProposalMotionBySolr(paging, proposal, draftYear, draftMonth, draftDay, word);
+  }
+  /**
    * 子流程-提案登记
    *
    * @param
@@ -214,9 +236,9 @@ public class ProposalController {
    * @throws Exception
    */
   @GetMapping("/subprocess/insertProposalMotion")
-  public Proposal insertProposal(@RequestParam("docId") String docId, @RequestParam("userNo") String userNo, @RequestParam("userOrgNo") String userOrgNo, @RequestParam("docCate") String docCate, @RequestParam("userName") String userName) {
+  public Proposal insertProposal(@RequestParam("docId") String docId, @RequestParam("userNo") String userNo, @RequestParam("userOrgNo") String userOrgNo, @RequestParam("docCate") String docCate, @RequestParam("userName") String userName, @RequestParam("handleType") String handleType) {
     Proposal proposal = this.proposalMng.getProposalMotionById(docId);
-    int insertResult = this.proposalMng.insertSubProposalMotion(proposal,userNo,userOrgNo,docCate,userName);
+    int insertResult = this.proposalMng.insertSubProposalMotion(proposal,userNo,userOrgNo,docCate,userName,handleType);
     if (insertResult != 1) {
       throw new BusinessException("子流程提案登记失败");
     } else {

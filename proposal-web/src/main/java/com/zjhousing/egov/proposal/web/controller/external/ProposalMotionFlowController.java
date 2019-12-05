@@ -75,7 +75,18 @@ public class ProposalMotionFlowController implements FlowTransferController, Flo
   }
   @Override
   public boolean setProcessDone(@RequestBody List<String> finishInfo) {
-    return this.processManageMng.setProcessDone(finishInfo, this.proposalFlowOperator);
+    boolean result = this.processManageMng.setProcessDone(finishInfo, this.proposalFlowOperator);
+    if(result){
+      if(finishInfo.size()>0){
+        String[] doc =finishInfo.get(0).split(";");
+        if(doc.length==2){
+          System.out.println("doc[1] = "+doc[1]);
+          this.proposalMng.setProcessRestart(doc[1]);
+        }
+      }
+
+    }
+    return result;
   }
 
   @Override
@@ -120,11 +131,11 @@ public class ProposalMotionFlowController implements FlowTransferController, Flo
   @Override
   public Boolean submitProcessWithoutUsers(@RequestBody SubmitParam submitParam) throws Exception {
     Proposal proposal = this.proposalMng.getProposalMotionById(submitParam.getDocId());
-    Boolean reslut = this.todoTransferMng.submitProcessWithoutUsers(submitParam.getAid(), proposal.toMap(), this.proposalFlowOperator);
-    if(reslut){
+    Boolean result = this.todoTransferMng.submitProcessWithoutUsers(submitParam.getAid(), proposal.toMap(), this.proposalFlowOperator);
+    if(result){
       proposalMng.setProcessRestart(submitParam.getDocId());
     }
-    return reslut;
+    return result;
   }
 
   @Override

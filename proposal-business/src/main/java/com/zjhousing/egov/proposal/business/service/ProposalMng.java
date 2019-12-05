@@ -1,10 +1,12 @@
 package com.zjhousing.egov.proposal.business.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.rongji.egov.doc.business.dispatch.model.Dispatch;
 import com.rongji.egov.utils.api.paging.Page;
 import com.rongji.egov.utils.api.paging.PagingRequest;
 import com.zjhousing.egov.proposal.business.model.Proposal;
 import org.apache.ibatis.annotations.Param;
+import org.apache.solr.common.SolrDocument;
 
 import java.util.List;
 /**
@@ -81,12 +83,25 @@ public interface ProposalMng {
   int batchUpdateProposalRelReceivalMark(List<Proposal> list);
 
   /**
+   * 根据条件 从Solr中查询数据
+   *
+   * @param paging
+   * @param proposal
+   * @param draftYear
+   * @param draftMonth
+   * @param draftDay
+   * @param word
+   * @return
+   */
+  Page<SolrDocument> getProposalMotionBySolr(PagingRequest paging, Proposal proposal,
+                                       Integer draftYear, Integer draftMonth, Integer draftDay, String word);
+  /**
    * 子流程-新增子流程文档
    *
    * @param proposal
    * @return
    */
-  int insertSubProposalMotion(Proposal proposal, String userNo,String userOrgNo,String docCate,String userName);
+  int insertSubProposalMotion(Proposal proposal, String userNo,String userOrgNo,String docCate,String userName,String handleType);
 
   /**
    * 子流程-主流程重启

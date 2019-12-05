@@ -35,6 +35,12 @@ public class ProposalAssigned {
   @Length(max = 256, message = "主文档ID{fixedLength}", groups = {UpdateValidate.class, InsertValidate.class})
   private String assistDocId;
   /**
+   * 主办协办识别码-HANDLE_TYPE
+   * 主办：host
+   * 协办：assist
+   */
+  private String handleType;
+  /**
    * 交办时间-CREATE_TIME
    */
   @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
@@ -72,13 +78,22 @@ public class ProposalAssigned {
     this.createTime = createTime;
   }
 
+  public String getHandleType() {
+    return handleType;
+  }
+
+  public void setHandleType(String handleType) {
+    this.handleType = handleType;
+  }
+
   public ProposalAssigned() {
   }
 
-  public ProposalAssigned(String id, String mainDocId, String assistDocId, Timestamp createTime) {
+  public ProposalAssigned(String id, String mainDocId, String assistDocId, String handleType, Timestamp createTime) {
     this.id = id;
     this.mainDocId = mainDocId;
     this.assistDocId = assistDocId;
+    this.handleType = handleType;
     this.createTime = createTime;
   }
 
@@ -88,6 +103,7 @@ public class ProposalAssigned {
     sb.append("id='").append(id).append('\'');
     sb.append(", mainDocId='").append(mainDocId).append('\'');
     sb.append(", assistDocId='").append(assistDocId).append('\'');
+    sb.append(", handleType='").append(handleType).append('\'');
     sb.append(", createTime=").append(createTime);
     sb.append('}');
     return sb.toString();

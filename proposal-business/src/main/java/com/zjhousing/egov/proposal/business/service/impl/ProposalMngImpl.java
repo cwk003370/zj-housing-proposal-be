@@ -16,13 +16,17 @@ import com.rongji.egov.docconfig.business.service.DocOperatorLogMng;
 import com.rongji.egov.flowutil.business.service.DocResourceMng;
 import com.rongji.egov.solrData.business.dao.SolrDataDao;
 import com.rongji.egov.user.business.dao.UmsUserOrgRelateDao;
+import com.rongji.egov.user.business.dao.UserDao;
+import com.rongji.egov.user.business.model.RmsRole;
 import com.rongji.egov.user.business.model.SecurityUser;
+import com.rongji.egov.user.business.model.UmsGroup;
 import com.rongji.egov.user.business.model.UmsUserOrgRelate;
 import com.rongji.egov.user.business.model.vo.DraftUser;
 import com.rongji.egov.user.business.util.SecurityUtils;
 import com.rongji.egov.user.business.util.UserDraftUtils;
 import com.rongji.egov.utils.api.paging.Page;
 import com.rongji.egov.utils.api.paging.PagingRequest;
+import com.rongji.egov.utils.api.paging.Sort;
 import com.rongji.egov.utils.common.IdUtil;
 import com.rongji.egov.utils.exception.BusinessException;
 import com.rongji.egov.wflow.business.service.engine.manage.ProcessManageMng;
@@ -35,10 +39,14 @@ import com.zjhousing.egov.proposal.business.model.Proposal;
 import com.zjhousing.egov.proposal.business.model.ProposalAssigned;
 import com.zjhousing.egov.proposal.business.service.ProposalMng;
 import org.apache.commons.lang.StringUtils;
+import org.apache.solr.client.solrj.SolrQuery;
+import org.apache.solr.client.solrj.response.QueryResponse;
+import org.apache.solr.common.SolrDocument;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.sql.SQLOutput;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 
@@ -65,6 +73,8 @@ public class ProposalMngImpl implements ProposalMng {
   private ProcessManageMng processManageMng;
   @Resource
   private UmsUserOrgRelateDao umsUserOrgRelateDao;
+  @Resource
+  private UserDao userDao;
 
 
   @Override
@@ -74,7 +84,7 @@ public class ProposalMngImpl implements ProposalMng {
     }
     SecurityUser securityUser = SecurityUtils.getPrincipal();
 
-    // 初始化发文默认数据
+    // 初始化提案默认数据
     proposal.setDraftDate(new Date());
     proposal.setDraftUserNo(securityUser.getUserNo());
     proposal.setDraftUserName(securityUser.getUserName());
@@ -152,17 +162,17 @@ public class ProposalMngImpl implements ProposalMng {
 
     int r = this.proposalDao.delProposalMotion(list);
     List<Receival> receivalList = new ArrayList<>();
-    for (Proposal dispatch : disList) {
-      String id = dispatch.getId();
-      if (StringUtils.isNotBlank(dispatch.getDocMark())) {
-        this.cleanUpNum(dispatch.getDocWord(), dispatch.getDocMarkNum(), dispatch.getDocMarkYear(), dispatch.getSystemNo());
-        dispatch.setDocMark("");
-        dispatch.setDocMarkNum(-1);
-        dispatch.setDocMarkYear(-1);
-        this.proposalDao.updateProposalMotion(dispatch);
+    for (Proposal proposal : disList) {
+      String id = proposal.getId();
+      if (StringUtils.isNotBlank(proposal.getDocMark())) {
+        this.cleanUpNum(proposal.getDocWord(), proposal.getDocMarkNum(), proposal.getDocMarkYear(), proposal.getSystemNo());
+        proposal.setDocMark("");
+        proposal.setDocMarkNum(-1);
+        proposal.setDocMarkYear(-1);
+        this.proposalDao.updateProposalMotion(proposal);
       }
-      //记录发文删除操作
-      this.operatorLogMng.insertOperatorLog("PROPOSALMOTION", "提案议案", dispatch.getSubject(), DocLogConstant.LOG_DEL, dispatch.getId());
+      //记录提案删除操作
+      this.operatorLogMng.insertOperatorLog("PROPOSALMOTION", "提案议案", proposal.getSubject(), DocLogConstant.LOG_DEL, proposal.getId());
 
       // 从solr中删除数据
       try {
@@ -172,12 +182,12 @@ public class ProposalMngImpl implements ProposalMng {
       }
       //删除附件
       this.egovAttMng.deleteEgovAttByDocId(id);
-      //删除发文关联
+      //删除提案关联
       this.docResourceMng.deleteDocResourceByDocId(id);
       //删除收文关联
       this.docResourceMng.deleteDocResourceByResourceDocId(id);
       //删除收文-关联文件字段值
-      String relRecFile = dispatch.getRelReceivalMark();
+      String relRecFile = proposal.getRelReceivalMark();
       if (StringUtils.isNotBlank(relRecFile)) {
         String[] relRecFileArr = relRecFile.split(";");
         if (relRecFileArr.length > 1) {
@@ -243,7 +253,141 @@ public class ProposalMngImpl implements ProposalMng {
   }
 
   @Override
-  public int insertSubProposalMotion(Proposal proposal, String userNo, String userOrgNo,String docCate,String userName) {
+  public Page<SolrDocument> getProposalMotionBySolr(PagingRequest paging, Proposal proposal, Integer draftYear, Integer draftMonth, Integer draftDay, String word) {
+    SecurityUser securityUser = SecurityUtils.getPrincipal();
+
+    Page<SolrDocument> page = new Page<>();
+
+    StringBuffer sqStr = new StringBuffer();
+    List<RmsRole> roles = userDao.listUserRole(securityUser.getUserNo(), securityUser.getSystemNo());
+    Boolean manage = false;
+    for (RmsRole role : roles) {
+      if ("proposal_manager".equals(role.getRoleNo()) || "sys_manager".equals(role.getRoleNo())) {
+        manage = true;
+      }
+    }
+    if (manage) {
+      sqStr.append("R_readers:*");
+    } else {
+      // 默认必须参数
+      sqStr.append("(R_readers:" + securityUser.getUserNo());
+      List<UmsGroup> groups = this.userDao.listUserGroup(securityUser.getUserNo(), securityUser.getSystemNo());
+      for (UmsGroup group : groups) {
+        sqStr.append(" OR R_readers:" + group.getGroupNo());
+      }
+      sqStr.append(" OR R_readers:" + securityUser.getOrgNo() + ")");
+    }
+    // word关键字模糊查询
+    if (StringUtils.isNotBlank(word)) {
+      StringBuffer sqStrWord = new StringBuffer();
+      String[] strings = word.trim().split("\\s+");
+      if (strings != null && strings.length > 0) {
+        for (int i = strings.length - 1; i >= 0; i--) {
+          sqStrWord.append(" OR S_subject2:*" + strings[i] + "*");
+          sqStrWord.append(" OR S_docWord:*" + strings[i] + "*");
+          sqStrWord.append(" OR R_mainSend:*" + strings[i] + "*");
+          sqStrWord.append(" OR S_draftDept:*" + strings[i] + "*");
+          sqStrWord.append(" OR S_draftUserName:*" + strings[i] + "*");
+          sqStrWord.append(" OR S_docMark:*" + strings[i] + "*");
+        }
+        sqStrWord.replace(0,3," AND (");
+        sqStrWord.append(" )");
+        sqStr.append(sqStrWord);
+      }
+    }
+    // 提案查询字段
+    if (StringUtils.isNotBlank(proposal.getSystemNo())) {
+      sqStr.append(" AND S_systemNo:" + proposal.getSystemNo());
+    }
+    if (StringUtils.isNotBlank(proposal.getSubject())) {
+      sqStr.append(" AND S_subject2:*" + proposal.getSubject() + "*");
+    }
+    if (StringUtils.isNotBlank(proposal.getDocMark())) {
+      sqStr.append(" AND S_docMark:*" + proposal.getDocMark() + "*");
+    }
+    if (StringUtils.isNotBlank(proposal.getDocWord())) {
+      sqStr.append(" AND S_docWord:" + proposal.getDocWord());
+    }
+    if (StringUtils.isNotBlank(proposal.getDraftDept())) {
+      if (StringUtils.equals(proposal.getDraftDept(), "办公室")) {
+        sqStr.append(" AND S_draftDept:" + proposal.getDraftDept());
+      } else {
+        sqStr.append(" AND S_draftDept:*" + proposal.getDraftDept() + "*");
+      }
+    }
+    if (StringUtils.isNotBlank(proposal.getDocSequence())) {
+      sqStr.append(" AND S_docSequence:*" + proposal.getDocSequence() + "*");
+    }
+    if (StringUtils.isNotBlank(proposal.getUrgentLevel())) {
+      sqStr.append(" AND S_urgenLevel:*" + proposal.getUrgentLevel() + "*");
+    }
+    if (StringUtils.isNotBlank(proposal.getSecLevel())) {
+      sqStr.append(" AND S_secLevel:*" + proposal.getSecLevel() + "*");
+    }
+    if (StringUtils.isNotBlank(proposal.getArchiveFlag())) {
+      sqStr.append(" AND S_archiveFlag:*" + proposal.getArchiveFlag() + "*");
+    }
+    if (null != proposal.getArchiveType()) {
+      sqStr.append(" AND S_archiveType:*" + proposal.getArchiveType() + "*");
+    }
+    if (StringUtils.isNotBlank(proposal.getSignUserName())) {
+      sqStr.append(" AND S_signUserName:*" + proposal.getSignUserName() + "*");
+    }
+
+    if (StringUtils.isNotBlank(proposal.getSignFlag())) {
+      sqStr.append(" AND S_signFlag:" + proposal.getSignFlag());
+    }
+    if (null != draftYear) {
+      sqStr.append(" AND I_draftYear:" + draftYear);
+    }
+    if (null != draftMonth) {
+      sqStr.append(" AND I_draftMonth:" + draftMonth);
+    }
+    if (null != draftDay) {
+      sqStr.append(" AND I_draftDay:" + draftDay);
+    }
+    if (StringUtils.isNotBlank(proposal.getDraftUserName())) {
+      sqStr.append(" AND S_draftUserName:*" + proposal.getDraftUserName() + "*");
+    }
+
+    // 流程相关查询字段
+    if (StringUtils.isNotBlank(proposal.getFlowStatus())) {
+      sqStr.append(" AND S_flowStatus:*" + proposal.getFlowStatus() + "*");
+    }
+//        sqStr.append(" AND -S_flowStatus:*8*");
+
+    // 协调世界时与东八区时间相差8个小时
+    DateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'");
+    sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
+    String beginStr = "*";
+    String endStr = "*";
+
+    if (null != proposal.getBeginDate()) {
+      beginStr = sdf.format(proposal.getBeginDate());
+    }
+    if (null != proposal.getEndDate()) {
+      endStr = sdf.format(proposal.getEndDate());
+    }
+    sqStr.append(" AND T_draftTime:[" + beginStr + " TO " + endStr + "]");
+
+    SolrQuery sq = new SolrQuery();
+    sq.addFilterQuery("S_module:PROPOSALMOTION");
+    sq.setQuery(sqStr.toString());
+
+    if (paging.getSort() != null && ((Sort.Order) paging.getSort().getOrders().get(0)).getDirection().name().equals("ASC")) {
+      sq.addSort(((Sort.Order) paging.getSort().getOrders().get(0)).getProperty(), SolrQuery.ORDER.asc);
+    } else if (paging.getSort() != null) {
+      sq.addSort(((Sort.Order) paging.getSort().getOrders().get(0)).getProperty(), SolrQuery.ORDER.desc);
+    }
+
+    QueryResponse queryResult = this.solrDataDao.queryAll(sq, paging.getOffset(), paging.getLimit());
+    page.setList(queryResult.getResults());
+    page.setTotal(queryResult.getResults().getNumFound());
+    return page;
+  }
+
+  @Override
+  public int insertSubProposalMotion(Proposal proposal, String userNo, String userOrgNo,String docCate,String userName,String handleType) {
     List<UmsUserOrgRelate> userList = umsUserOrgRelateDao.listUmsOrgByUserNo(userNo);
     UmsUserOrgRelate umsUserOrgRelate =null;
     for(UmsUserOrgRelate u : userList){
@@ -293,6 +437,7 @@ public class ProposalMngImpl implements ProposalMng {
     proposalAssigned.setId(IdUtil.getUID());
     proposalAssigned.setMainDocId(mainDocId);
     proposalAssigned.setAssistDocId(proposal.getId());
+    proposalAssigned.setHandleType(handleType);
     this.proposalDao.insertProposalMotionAssigned(proposalAssigned);
     //新增记录日志
     this.operatorLogMng.insertOperatorLog("PROPOSALMOTION", "提案议案", proposal.getSubject(), DocLogConstant.LOG_ADD, proposal.getId());

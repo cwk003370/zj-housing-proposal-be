@@ -51,6 +51,7 @@
     <result column="CAUSE_ACTION" property="causeAction"/>
     <result column="MAIN_ORGANIZER" property="mainOrganizer" javaType="java.util.Set" jdbcType="VARCHAR"/>
     <result column="ASSIST_ORGANIZER" property="assistOrganizer" javaType="java.util.Set" jdbcType="VARCHAR"/>
+    <result column="MAIN_CONTENT" property="mainContent"/>
     <result column="ASSIGNMENT_NUM" property="assignmentNum"/>
     <result column="ASSIGNMENT_DATE" property="assignmentDate"/>
     <result column="REQUEST_DATE" property="requestDate"/>
@@ -62,13 +63,17 @@
     <result column="ASSIGNMENT_PHOTO" property="assignmentPhoto"/>
     <result column="IMPORT_LEVEL" property="importLevel"/>
     <result column="ASSIGNMENT_REQUIREMENTS" property="assignmentRequirements"/>
+    <result column="OFFICE_OPINIONS" property="officeOpinions"/>
+    <result column="BUREAU_OPINIONS" property="bureauOpinions"/>
+    <result column="HANDLE_RESULT" property="handleResult"/>
+    <result column="REMARK" property="remark"/>
     <result column="MAIN_SEND" property="mainSend" javaType="java.util.Set" jdbcType="VARCHAR"/>
     <result column="COPY_SEND" property="copySend" javaType="java.util.Set" jdbcType="VARCHAR"/>
     <result column="HANDLE_USER_NO" property="handleUserNo"/>
     <result column="HANDLE_USER" property="handleUser"/>
     <result column="HANDLE_PHOTO" property="handlePhoto"/>
+    <result column="RESULT_ATTITUDE" property="resultAttitude"/>
     <result column="SERVICE_ATTITUDE" property="serviceAttitude"/>
-    <result column="REMARK" property="remark"/>
 
     <result column="DEAL_FORM_ID" property="dealFormId"/>
     <result column="SYSTEM_NO" property="systemNo"/>
@@ -129,6 +134,7 @@
     CAUSE_ACTION,
     MAIN_ORGANIZER,
     ASSIST_ORGANIZER,
+    MAIN_CONTENT,
     ASSIGNMENT_NUM,
     ASSIGNMENT_DATE,
     REQUEST_DATE,
@@ -140,13 +146,17 @@
     ASSIGNMENT_PHOTO,
     IMPORT_LEVEL,
     ASSIGNMENT_REQUIREMENTS,
+    OFFICE_OPINIONS,
+    BUREAU_OPINIONS,
+    HANDLE_RESULT,
+    REMARK,
     MAIN_SEND,
     COPY_SEND,
     HANDLE_USER_NO,
     HANDLE_USER,
     HANDLE_PHOTO,
+    RESULT_ATTITUDE,
     SERVICE_ATTITUDE,
-    REMARK,
     DEAL_FORM_ID,
     SYSTEM_NO,
     READERS,
@@ -293,6 +303,9 @@
       <if test="assistOrganizer !=null">
         ASSIST_ORGANIZER,
       </if>
+      <if test="mainContent !=null">
+        MAIN_CONTENT,
+      </if>
       <if test="assignmentNum !=null">
         ASSIGNMENT_NUM,
       </if>
@@ -382,6 +395,18 @@
       </if>
       <if test="inReaders !=null">
         IN_READERS,
+      </if>
+      <if test="officeOpinions !=null">
+        OFFICE_OPINIONS,
+      </if>
+      <if test="bureauOpinions !=null">
+        BUREAU_OPINIONS,
+      </if>
+      <if test="handleResult !=null">
+        HANDLE_RESULT,
+      </if>
+      <if test="resultAttitude !=null">
+        RESULT_ATTITUDE,
       </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
@@ -514,6 +539,9 @@
       <if test="assistOrganizer !=null">
         #{assistOrganizer},
       </if>
+      <if test="mainContent !=null">
+        #{mainContent},
+      </if>
       <if test="assignmentNum !=null">
         #{assignmentNum},
       </if>
@@ -603,6 +631,18 @@
       </if>
       <if test="inReaders !=null">
         #{inReaders},
+      </if>
+      <if test="officeOpinions !=null">
+        #{officeOpinions},
+      </if>
+      <if test="bureauOpinions !=null">
+        #{bureauOpinions},
+      </if>
+      <if test="handleResult !=null">
+        #{handleResult},
+      </if>
+      <if test="resultAttitude !=null">
+        #{resultAttitude},
       </if>
     </trim>
   </insert>
@@ -744,6 +784,9 @@
       <if test="assistOrganizer !=null">
         ASSIST_ORGANIZER = #{assistOrganizer},
       </if>
+      <if test="mainContent !=null">
+        MAIN_CONTENT = #{mainContent},
+      </if>
       <if test="assignmentNum !=null">
         ASSIGNMENT_NUM = #{assignmentNum},
       </if>
@@ -833,6 +876,18 @@
       </if>
       <if test="inReaders !=null">
         IN_READERS = #{inReaders},
+      </if>
+      <if test="officeOpinions !=null">
+        OFFICE_OPINIONS = #{officeOpinions},
+      </if>
+      <if test="bureauOpinions !=null">
+        BUREAU_OPINIONS = #{bureauOpinions},
+      </if>
+      <if test="handleResult !=null">
+        HANDLE_RESULT = #{handleResult},
+      </if>
+      <if test="resultAttitude !=null">
+        RESULT_ATTITUDE = #{resultAttitude},
       </if>
     </set>
     <where>
@@ -945,6 +1000,9 @@
       <if test="assistDocId != null">
         ASSIST_DOC_ID,
       </if>
+      <if test="handleType != null">
+        HANDLE_TYPE,
+      </if>
       <if test="createTime != null">
         CREATE_TIME,
       </if>
@@ -958,6 +1016,9 @@
       </if>
       <if test="assistDocId !=null">
         #{assistDocId},
+      </if>
+      <if test="handleType != null">
+        #{handleType},
       </if>
       <if test="createTime !=null">
         #{createTime},
@@ -1017,6 +1078,7 @@
     CAUSE_ACTION,
     MAIN_ORGANIZER,
     ASSIST_ORGANIZER,
+    MAIN_CONTENT,
     ASSIGNMENT_NUM,
     ASSIGNMENT_DATE,
     REQUEST_DATE,
@@ -1028,13 +1090,17 @@
     ASSIGNMENT_PHOTO,
     IMPORT_LEVEL,
     ASSIGNMENT_REQUIREMENTS,
+    OFFICE_OPINIONS,
+    BUREAU_OPINIONS,
+    HANDLE_RESULT,
+    REMARK,
     MAIN_SEND,
     COPY_SEND,
     HANDLE_USER_NO,
     HANDLE_USER,
     HANDLE_PHOTO,
+    RESULT_ATTITUDE,
     SERVICE_ATTITUDE,
-    REMARK,
     DEAL_FORM_ID,
     SYSTEM_NO,
     READERS,
