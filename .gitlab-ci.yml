@@ -1,0 +1,15 @@
+# 定义 stages
+stages:
+- deploy
+cache:
+  paths:
+  - target/
+before_script:
+  - source /etc/profile
+build-project:
+  stage: deploy
+  script:
+  - mvn clean deploy -Dmaven.test.skip=true --update-snapshots
+  tags:
+  - maven
+
