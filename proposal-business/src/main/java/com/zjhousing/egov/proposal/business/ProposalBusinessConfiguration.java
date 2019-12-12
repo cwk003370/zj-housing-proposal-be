@@ -59,10 +59,10 @@ public class ProposalBusinessConfiguration {
     SpringApplication.run(ProposalBusinessConfiguration.class, args);
   }
 
-  @Bean
-  EnumBasePackageWrapper docBusinessEnumBasePackageWrapper() {
-    return new EnumBasePackageWrapper("com.zjhousing.egov.proposal.business.proposal.enums");
-  }
+//  @Bean
+//  EnumBasePackageWrapper docBusinessEnumBasePackageWrapper() {
+//    return new EnumBasePackageWrapper("com.zjhousing.egov.proposal.business.proposal.enums");
+//  }
 
   @Bean
   RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
