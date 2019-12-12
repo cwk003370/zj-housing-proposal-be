@@ -7,8 +7,6 @@ import com.rongji.egov.docconfig.web.DocConfigWebConfiguration;
 import com.rongji.egov.email.web.EmailWebConfiguration;
 import com.rongji.egov.flowutil.web.FlowUtilWebConfiguration;
 import com.rongji.egov.solrData.business.SolrDataBusinessConfiguration;
-import com.rongji.egov.solrData.web.SolrDataWebConfiguration;
-import com.rongji.egov.solrcopydata.web.SolrCopyDataWebConfiguration;
 import com.rongji.egov.user.web.UserWebConfiguration;
 import com.rongji.egov.user.web.security.IgnoredPathsWrapper;
 import com.rongji.egov.wflow.web.WflowWebConfiguration;
@@ -36,8 +34,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
   WflowWebConfiguration.class,
   DocWebConfiguration.class,
   SolrDataBusinessConfiguration.class,
-  CommonSequenceConfiguration.class,
-  SolrCopyDataWebConfiguration.class
+  CommonSequenceConfiguration.class
 
 })
 public class ProposalWebConfiguration extends WebMvcConfigurerAdapter {

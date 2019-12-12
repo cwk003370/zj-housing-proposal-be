@@ -53,19 +53,6 @@
 
 
   <dependencies>
-
-    <dependency>
-      <groupId>com.rongji.egov</groupId>
-      <artifactId>utils</artifactId>
-      <version>1.0.0-SNAPSHOT</version>
-    </dependency>
-    <dependency>
-      <groupId>com.rongji.egov</groupId>
-      <artifactId>attach-util</artifactId>
-      <version>1.0.1-SNAPSHOT</version>
-    </dependency>
-
-    <!-- 用于测试包含库的Spring Boot应用程序的入门者JUnit，Hamcrest和Mockito -->
     <dependency>
       <groupId>org.springframework.boot</groupId>
       <artifactId>spring-boot-starter-test</artifactId>
@@ -81,7 +68,6 @@
       <artifactId>dept-task-web</artifactId>
       <version>1.0.0-SNAPSHOT</version>
     </dependency>
-
     <!-- 其他功能包-->
     <!--流水号依赖-->
     <dependency>
@@ -89,16 +75,17 @@
       <artifactId>common-sequence</artifactId>
       <version>1.0.1-SNAPSHOT</version>
     </dependency>
-    <dependency>
-      <groupId>com.rongji.egov</groupId>
-      <artifactId>wflow-business</artifactId>
-      <version>1.0.1-SNAPSHOT</version>
-    </dependency>
+    <!--通用附件依赖包-->
     <dependency>
       <groupId>com.rongji.egov</groupId>
       <artifactId>attach-util</artifactId>
       <version>1.0.1-SNAPSHOT</version>
     </dependency>
-
+    <!--基础工具-->
+    <dependency>
+      <groupId>com.rongji.egov</groupId>
+      <artifactId>utils</artifactId>
+      <version>1.0.0-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 </project>

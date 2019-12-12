@@ -1,7 +1,6 @@
 package com.zjhousing.egov.proposal.business.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.rongji.egov.doc.business.util.ToSolrMapUtil;
 import com.rongji.egov.utils.spring.validation.InsertValidate;
 import com.rongji.egov.utils.spring.validation.UpdateValidate;
 import com.rongji.egov.wflow.business.constant.ModuleFiledConst;
@@ -10,6 +9,7 @@ import com.zjhousing.egov.proposal.business.enums.ArchiveTypeEnum;
 import com.zjhousing.egov.proposal.business.enums.CleanFlagEnum;
 import com.zjhousing.egov.proposal.business.enums.TransferLibraryTypeEnum;
 
+import com.zjhousing.egov.proposal.business.utils.ToSolrMapUtil;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -1340,7 +1340,6 @@ public class Proposal extends FlowObject implements Serializable {
       map.put("I_signMonth", null);
       map.put("I_signDay", null);
     }
-
     List<String> body = ToSolrMapUtil.getFileStringByTikaList(this.id, this.getFlowStatus());
     if (body != null && body.size() > 0) {
       map.put("BODY_zw", body);

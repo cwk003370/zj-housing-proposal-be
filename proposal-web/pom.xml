@@ -51,11 +51,6 @@
       <artifactId>doc-web</artifactId>
       <version>1.0.1-SNAPSHOT</version>
     </dependency>
-    <dependency>
-      <groupId>com.rongji.egov</groupId>
-      <artifactId>solrData-web</artifactId>
-      <version>1.0.1-SNAPSHOT</version>
-    </dependency>
   </dependencies>
 
   <build>
@@ -63,13 +58,6 @@
       <plugin>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-maven-plugin</artifactId>
-        <!--<executions>-->
-        <!--<execution>-->
-        <!--<goals>-->
-        <!--<goal>repackage</goal>-->
-        <!--</goals>-->
-        <!--</execution>-->
-        <!--</executions>-->
       </plugin>
     </plugins>
   </build>
