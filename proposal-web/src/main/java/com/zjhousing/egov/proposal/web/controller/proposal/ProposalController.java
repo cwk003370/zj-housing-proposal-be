@@ -2,7 +2,6 @@ package com.zjhousing.egov.proposal.web.controller.proposal;
 
 
 import com.alibaba.fastjson.JSONObject;
-import com.rongji.egov.doc.business.dispatch.model.Dispatch;
 import com.rongji.egov.docconfig.business.annotation.DocReadLogAn;
 import com.rongji.egov.user.business.dao.UserDao;
 import com.rongji.egov.user.business.model.RmsRole;
@@ -17,6 +16,7 @@ import com.rongji.egov.wflow.business.model.dto.temp.ReadSend;
 import com.rongji.egov.wflow.business.service.engine.manage.ProcessManageMng;
 import com.rongji.egov.wflow.business.service.engine.transfer.TodoTransferMng;
 import com.zjhousing.egov.proposal.business.model.Proposal;
+import com.zjhousing.egov.proposal.business.query.ProposalAssistQuery;
 import com.zjhousing.egov.proposal.business.service.ProSequenceMng;
 import com.zjhousing.egov.proposal.business.service.ProposalFlowOperator;
 import com.zjhousing.egov.proposal.business.service.ProposalMng;
@@ -235,10 +235,10 @@ public class ProposalController {
    * @return
    * @throws Exception
    */
-  @GetMapping("/subprocess/insertProposalMotion")
-  public Proposal insertProposal(@RequestParam("docId") String docId, @RequestParam("userNo") String userNo, @RequestParam("userOrgNo") String userOrgNo, @RequestParam("docCate") String docCate, @RequestParam("userName") String userName, @RequestParam("handleType") String handleType) {
-    Proposal proposal = this.proposalMng.getProposalMotionById(docId);
-    int insertResult = this.proposalMng.insertSubProposalMotion(proposal,userNo,userOrgNo,docCate,userName,handleType);
+  @PostMapping("/subprocess/insertProposalMotion")
+  public Proposal insertProposal(@RequestBody ProposalAssistQuery proposalAssistQuery) {
+    Proposal proposal = this.proposalMng.getProposalMotionById(proposalAssistQuery.getDocId());
+    int insertResult = this.proposalMng.insertSubProposalMotion(proposal,proposalAssistQuery.getUserNo(),proposalAssistQuery.getUserOrgNo(),proposalAssistQuery.getDocCate(),proposalAssistQuery.getUserName(),proposalAssistQuery.getHandleType(),proposalAssistQuery.getDealForm());
     if (insertResult != 1) {
       throw new BusinessException("子流程提案登记失败");
     } else {

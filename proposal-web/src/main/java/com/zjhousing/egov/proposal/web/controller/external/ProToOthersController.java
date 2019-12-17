@@ -34,7 +34,7 @@ public class ProToOthersController {
    * @return
    */
   @PostMapping("/proToOthers")
-  public boolean disToOthers(@RequestBody ProToOthersQuery proToOthersQuery) {
+  public boolean proToOthers(@RequestBody ProToOthersQuery proToOthersQuery) {
     return this.proToOthersMng.proToOthers(proToOthersQuery);
   }
 }

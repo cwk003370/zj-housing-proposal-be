@@ -51,6 +51,11 @@
       <artifactId>doc-web</artifactId>
       <version>1.0.1-SNAPSHOT</version>
     </dependency>
+    <dependency>
+      <groupId>com.rongji.egov</groupId>
+      <artifactId>dept-library-web</artifactId>
+      <version>1.0.1-SNAPSHOT</version>
+    </dependency>
   </dependencies>
 
   <build>

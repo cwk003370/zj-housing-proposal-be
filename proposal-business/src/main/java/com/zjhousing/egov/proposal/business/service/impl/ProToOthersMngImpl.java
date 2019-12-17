@@ -95,18 +95,16 @@ public class ProToOthersMngImpl implements ProToOthersMng {
         map = this.getProToArchiveHashMap(pro, proToOthersQuery);
         result = this.withTokenRestTemplate.postForObject(this.docBusinessProperties.getRequestPrefix() + "/archive/insertOthersToArchive", map, JSONObject.class);
         if (ExCommon.getFlag(result)) {
-          Proposal proeival = new Proposal();
-          proeival.setId(docId);
-          proeival.setArchiveFlag("1");
-          if (this.proposalMng.updateProposalMotion(proeival) < 1) {
+          Proposal proposal = new Proposal();
+          proposal.setId(docId);
+          proposal.setArchiveFlag("1");
+          if (this.proposalMng.updateProposalMotion(proposal) < 1) {
             fianl = false;
           }
         }
         break;
       case ExternalToOthersConstant.TO_DEPARTMENT:
         map = this.getToDepartmentHashMap(pro, proToOthersQuery);
-        System.out.println("111111111");
-        System.out.println(this.docBusinessProperties.getRequestPrefix());
         JSONObject jsonObject = this.withTokenRestTemplate.postForObject(this.docBusinessProperties.getRequestPrefix() + "/deptReceival/insertFileToDeptReceival", map, JSONObject.class);
         boolean res = ExCommon.getFlag(jsonObject);
         if (!res) {
@@ -179,10 +177,10 @@ public class ProToOthersMngImpl implements ProToOthersMng {
             break;
           }
           this.withTokenRestTemplate.postForObject(this.docBusinessProperties.getRequestPrefix() + "/efficiencySupervision/insertExternalTask", map, JSONObject.class);
-          Proposal proeival = new Proposal();
-          proeival.setId(docId);
-          proeival.setTaskFlag("1");
-          if (this.proposalMng.updateProposalMotion(proeival) < 1) {
+          Proposal proposal = new Proposal();
+          proposal.setId(docId);
+          proposal.setTaskFlag("1");
+          if (this.proposalMng.updateProposalMotion(proposal) < 1) {
             fianl = false;
           }
         }
@@ -226,15 +224,15 @@ public class ProToOthersMngImpl implements ProToOthersMng {
 //                HttpHeaders header = new HttpHeaders();
         result= this.withTokenRestTemplate.postForObject(this.docBusinessProperties.getRequestPrefix() + "/workReminder/toWorkReminder", map, JSONObject.class);
         if (result != null && "1".equals(result.getString("status"))) {
-          Proposal proeival = new Proposal();
-          proeival.setId(docId);
+          Proposal proposal = new Proposal();
+          proposal.setId(docId);
           if (turnNumInt == -1) {
             turnNumJson.put(TO_WORK_REMINDER, 1);
           } else {
             turnNumJson.put(TO_WORK_REMINDER, turnNumInt + 1);
           }
-          proeival.setTurnNum(turnNumJson.toJSONString());
-          if (this.proposalMng.updateProposalMotion(proeival) < 1) {
+          proposal.setTurnNum(turnNumJson.toJSONString());
+          if (this.proposalMng.updateProposalMotion(proposal) < 1) {
             fianl = false;
           } else {
             fianl = true;
@@ -265,15 +263,15 @@ public class ProToOthersMngImpl implements ProToOthersMng {
         map.put("source", "本级重要文件");
         result= this.withTokenRestTemplate.postForObject(this.docBusinessProperties.getRequestPrefix() + "/vitalDocument/transformationFile", map, JSONObject.class);
         if (result != null && result.getBooleanValue("flag")) {
-          Proposal proeival = new Proposal();
-          proeival.setId(docId);
+          Proposal proposal = new Proposal();
+          proposal.setId(docId);
           if (turnNumInt == -1) {
             turnNumJson.put(TO_VITAL_DOCUMENT, 1);
           } else {
             turnNumJson.put(TO_VITAL_DOCUMENT, turnNumInt + 1);
           }
-          proeival.setTurnNum(turnNumJson.toJSONString());
-          if (this.proposalMng.updateProposalMotion(proeival) < 1) {
+          proposal.setTurnNum(turnNumJson.toJSONString());
+          if (this.proposalMng.updateProposalMotion(proposal) < 1) {
             fianl = false;
           } else {
             fianl = true;

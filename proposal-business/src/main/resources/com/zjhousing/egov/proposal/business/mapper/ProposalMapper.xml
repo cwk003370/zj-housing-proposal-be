@@ -88,6 +88,21 @@
     <result property="taskFlag" column="TASK_FLAG" javaType="java.lang.String" jdbcType="VARCHAR"/>
     <result property="turnNum" column="TURN_NUM" javaType="java.lang.String" jdbcType="VARCHAR"/>
     <result property="inReaders" column="IN_READERS" javaType="java.util.Set" jdbcType="VARCHAR"/>
+
+    <result column="SUB_ASSIGNMENT_NUM" property="subAssignmentNum"/>
+    <result column="SUB_ASSIGNMENT_DATE" property="subAssignmentDate"/>
+    <result column="SUB_REQUEST_DATE" property="subRequestDate"/>
+    <result column="SUB_UNDERTAKE_DEPARTMENT" property="subUndertakeDepartment"/>
+    <result column="SUB_HANDLING_MODE" property="subHandlingMode"/>
+    <result column="SUB_URGENT_LEVEL" property="subUrgentLevel"/>
+    <result column="SUB_ASSIGNMENT_USER_NO" property="subAssignmentUserNo"/>
+    <result column="SUB_ASSIGNMENT_USER" property="subAssignmentUser"/>
+    <result column="SUB_ASSIGNMENT_PHOTO" property="subAssignmentPhoto"/>
+    <result column="SUB_IMPORT_LEVEL" property="subImportLevel"/>
+    <result column="SUB_ASSIGNMENT_REQUIREMENTS" property="subAssignmentRequirements"/>
+    <result column="SUB_LEADER_OPINIONS" property="subLeaderOpinions"/>
+    <result column="SUB_JUDGE" property="subJudge"/>
+
   </resultMap>
   <!-- 可重复利用的sql -->
   <sql id="allColumns">
@@ -168,9 +183,22 @@
     PRINT_NUM,
     TASK_FLAG,
     TURN_NUM,
-    IN_READERS
+    IN_READERS,
+    SUB_ASSIGNMENT_NUM,
+    SUB_ASSIGNMENT_DATE,
+    SUB_REQUEST_DATE,
+    SUB_UNDERTAKE_DEPARTMENT,
+    SUB_HANDLING_MODE,
+    SUB_URGENT_LEVEL,
+    SUB_ASSIGNMENT_USER_NO,
+    SUB_ASSIGNMENT_USER,
+    SUB_ASSIGNMENT_PHOTO,
+    SUB_IMPORT_LEVEL,
+    SUB_ASSIGNMENT_REQUIREMENTS,
+    SUB_LEADER_OPINIONS,
+    SUB_JUDGE
 	</sql>
-  <!-- 新增发文 -->
+  <!-- 新增提案 -->
   <insert id="insertProposalMotion" parameterType="com.zjhousing.egov.proposal.business.model.Proposal">
     INSERT INTO EGOV_PROPOSAL_MOTION
     <trim prefix="(" suffix=")" suffixOverrides=",">
@@ -408,6 +436,45 @@
       <if test="resultAttitude !=null">
         RESULT_ATTITUDE,
       </if>
+      <if test="subAssignmentNum !=null">
+        SUB_ASSIGNMENT_NUM,
+      </if>
+      <if test="subAssignmentDate !=null">
+        SUB_ASSIGNMENT_DATE,
+      </if>
+      <if test="subRequestDate !=null">
+        SUB_REQUEST_DATE,
+      </if>
+      <if test="subUndertakeDepartment !=null">
+        SUB_UNDERTAKE_DEPARTMENT,
+      </if>
+      <if test="subHandlingMode !=null">
+        SUB_HANDLING_MODE,
+      </if>
+      <if test="subUrgentLevel !=null">
+        SUB_URGENT_LEVEL,
+      </if>
+      <if test="subAssignmentUserNo !=null">
+        SUB_ASSIGNMENT_USER_NO,
+      </if>
+      <if test="subAssignmentUser !=null">
+        SUB_ASSIGNMENT_USER,
+      </if>
+      <if test="subAssignmentPhoto!=null">
+        SUB_ASSIGNMENT_PHOTO,
+      </if>
+      <if test="subImportLevel !=null">
+        SUB_IMPORT_LEVEL,
+      </if>
+      <if test="subAssignmentRequirements !=null">
+        SUB_ASSIGNMENT_REQUIREMENTS,
+      </if>
+      <if test="subLeaderOpinions !=null">
+        SUB_LEADER_OPINIONS,
+      </if>
+      <if test="subJudge !=null">
+        SUB_JUDGE,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -644,9 +711,48 @@
       <if test="resultAttitude !=null">
         #{resultAttitude},
       </if>
+      <if test="subAssignmentNum !=null">
+        #{subAssignmentNum},
+      </if>
+      <if test="subAssignmentDate !=null">
+        #{subAssignmentDate },
+      </if>
+      <if test="subRequestDate !=null">
+        #{subRequestDate},
+      </if>
+      <if test="subUndertakeDepartment !=null">
+        #{subUndertakeDepartment},
+      </if>
+      <if test="subHandlingMode !=null">
+        #{subHandlingMode},
+      </if>
+      <if test="subUrgentLevel !=null">
+        #{subUrgentLevel},
+      </if>
+      <if test="subAssignmentUserNo !=null">
+        #{subAssignmentUserNo},
+      </if>
+      <if test="subAssignmentUser !=null">
+        #{subAssignmentUser},
+      </if>
+      <if test="subAssignmentPhoto!=null">
+        #{subAssignmentPhoto},
+      </if>
+      <if test="subImportLevel !=null">
+        #{subImportLevel},
+      </if>
+      <if test="subAssignmentRequirements !=null">
+        #{subAssignmentRequirements},
+      </if>
+      <if test="subLeaderOpinions !=null">
+        #{subLeaderOpinions},
+      </if>
+      <if test="subJudge !=null">
+        #{subJudge},
+      </if>
     </trim>
   </insert>
-  <!-- 新增发文 -->
+  <!-- 新增提案 -->
   <update id="updateProposalMotion" parameterType="com.zjhousing.egov.proposal.business.model.Proposal">
     UPDATE EGOV_PROPOSAL_MOTION
     <set>
@@ -889,6 +995,46 @@
       <if test="resultAttitude !=null">
         RESULT_ATTITUDE = #{resultAttitude},
       </if>
+
+      <if test="subAssignmentNum !=null">
+        SUB_ASSIGNMENT_NUM = #{subAssignmentNum},
+      </if>
+      <if test="subAssignmentDate !=null">
+        SUB_ASSIGNMENT_DATE = #{subAssignmentDate},
+      </if>
+      <if test="subRequestDate !=null">
+        SUB_REQUEST_DATE = #{subRequestDate},
+      </if>
+      <if test="subUndertakeDepartment !=null">
+        SUB_UNDERTAKE_DEPARTMENT = #{subUndertakeDepartment},
+      </if>
+      <if test="subHandlingMode !=null">
+        SUB_HANDLING_MODE = #{subHandlingMode},
+      </if>
+      <if test="subUrgentLevel !=null">
+        SUB_URGENT_LEVEL = #{subUrgentLevel},
+      </if>
+      <if test="subAssignmentUserNo !=null">
+        SUB_ASSIGNMENT_USER_NO = #{subAssignmentUserNo},
+      </if>
+      <if test="subAssignmentUser !=null">
+        SUB_ASSIGNMENT_USER = #{subAssignmentUser},
+      </if>
+      <if test="subAssignmentPhoto !=null">
+        SUB_ASSIGNMENT_PHOTO = #{subAssignmentPhoto},
+      </if>
+      <if test="subImportLevel !=null">
+        SUB_IMPORT_LEVEL = #{subImportLevel},
+      </if>
+      <if test="subAssignmentRequirements !=null">
+        SUB_ASSIGNMENT_REQUIREMENTS = #{subAssignmentRequirements},
+      </if>
+      <if test="subLeaderOpinions !=null">
+        SUB_LEADER_OPINIONS = #{subLeaderOpinions},
+      </if>
+      <if test="subJudge !=null">
+        SUB_JUDGE = #{subJudge},
+      </if>
     </set>
     <where>
       <if test="id!=null and id!=''">
@@ -911,7 +1057,7 @@
     FROM EGOV_PROPOSAL_MOTION
     WHERE ID = #{id}
   </select>
-  <!--分页 获取发文数据-->
+  <!--分页 获取提案数据-->
   <select id="getProposalMotion4Page" resultMap="BaseResultMap">
     SELECT
     <include refid="allColumns"/>
@@ -977,7 +1123,7 @@
     </foreach>
     )
   </select>
-  <!-- 批量更新发文-关联文件字段值 -->
+  <!-- 批量更新提案-关联文件字段值 -->
   <update id="batchUpdateProposalRelReceivalMark">
     <foreach collection="list" item="model" index="index" open="" close="" separator=";">
       UPDATE EGOV_PROPOSAL_MOTION
@@ -1036,7 +1182,7 @@
   <select id="getSubProposalById" resultMap="BaseResultMap">
     SELECT
     assist.ID as ID,
-    SUBJECT,
+		SUBJECT,
 		DOC_MARK_NUM,
 		DOC_MARK_YEAR,
 		DOC_SEQUENCE,
@@ -1112,7 +1258,20 @@
     PRINT_NUM,
     TASK_FLAG,
     TURN_NUM,
-    IN_READERS
+    IN_READERS,
+    SUB_ASSIGNMENT_NUM,
+    SUB_ASSIGNMENT_DATE,
+    SUB_REQUEST_DATE,
+    SUB_UNDERTAKE_DEPARTMENT,
+    SUB_HANDLING_MODE,
+    SUB_URGENT_LEVEL,
+    SUB_ASSIGNMENT_USER_NO,
+    SUB_ASSIGNMENT_USER,
+    SUB_ASSIGNMENT_PHOTO,
+    SUB_IMPORT_LEVEL,
+    SUB_ASSIGNMENT_REQUIREMENTS,
+    SUB_LEADER_OPINIONS,
+    SUB_JUDGE
     FROM  EGOV_PROPOSAL_MOTION_ASSIGNED mta JOIN EGOV_PROPOSAL_MOTION assist
     ON mta.ASSIST_DOC_ID = assist.ID
     WHERE mta.MAIN_DOC_ID = #{id}

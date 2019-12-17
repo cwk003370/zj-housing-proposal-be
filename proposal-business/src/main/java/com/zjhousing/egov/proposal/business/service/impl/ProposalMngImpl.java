@@ -9,6 +9,9 @@ import com.rongji.egov.attachutil.model.EgovAtt;
 import com.rongji.egov.attachutil.service.EgovAttMng;
 import com.rongji.egov.doc.business.constant.DocLogConstant;
 import com.rongji.egov.doc.business.external.model.EgovDocUpdateItemLog;
+import com.rongji.egov.doc.business.external.query.CommonToOthersQuery;
+import com.rongji.egov.doc.business.external.query.DealForm;
+import com.rongji.egov.doc.business.external.service.ComToOthersMng;
 import com.rongji.egov.doc.business.external.service.EgovDocUpdateItemLogMng;
 import com.rongji.egov.doc.business.receival.model.Receival;
 import com.rongji.egov.doc.business.receival.service.ReceivalMng;
@@ -75,7 +78,8 @@ public class ProposalMngImpl implements ProposalMng {
   private UmsUserOrgRelateDao umsUserOrgRelateDao;
   @Resource
   private UserDao userDao;
-
+  @Resource
+  private ComToOthersMng comToOthersMng;
 
   @Override
   public int insertProposalMotion(Proposal proposal) {
@@ -387,7 +391,7 @@ public class ProposalMngImpl implements ProposalMng {
   }
 
   @Override
-  public int insertSubProposalMotion(Proposal proposal, String userNo, String userOrgNo,String docCate,String userName,String handleType) {
+  public int insertSubProposalMotion(Proposal proposal, String userNo, String userOrgNo, String docCate, String userName, String handleType, List<DealForm> dealForm) {
     List<UmsUserOrgRelate> userList = umsUserOrgRelateDao.listUmsOrgByUserNo(userNo);
     UmsUserOrgRelate umsUserOrgRelate =null;
     for(UmsUserOrgRelate u : userList){
@@ -398,10 +402,11 @@ public class ProposalMngImpl implements ProposalMng {
     if (umsUserOrgRelate == null) {
       throw new BusinessException("指定人员不存在");
     }
-
+    String targetId =IdUtil.getUID();
     String mainDocId = proposal.getId();
+
     //初始化流程信息
-    proposal.setId(IdUtil.getUID());
+    proposal.setId(targetId);
     proposal.setFlowDoneUser(null);
     proposal.setFlowLabel(null);
     proposal.setFlowPid(null);
@@ -414,6 +419,8 @@ public class ProposalMngImpl implements ProposalMng {
     proposal.setDocCate(docCate);
     proposal.setFlowStatus("0");
     proposal.setSignFlag("0");
+    //表示该实例是子流程实例
+    proposal.setSubJudge("1");
 
     if (StringUtils.isBlank(proposal.getDocMark())) {
       proposal.setDocMark("");
@@ -431,6 +438,31 @@ public class ProposalMngImpl implements ProposalMng {
     int result = this.proposalDao.insertProposalMotion(proposal);
     if (result < 1) {
       throw new BusinessException("登记提案议案失败");
+    }
+    final String MODULE_NO = "PROPOSALMOTION";
+    //拷贝正文
+    this.egovAttMng.copyEgovAttByDocId(mainDocId, targetId, "main_doc", "main_doc");
+    //拷贝普通附件
+    this.egovAttMng.copyEgovAttByDocId(mainDocId, targetId, "attach", "attach");
+    //保存办理单为附件
+    if (dealForm != null &&dealForm.size()>0 ) {
+      SecurityUser user = SecurityUtils.getPrincipal();
+      byte[] fileByte = dealForm.get(0).getFile().getBytes();
+      String dealFormTitle = dealForm.get(0).getFileName();
+      EgovAtt egovAtt = new EgovAtt();
+      String dealFormAttachId = IdUtil.getUID();
+      egovAtt.setId(dealFormAttachId);
+      egovAtt.setModuleId(MODULE_NO);
+      egovAtt.setDocId(targetId);
+      egovAtt.setFileSize(fileByte.length);
+      egovAtt.setStatus("1");
+      egovAtt.setType("attach");
+      egovAtt.setFile(fileByte);
+      egovAtt.setFileName(dealFormTitle);
+      egovAtt.setFileSuffix("html");
+      //egovAtt.setContentType("text/html");
+      egovAtt.setSystemNo(user.getSystemNo());
+      this.egovAttMng.insertEgovAtt(egovAtt, user);
     }
     //添加交办关系
     ProposalAssigned proposalAssigned = new ProposalAssigned();

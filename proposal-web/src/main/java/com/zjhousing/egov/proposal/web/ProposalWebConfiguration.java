@@ -2,6 +2,7 @@ package com.zjhousing.egov.proposal.web;
 
 
 import com.rongji.egov.commonsequence.CommonSequenceConfiguration;
+import com.rongji.egov.dept.library.web.DeptLibraryWebConfiguration;
 import com.rongji.egov.doc.web.DocWebConfiguration;
 import com.rongji.egov.docconfig.web.DocConfigWebConfiguration;
 import com.rongji.egov.email.web.EmailWebConfiguration;
@@ -34,7 +35,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
   WflowWebConfiguration.class,
   DocWebConfiguration.class,
   SolrDataBusinessConfiguration.class,
-  CommonSequenceConfiguration.class
+  CommonSequenceConfiguration.class,
+  DeptLibraryWebConfiguration.class
 
 })
 public class ProposalWebConfiguration extends WebMvcConfigurerAdapter {

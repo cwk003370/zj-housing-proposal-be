@@ -345,6 +345,63 @@ public class Proposal extends FlowObject implements Serializable {
    * 内部传阅-IN_READERS
    */
   private Set<String> inReaders;
+
+  /**
+   * 子流程-交办编号-SUB_ASSIGNMENT_NUM
+   */
+  private String subAssignmentNum;
+  /**
+   * 子流程-交办时间-SUB_ASSIGNMENT_DATE
+   */
+  @JsonFormat(pattern = "yyyy-MM-dd")
+  @DateTimeFormat(pattern = "yyyy-MM-dd")
+  private Date subAssignmentDate;
+  /**
+   * 子流程-要求反馈时间时间-SUB_REQUEST_DATE
+   */
+  @JsonFormat(pattern = "yyyy-MM-dd")
+  @DateTimeFormat(pattern = "yyyy-MM-dd")
+  private Date subRequestDate;
+  /**
+   * 子流程-承办处-SUB_UNDERTAKE_DEPARTMENT
+   */
+  private String subUndertakeDepartment;
+  /**
+   * 子流程-办理方式-SUB_HANDLING_MODE
+   */
+  private String subHandlingMode;
+  /**
+   * 子流程-紧急程度-SUB_URGENT_LEVEL
+   */
+  private String subUrgentLevel;
+  /**
+   * 子流程-交办人ID-SUB_ASSIGNMENT_USER_NO
+   */
+  private String subAssignmentUserNo;
+  /**
+   * 子流程-交办人-SUB_ASSIGNMENT_USER
+   */
+  private String subAssignmentUser;
+  /**
+   * 子流程-联系方式-SUB_ASSIGNMENT_PHOTO
+   */
+  private String subAssignmentPhoto;
+  /**
+   * 子流程-重要程度-SUB_IMPORT_LEVEL
+   */
+  private String subImportLevel;
+  /**
+   * 子流程-交办要求-SUB_ASSIGNMENT_REQUIREMENTS
+   */
+  private String subAssignmentRequirements;
+  /**
+   * 子流程-领导意见-SUB_LEADER_OPINIONS
+   */
+  private String subLeaderOpinions;
+  /**
+   * 子流程判断-SUB_JUDGE
+   */
+  private String subJudge;
   /**
    * 归档需要
    * 文件种类
@@ -550,6 +607,110 @@ public class Proposal extends FlowObject implements Serializable {
     sb.append(", endDate=").append(endDate);
     sb.append('}');
     return sb.toString();
+  }
+
+  public String getSubJudge() {
+    return subJudge;
+  }
+
+  public void setSubJudge(String subJudge) {
+    this.subJudge = subJudge;
+  }
+
+  public String getSubAssignmentNum() {
+    return subAssignmentNum;
+  }
+
+  public void setSubAssignmentNum(String subAssignmentNum) {
+    this.subAssignmentNum = subAssignmentNum;
+  }
+
+  public Date getSubAssignmentDate() {
+    return subAssignmentDate;
+  }
+
+  public void setSubAssignmentDate(Date subAssignmentDate) {
+    this.subAssignmentDate = subAssignmentDate;
+  }
+
+  public Date getSubRequestDate() {
+    return subRequestDate;
+  }
+
+  public void setSubRequestDate(Date subRequestDate) {
+    this.subRequestDate = subRequestDate;
+  }
+
+  public String getSubUndertakeDepartment() {
+    return subUndertakeDepartment;
+  }
+
+  public void setSubUndertakeDepartment(String subUndertakeDepartment) {
+    this.subUndertakeDepartment = subUndertakeDepartment;
+  }
+
+  public String getSubHandlingMode() {
+    return subHandlingMode;
+  }
+
+  public void setSubHandlingMode(String subHandlingMode) {
+    this.subHandlingMode = subHandlingMode;
+  }
+
+  public String getSubUrgentLevel() {
+    return subUrgentLevel;
+  }
+
+  public void setSubUrgentLevel(String subUrgentLevel) {
+    this.subUrgentLevel = subUrgentLevel;
+  }
+
+  public String getSubAssignmentUserNo() {
+    return subAssignmentUserNo;
+  }
+
+  public void setSubAssignmentUserNo(String subAssignmentUserNo) {
+    this.subAssignmentUserNo = subAssignmentUserNo;
+  }
+
+  public String getSubAssignmentUser() {
+    return subAssignmentUser;
+  }
+
+  public void setSubAssignmentUser(String subAssignmentUser) {
+    this.subAssignmentUser = subAssignmentUser;
+  }
+
+  public String getSubAssignmentPhoto() {
+    return subAssignmentPhoto;
+  }
+
+  public void setSubAssignmentPhoto(String subAssignmentPhoto) {
+    this.subAssignmentPhoto = subAssignmentPhoto;
+  }
+
+  public String getSubImportLevel() {
+    return subImportLevel;
+  }
+
+  public void setSubImportLevel(String subImportLevel) {
+    this.subImportLevel = subImportLevel;
+  }
+
+  public String getSubAssignmentRequirements() {
+    return subAssignmentRequirements;
+  }
+
+  public void setSubAssignmentRequirements(String subAssignmentRequirements) {
+    this.subAssignmentRequirements = subAssignmentRequirements;
+  }
+
+  public String getSubLeaderOpinions() {
+    return subLeaderOpinions;
+  }
+
+  public void setSubLeaderOpinions(String subLeaderOpinions) {
+    this.subLeaderOpinions = subLeaderOpinions;
   }
 
   public Date getFront_RangeStartDate() {

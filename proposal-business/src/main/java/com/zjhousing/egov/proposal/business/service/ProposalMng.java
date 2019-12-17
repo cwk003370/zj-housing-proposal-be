@@ -2,6 +2,7 @@ package com.zjhousing.egov.proposal.business.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.rongji.egov.doc.business.dispatch.model.Dispatch;
+import com.rongji.egov.doc.business.external.query.DealForm;
 import com.rongji.egov.utils.api.paging.Page;
 import com.rongji.egov.utils.api.paging.PagingRequest;
 import com.zjhousing.egov.proposal.business.model.Proposal;
@@ -101,7 +102,7 @@ public interface ProposalMng {
    * @param proposal
    * @return
    */
-  int insertSubProposalMotion(Proposal proposal, String userNo,String userOrgNo,String docCate,String userName,String handleType);
+  int insertSubProposalMotion(Proposal proposal, String userNo,String userOrgNo,String docCate,String userName,String handleType, List<DealForm> dealForm);
 
   /**
    * 子流程-主流程重启
