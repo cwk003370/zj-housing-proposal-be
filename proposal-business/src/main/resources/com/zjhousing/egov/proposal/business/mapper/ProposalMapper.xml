@@ -47,7 +47,7 @@
     <result column="LEADING_USER_PHOTO" property="leadingPhoto"/>
     <result column="LEADING_USER_PLACE" property="leadingPlace"/>
     <result column="SECONDED_USERS_NO" property="secondedNo"/>
-    <result column="SECONDED_USERS" property="secondedUsers" javaType="java.util.Set" jdbcType="VARCHAR"/>
+    <result column="SECONDED_USERS" property="secondedUsers"/>
     <result column="CAUSE_ACTION" property="causeAction"/>
     <result column="MAIN_ORGANIZER" property="mainOrganizer" javaType="java.util.Set" jdbcType="VARCHAR"/>
     <result column="ASSIST_ORGANIZER" property="assistOrganizer" javaType="java.util.Set" jdbcType="VARCHAR"/>
@@ -55,7 +55,7 @@
     <result column="ASSIGNMENT_NUM" property="assignmentNum"/>
     <result column="ASSIGNMENT_DATE" property="assignmentDate"/>
     <result column="REQUEST_DATE" property="requestDate"/>
-    <result column="UNDERTAKE_DEPARTMENT" property="undertakeDepartment"/>
+    <result column="UNDERTAKE_DEPARTMENT" property="undertakeDepartment" javaType="java.util.List" jdbcType="VARCHAR"/>
     <result column="HANDLING_MODE" property="handlingMode"/>
     <result column="URGENT_LEVEL" property="urgentLevel"/>
     <result column="ASSIGNMENT_USER_NO" property="assignmentUserNo"/>
@@ -80,14 +80,13 @@
     <result column="READERS" property="readers" javaType="java.util.Set" jdbcType="VARCHAR"/>
     <result column="SEC_LEVEL" property="secLevel"/>
     <result column="TRANSFER_LIBRARY_TYPE" property="transferLibraryType"/>
-    <result column="ARCHIVE_TYPE" property="archiveType"
-            javaType="com.zjhousing.egov.proposal.business.enums.ArchiveTypeEnum"/>
+    <result column="ARCHIVE_TYPE" property="archiveType" javaType="com.zjhousing.egov.proposal.business.enums.ArchiveTypeEnum"/>
     <result column="ARCHIVE_FLAG" property="archiveFlag"/>
     <result column="PAGE_NUM" property="pageNum"/>
     <result column="PRINT_NUM" property="printNum"/>
-    <result property="taskFlag" column="TASK_FLAG" javaType="java.lang.String" jdbcType="VARCHAR"/>
-    <result property="turnNum" column="TURN_NUM" javaType="java.lang.String" jdbcType="VARCHAR"/>
-    <result property="inReaders" column="IN_READERS" javaType="java.util.Set" jdbcType="VARCHAR"/>
+    <result column="TASK_FLAG" property="taskFlag" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result column="TURN_NUM" property="turnNum" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result column="IN_READERS" property="inReaders" javaType="java.util.Set" jdbcType="VARCHAR"/>
 
     <result column="SUB_ASSIGNMENT_NUM" property="subAssignmentNum"/>
     <result column="SUB_ASSIGNMENT_DATE" property="subAssignmentDate"/>
@@ -102,7 +101,10 @@
     <result column="SUB_ASSIGNMENT_REQUIREMENTS" property="subAssignmentRequirements"/>
     <result column="SUB_LEADER_OPINIONS" property="subLeaderOpinions"/>
     <result column="SUB_JUDGE" property="subJudge"/>
-
+    <result column="ASSIST_FLAG" property="assistFlag"/>
+    <result column="CONVERGE_FLAG" property="convergeFlag"/>
+    <result column="ASSIST_AID" property="assistAid"/>
+    <result column="DEAL_FROM_NO" property="dealFormNo"/>
   </resultMap>
   <!-- 可重复利用的sql -->
   <sql id="allColumns">
@@ -196,7 +198,11 @@
     SUB_IMPORT_LEVEL,
     SUB_ASSIGNMENT_REQUIREMENTS,
     SUB_LEADER_OPINIONS,
-    SUB_JUDGE
+    SUB_JUDGE,
+    ASSIST_FLAG,
+    CONVERGE_FLAG,
+    ASSIST_AID,
+    DEAL_FROM_NO
 	</sql>
   <!-- 新增提案 -->
   <insert id="insertProposalMotion" parameterType="com.zjhousing.egov.proposal.business.model.Proposal">
@@ -475,6 +481,18 @@
       <if test="subJudge !=null">
         SUB_JUDGE,
       </if>
+      <if test="assistFlag !=null">
+        ASSIST_FLAG,
+      </if>
+      <if test="convergeFlag !=null">
+        CONVERGE_FLAG,
+      </if>
+      <if test="assistAid !=null">
+        ASSIST_AID,
+      </if>
+      <if test="dealFormNo !=null">
+        DEAL_FROM_NO,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -749,6 +767,18 @@
       </if>
       <if test="subJudge !=null">
         #{subJudge},
+      </if>
+      <if test="assistFlag !=null">
+        #{assistFlag},
+      </if>
+      <if test="convergeFlag !=null">
+        #{convergeFlag},
+      </if>
+      <if test="assistAid !=null">
+        #{assistAid},
+      </if>
+      <if test="dealFormNo !=null">
+        #{dealFormNo},
       </if>
     </trim>
   </insert>
@@ -1035,6 +1065,18 @@
       <if test="subJudge !=null">
         SUB_JUDGE = #{subJudge},
       </if>
+      <if test="assistFlag !=null">
+        ASSIST_FLAG = #{assistFlag},
+      </if>
+      <if test="convergeFlag !=null">
+        CONVERGE_FLAG = #{convergeFlag},
+      </if>
+      <if test="assistAid !=null">
+        ASSIST_AID = #{assistAid},
+      </if>
+      <if test="dealFormNo !=null">
+        DEAL_FROM_NO = #{dealFormNo},
+      </if>
     </set>
     <where>
       <if test="id!=null and id!=''">
@@ -1271,7 +1313,11 @@
     SUB_IMPORT_LEVEL,
     SUB_ASSIGNMENT_REQUIREMENTS,
     SUB_LEADER_OPINIONS,
-    SUB_JUDGE
+    SUB_JUDGE,
+    ASSIST_FLAG,
+    CONVERGE_FLAG,
+    ASSIST_AID,
+    DEAL_FROM_NO
     FROM  EGOV_PROPOSAL_MOTION_ASSIGNED mta JOIN EGOV_PROPOSAL_MOTION assist
     ON mta.ASSIST_DOC_ID = assist.ID
     WHERE mta.MAIN_DOC_ID = #{id}

@@ -3,7 +3,6 @@ package com.zjhousing.egov.proposal.business.query;
 import com.rongji.egov.doc.business.external.query.DealForm;
 
 import java.util.List;
-import java.util.Set;
 
 /**
  * 子流程主文档创建  query
@@ -14,7 +13,7 @@ import java.util.Set;
 public class ProposalAssistQuery {
 
   /**
-   * 主流程-文档id
+   * 主流程-文档id(批量使用)
    */
   private String docId;
   /**
@@ -38,7 +37,7 @@ public class ProposalAssistQuery {
    */
   private String handleType;
   /**
-   * 阅办单
+   * 阅办单（批量使用）
    */
   private List<DealForm> dealForm;
 

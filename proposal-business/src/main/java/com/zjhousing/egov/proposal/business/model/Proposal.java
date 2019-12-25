@@ -176,9 +176,9 @@ public class Proposal extends FlowObject implements Serializable {
    */
   private String secondedNo;
   /**
-   * 附议代表-SECONDED_USERS
+   * 附议代表及人数-SECONDED_USERS
    */
-  private Set<String> secondedUsers;
+  private String secondedUsers;
   /**
    * 附议人数***
    */
@@ -222,7 +222,7 @@ public class Proposal extends FlowObject implements Serializable {
   /**
    * 承办处-UNDERTAKE_DEPARTMENT
    */
-  private String undertakeDepartment;
+  private List<String> undertakeDepartment;
   /**
    * 办理方式-HANDLING_MODE
    */
@@ -345,7 +345,6 @@ public class Proposal extends FlowObject implements Serializable {
    * 内部传阅-IN_READERS
    */
   private Set<String> inReaders;
-
   /**
    * 子流程-交办编号-SUB_ASSIGNMENT_NUM
    */
@@ -403,6 +402,23 @@ public class Proposal extends FlowObject implements Serializable {
    */
   private String subJudge;
   /**
+   * 提案交办权限-ASSIST_FLAG
+   */
+  private String assistFlag;
+  /**
+   * 提案汇合权限-CONVERGE_FLAG
+   */
+  private String convergeFlag;
+  /**
+   * 交办环节ID-ASSIST_AID
+   */
+  private String assistAid;
+  /**
+   * 阅办单附件ID-DEAL_FROM_NO
+   */
+  private String dealFormNo;
+
+  /**
    * 归档需要
    * 文件种类
    */
@@ -435,90 +451,6 @@ public class Proposal extends FlowObject implements Serializable {
   public Proposal(String id, String relReceivalMark) {
     this.id = id;
     this.relReceivalMark = relReceivalMark;
-  }
-
-  public Proposal(String id, String subject, String docMark, Integer docMarkNum, Integer docMarkYear, String docSequence, Integer docSequenceYear, String docWord, String docCate, Date draftDate, String draftUserNo, String draftUserName, String draftDept, String draftDeptNo, String draftUnit, String draftUnitNo, String signUserNo, String signUserName, String signDept, String signDeptNo, String signUnit, String signUnitNo, Date signDate, CleanFlagEnum signDateCleanFlag, String signFlag, String parentClass, String childrenClass, String reflectionCategory, String meetingSession, String proposalNum, String relReceivalMark, String leadingNo, String leadingUser, String leadingPhoto, String leadingPlace, String secondedNo, Set<String> secondedUsers, String secondedNum, String causeAction, Set<String> mainOrganizer, Set<String> assistOrganizer, String mainContent, String attachDesc, String assignmentNum, Date assignmentDate, Date requestDate, String undertakeDepartment, String handlingMode, String urgentLevel, String assignmentUserNo, String assignmentUser, String assignmentPhoto, String importLevel, String assignmentRequirements, String officeOpinions, String bureauOpinions, String handleResult, String remark, Set<String> mainSend, Set<String> copySend, String handleUserNo, String handleUser, String handlePhoto, String resultAttitude, String serviceAttitude, String dealFormId, String systemNo, Set<String> readers, String secLevel, TransferLibraryTypeEnum transferLibraryType, ArchiveTypeEnum archiveType, String archiveFlag, Integer pageNum, Integer printNum, String taskFlag, String turnNum, Set<String> inReaders, String docType, String publicCate, Date beginDate, Date endDate) {
-    this.id = id;
-    this.subject = subject;
-    this.docMark = docMark;
-    this.docMarkNum = docMarkNum;
-    this.docMarkYear = docMarkYear;
-    this.docSequence = docSequence;
-    this.docSequenceYear = docSequenceYear;
-    this.docWord = docWord;
-    this.docCate = docCate;
-    this.draftDate = draftDate;
-    this.draftUserNo = draftUserNo;
-    this.draftUserName = draftUserName;
-    this.draftDept = draftDept;
-    this.draftDeptNo = draftDeptNo;
-    this.draftUnit = draftUnit;
-    this.draftUnitNo = draftUnitNo;
-    this.signUserNo = signUserNo;
-    this.signUserName = signUserName;
-    this.signDept = signDept;
-    this.signDeptNo = signDeptNo;
-    this.signUnit = signUnit;
-    this.signUnitNo = signUnitNo;
-    this.signDate = signDate;
-    this.signDateCleanFlag = signDateCleanFlag;
-    this.signFlag = signFlag;
-    this.parentClass = parentClass;
-    this.childrenClass = childrenClass;
-    this.reflectionCategory = reflectionCategory;
-    this.meetingSession = meetingSession;
-    this.proposalNum = proposalNum;
-    this.relReceivalMark = relReceivalMark;
-    this.leadingNo = leadingNo;
-    this.leadingUser = leadingUser;
-    this.leadingPhoto = leadingPhoto;
-    this.leadingPlace = leadingPlace;
-    this.secondedNo = secondedNo;
-    this.secondedUsers = secondedUsers;
-    this.secondedNum = secondedNum;
-    this.causeAction = causeAction;
-    this.mainOrganizer = mainOrganizer;
-    this.assistOrganizer = assistOrganizer;
-    this.mainContent = mainContent;
-    this.attachDesc = attachDesc;
-    this.assignmentNum = assignmentNum;
-    this.assignmentDate = assignmentDate;
-    this.requestDate = requestDate;
-    this.undertakeDepartment = undertakeDepartment;
-    this.handlingMode = handlingMode;
-    this.urgentLevel = urgentLevel;
-    this.assignmentUserNo = assignmentUserNo;
-    this.assignmentUser = assignmentUser;
-    this.assignmentPhoto = assignmentPhoto;
-    this.importLevel = importLevel;
-    this.assignmentRequirements = assignmentRequirements;
-    this.officeOpinions = officeOpinions;
-    this.bureauOpinions = bureauOpinions;
-    this.handleResult = handleResult;
-    this.remark = remark;
-    this.mainSend = mainSend;
-    this.copySend = copySend;
-    this.handleUserNo = handleUserNo;
-    this.handleUser = handleUser;
-    this.handlePhoto = handlePhoto;
-    this.resultAttitude = resultAttitude;
-    this.serviceAttitude = serviceAttitude;
-    this.dealFormId = dealFormId;
-    this.systemNo = systemNo;
-    this.readers = readers;
-    this.secLevel = secLevel;
-    this.transferLibraryType = transferLibraryType;
-    this.archiveType = archiveType;
-    this.archiveFlag = archiveFlag;
-    this.pageNum = pageNum;
-    this.printNum = printNum;
-    this.taskFlag = taskFlag;
-    this.turnNum = turnNum;
-    this.inReaders = inReaders;
-    this.docType = docType;
-    this.publicCate = publicCate;
-    this.beginDate = beginDate;
-    this.endDate = endDate;
   }
 
   @Override
@@ -570,7 +502,7 @@ public class Proposal extends FlowObject implements Serializable {
     sb.append(", assignmentNum='").append(assignmentNum).append('\'');
     sb.append(", assignmentDate=").append(assignmentDate);
     sb.append(", requestDate=").append(requestDate);
-    sb.append(", undertakeDepartment='").append(undertakeDepartment).append('\'');
+    sb.append(", undertakeDepartment=").append(undertakeDepartment);
     sb.append(", handlingMode='").append(handlingMode).append('\'');
     sb.append(", urgentLevel='").append(urgentLevel).append('\'');
     sb.append(", assignmentUserNo='").append(assignmentUserNo).append('\'');
@@ -601,12 +533,61 @@ public class Proposal extends FlowObject implements Serializable {
     sb.append(", taskFlag='").append(taskFlag).append('\'');
     sb.append(", turnNum='").append(turnNum).append('\'');
     sb.append(", inReaders=").append(inReaders);
+    sb.append(", subAssignmentNum='").append(subAssignmentNum).append('\'');
+    sb.append(", subAssignmentDate=").append(subAssignmentDate);
+    sb.append(", subRequestDate=").append(subRequestDate);
+    sb.append(", subUndertakeDepartment='").append(subUndertakeDepartment).append('\'');
+    sb.append(", subHandlingMode='").append(subHandlingMode).append('\'');
+    sb.append(", subUrgentLevel='").append(subUrgentLevel).append('\'');
+    sb.append(", subAssignmentUserNo='").append(subAssignmentUserNo).append('\'');
+    sb.append(", subAssignmentUser='").append(subAssignmentUser).append('\'');
+    sb.append(", subAssignmentPhoto='").append(subAssignmentPhoto).append('\'');
+    sb.append(", subImportLevel='").append(subImportLevel).append('\'');
+    sb.append(", subAssignmentRequirements='").append(subAssignmentRequirements).append('\'');
+    sb.append(", subLeaderOpinions='").append(subLeaderOpinions).append('\'');
+    sb.append(", subJudge='").append(subJudge).append('\'');
+    sb.append(", assistFlag='").append(assistFlag).append('\'');
+    sb.append(", convergeFlag='").append(convergeFlag).append('\'');
     sb.append(", docType='").append(docType).append('\'');
     sb.append(", publicCate='").append(publicCate).append('\'');
     sb.append(", beginDate=").append(beginDate);
     sb.append(", endDate=").append(endDate);
+    sb.append(", front_RangeStartDate=").append(front_RangeStartDate);
+    sb.append(", front_RangeEndDate=").append(front_RangeEndDate);
     sb.append('}');
     return sb.toString();
+  }
+
+  public String getAssistAid() {
+    return assistAid;
+  }
+
+  public void setAssistAid(String assistAid) {
+    this.assistAid = assistAid;
+  }
+
+  public String getDealFormNo() {
+    return dealFormNo;
+  }
+
+  public void setDealFormNo(String dealFormNo) {
+    this.dealFormNo = dealFormNo;
+  }
+
+  public String getAssistFlag() {
+    return assistFlag;
+  }
+
+  public void setAssistFlag(String assistFlag) {
+    this.assistFlag = assistFlag;
+  }
+
+  public String getConvergeFlag() {
+    return convergeFlag;
+  }
+
+  public void setConvergeFlag(String convergeFlag) {
+    this.convergeFlag = convergeFlag;
   }
 
   public String getSubJudge() {
@@ -961,11 +942,11 @@ public class Proposal extends FlowObject implements Serializable {
     this.leadingPlace = leadingPlace;
   }
 
-  public Set<String> getSecondedUsers() {
+  public String getSecondedUsers() {
     return secondedUsers;
   }
 
-  public void setSecondedUsers(Set<String> secondedUsers) {
+  public void setSecondedUsers(String secondedUsers) {
     this.secondedUsers = secondedUsers;
   }
 
@@ -1025,11 +1006,11 @@ public class Proposal extends FlowObject implements Serializable {
     this.requestDate = requestDate;
   }
 
-  public String getUndertakeDepartment() {
+  public List<String> getUndertakeDepartment() {
     return undertakeDepartment;
   }
 
-  public void setUndertakeDepartment(String undertakeDepartment) {
+  public void setUndertakeDepartment(List<String> undertakeDepartment) {
     this.undertakeDepartment = undertakeDepartment;
   }
 

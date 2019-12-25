@@ -6,6 +6,8 @@ import com.rongji.egov.docconfig.business.annotation.DocReadLogAn;
 import com.rongji.egov.user.business.dao.UserDao;
 import com.rongji.egov.user.business.model.RmsRole;
 import com.rongji.egov.user.business.model.SecurityUser;
+import com.rongji.egov.user.business.model.vo.DraftUser;
+import com.rongji.egov.user.business.util.UserDraftUtils;
 import com.rongji.egov.user.web.annotation.CurrentUser;
 import com.rongji.egov.utils.api.paging.Page;
 import com.rongji.egov.utils.api.paging.PagingRequest;
@@ -17,17 +19,16 @@ import com.rongji.egov.wflow.business.service.engine.manage.ProcessManageMng;
 import com.rongji.egov.wflow.business.service.engine.transfer.TodoTransferMng;
 import com.zjhousing.egov.proposal.business.model.Proposal;
 import com.zjhousing.egov.proposal.business.query.ProposalAssistQuery;
-import com.zjhousing.egov.proposal.business.service.ProSequenceMng;
 import com.zjhousing.egov.proposal.business.service.ProposalFlowOperator;
 import com.zjhousing.egov.proposal.business.service.ProposalMng;
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.common.SolrDocument;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -47,8 +48,6 @@ public class ProposalController {
   private UserDao userDao;
   @Resource
   private ProcessManageMng processManageMng;
-  @Autowired
-  private ProSequenceMng proSequenceMng;
   @Resource
   private TodoTransferMng todoTransferMng;
   @Resource
@@ -126,12 +125,13 @@ public class ProposalController {
    * @return
    */
   @PostMapping("/updateProposalMotion")
-  public Proposal updateRegProposal(@RequestBody @Validated({UpdateValidate.class}) Proposal proposal, BindingResult bindingResult) {
+  public Proposal updateRegProposal(@CurrentUser SecurityUser securityUser,@RequestBody @Validated({UpdateValidate.class}) Proposal proposal, BindingResult bindingResult) {
     //验证表单数据
     if (bindingResult.hasErrors()) {
       throw new BusinessException(bindingResult.getFieldError().getDefaultMessage());
     }
     Proposal old = this.proposalMng.getProposalMotionById(proposal.getId());
+
     if (!old.getFlowStatus().equals(proposal.getFlowStatus())) {
       throw new BusinessException("流程状态已被修改！");
     }
@@ -227,6 +227,18 @@ public class ProposalController {
                                                  String word) {
     proposal.setSystemNo(user.getSystemNo());
     return this.proposalMng.getProposalMotionBySolr(paging, proposal, draftYear, draftMonth, draftDay, word);
+  }
+
+  /**
+   * 子流程-阅办单另存为附件
+   *
+   * @param
+   * @return
+   * @throws Exception
+   */
+  @PostMapping("/subprocess/insertSubDealForm")
+  public boolean insertSubDealForm(@RequestBody ProposalAssistQuery proposalAssistQuery) {
+        return this.proposalMng.insertSubDealForm(proposalAssistQuery);
   }
   /**
    * 子流程-提案登记

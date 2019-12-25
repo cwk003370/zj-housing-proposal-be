@@ -6,6 +6,7 @@ import com.rongji.egov.dept.library.web.DeptLibraryWebConfiguration;
 import com.rongji.egov.doc.web.DocWebConfiguration;
 import com.rongji.egov.docconfig.web.DocConfigWebConfiguration;
 import com.rongji.egov.email.web.EmailWebConfiguration;
+import com.rongji.egov.flowrelation.web.FlowRelationWebConfiguration;
 import com.rongji.egov.flowutil.web.FlowUtilWebConfiguration;
 import com.rongji.egov.solrData.business.SolrDataBusinessConfiguration;
 import com.rongji.egov.user.web.UserWebConfiguration;
@@ -17,6 +18,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 
@@ -24,6 +26,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
  * @author chenwenkang
  * @date 2019-11-22
  **/
+@EnableTransactionManagement
 @SpringBootApplication
 @Configuration
 @Import({
@@ -36,7 +39,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
   DocWebConfiguration.class,
   SolrDataBusinessConfiguration.class,
   CommonSequenceConfiguration.class,
-  DeptLibraryWebConfiguration.class
+  DeptLibraryWebConfiguration.class,
+  FlowRelationWebConfiguration.class
 
 })
 public class ProposalWebConfiguration extends WebMvcConfigurerAdapter {

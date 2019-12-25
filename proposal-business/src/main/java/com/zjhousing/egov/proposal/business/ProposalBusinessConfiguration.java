@@ -4,6 +4,7 @@ import com.rongji.egov.commonsequence.CommonSequenceConfiguration;
 import com.rongji.egov.doc.business.constant.ExternalToOthersConstant;
 import com.rongji.egov.docconfig.business.DocConfigBusinessConfiguration;
 import com.rongji.egov.docnum.DocNumConfiguration;
+import com.rongji.egov.flowrelation.business.FlowRelationBusinessConfiguration;
 import com.rongji.egov.flowutil.business.FlowUtilBusinessConfiguration;
 import com.rongji.egov.maximunno.EgovMaximunNoConfiguration;
 import com.rongji.egov.solrData.business.SolrDataBusinessConfiguration;
@@ -52,7 +53,8 @@ import org.springframework.web.client.RestTemplate;
   SolrDataBusinessConfiguration.class,
   DocNumConfiguration.class,
   EgovMaximunNoConfiguration.class,
-  CommonSequenceConfiguration.class
+  CommonSequenceConfiguration.class,
+  FlowRelationBusinessConfiguration.class
   })
 public class ProposalBusinessConfiguration {
   public static void main(String[] args) {

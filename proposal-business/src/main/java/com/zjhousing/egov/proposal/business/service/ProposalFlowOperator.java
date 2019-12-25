@@ -3,17 +3,24 @@ package com.zjhousing.egov.proposal.business.service;
 import com.alibaba.fastjson.JSONObject;
 import com.rongji.egov.doc.business.constant.ExternalToOthersConstant;
 import com.rongji.egov.docconfig.business.annotation.DocReadLogAn;
+import com.rongji.egov.flowrelation.business.constant.FlowTypeConstant;
+import com.rongji.egov.flowrelation.business.model.FlowRelation;
+import com.rongji.egov.flowrelation.business.model.query.FlowRelationQuery;
+import com.rongji.egov.flowrelation.business.service.FlowRelationMng;
 import com.rongji.egov.user.business.model.SecurityUser;
 import com.rongji.egov.user.business.util.SecurityUtils;
+import com.rongji.egov.utils.exception.BusinessException;
 import com.rongji.egov.wflow.business.service.ModuleOperator;
 import com.rongji.egov.wflow.business.service.engine.manage.ProcessManageMng;
 import com.zjhousing.egov.proposal.business.enums.TransferLibraryTypeEnum;
 import com.zjhousing.egov.proposal.business.model.Proposal;
 import com.zjhousing.egov.proposal.business.query.ProToOthersQuery;
+import com.zjhousing.egov.proposal.business.query.ProposalAssistQuery;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
+import java.sql.Timestamp;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
@@ -30,6 +37,8 @@ public class ProposalFlowOperator implements ModuleOperator {
   @Resource
   private ProcessManageMng processManageMng;
 
+  @Resource
+  private FlowRelationMng flowRelationMng;
   /**
    * 初始化时更新主表单
    * 1.变更flowStauts
@@ -111,7 +120,13 @@ public class ProposalFlowOperator implements ModuleOperator {
     if (TransferLibraryTypeEnum.FILE_DONE_TRANSFER.equals(proposal.getTransferLibraryType())) {
       proposal.setArchiveFlag("1");
     }
+    //更新流程关系
+    if("1".equals(proposal.getSubJudge())){
+      updateFlowRelation(docId,"PROPOSALMOTION", FlowTypeConstant.TO_DO);
+    }
     this.proposalMng.updateProposalMotion(proposal);
+
+
   }
 
   /**
@@ -190,6 +205,30 @@ public class ProposalFlowOperator implements ModuleOperator {
         proposal.setArchiveFlag("1");
       }
     }
+    //更新流程关系
+    if("1".equals(proposal.getSubJudge())){
+      updateFlowRelation(docId,"PROPOSALMOTION", FlowTypeConstant.TO_DO);
+    }
     this.proposalMng.updateProposalMotion(proposal);
+  }
+  /**
+   * 更新流程关系
+   *
+   * @param docId
+   * @param modulId
+   * @param
+   */
+  public int updateFlowRelation(String docId,String modulId,String flowType){
+    // 更改流程关系子文档办理时间
+    FlowRelation flowRelation = new FlowRelation();
+    flowRelation.setSonDocId(docId);
+    flowRelation.setSonModuleNo(modulId);
+    flowRelation.setFlowType(flowType);
+    flowRelation.setSonEndTime(new Timestamp(System.currentTimeMillis()));
+    try {
+      return this.flowRelationMng.updateFlowRelationByDocId(flowRelation);
+    } catch (Exception e) {
+      throw new BusinessException(e.getMessage());
+    }
   }
 }

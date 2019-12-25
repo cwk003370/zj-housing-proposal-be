@@ -20,6 +20,8 @@ import com.zjhousing.egov.proposal.business.service.ProposalFlowOperator;
 import com.zjhousing.egov.proposal.business.service.ProposalMng;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -48,18 +50,18 @@ public class ProposalMotionFlowController implements FlowTransferController, Flo
   private ProSequenceMng proSequenceMng;
 
 
+
   @Override
   public String initProcess(String label, String version, String docId) {
     Proposal proposal = this.proposalMng.getProposalMotionById(docId);
     if (StringUtils.isNotBlank(proposal.getFlowPid())) {
       throw new BusinessException("该文件已启用流程");
     } else {
-
       //初始化编号
       SecurityUser user = SecurityUtils.getPrincipal();
       String systemNo = user.getSystemNo();
       HashMap<String, Object> map = this.proSequenceMng.getSequenceNum(proposal.getDocCate(), systemNo);
-      proposal.setDocMark(map.get("docSequence").toString().replaceFirst("^0*", ""));
+      proposal.setRelReceivalMark(map.get("docSequence").toString().replaceFirst("^0*", ""));
       proposalMng.updateProposalMotion(proposal);
       HashMap<String, Object> proposalMap = proposal.toMap();
       proposalMap.put(ModuleFiledConst.SEQUENCE_MAP, map);
@@ -123,9 +125,29 @@ public class ProposalMotionFlowController implements FlowTransferController, Flo
   }
 
   @Override
-  public Boolean submitProcessUsers(@RequestBody SubmitParam submitParam) throws Exception {
-    Proposal proposal = this.proposalMng.getProposalMotionById(submitParam.getDocId());
-    return this.todoTransferMng.submitProcessUsers(submitParam.getAid(), proposal.toMap(), this.proposalFlowOperator, submitParam.getNextStates(), submitParam.getMsgType());
+  @Transactional
+  public Boolean submitProcessUsers(@RequestBody SubmitParam submitParam)  {
+    try {
+
+      Proposal proposal = this.proposalMng.getProposalMotionById(submitParam.getDocId());
+      JSONObject permission = this.todoTransferMng.getProcessPermission(submitParam.getAid(), proposal.toMap());
+      if(permission!=null && !"".equals(permission)){
+        String buttons =permission.getJSONObject("business").getString("buttons");
+        //判断当前环节是否存在分发权限
+        if(buttons != null && buttons.indexOf("proposalAssist") > -1){
+          this.proposalMng.insertSubProposalMotions(submitParam.getDocId(),submitParam.getAid());
+        }
+        //判断当前环节是否存在汇合权限
+        if(buttons != null && buttons.indexOf("proposalConverge") > -1){
+
+        }
+      }
+      return this.todoTransferMng.submitProcessUsers(submitParam.getAid(), proposal.toMap(), this.proposalFlowOperator, submitParam.getNextStates(), submitParam.getMsgType());
+    }catch (Exception e){
+      System.out.println(e.toString());
+      TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
+      throw new BusinessException(e.getMessage());
+    }
   }
 
   @Override

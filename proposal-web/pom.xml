@@ -17,6 +17,11 @@
 
   <dependencies>
     <dependency>
+      <groupId>com.rongji.egov</groupId>
+      <artifactId>flowrelation-web</artifactId>
+      <version>1.0.1-SNAPSHOT</version>
+    </dependency>
+    <dependency>
       <groupId>com.zjhousing.egov</groupId>
       <artifactId>proposal-business</artifactId>
       <version>${project.version}</version>
@@ -56,6 +61,7 @@
       <artifactId>dept-library-web</artifactId>
       <version>1.0.1-SNAPSHOT</version>
     </dependency>
+
   </dependencies>
 
   <build>

@@ -4,12 +4,15 @@ import com.rongji.egov.attachutil.controller.EgovAttController;
 import com.rongji.egov.attachutil.model.EgovAtt;
 import com.rongji.egov.user.business.model.SecurityUser;
 import com.rongji.egov.user.web.annotation.CurrentUser;
+import com.rongji.egov.utils.exception.BusinessException;
+import com.zjhousing.egov.proposal.business.service.ProposalMng;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -23,7 +26,8 @@ import java.util.List;
 @RequestMapping("/proposalmotion")
 @RestController
 public class ProposalMotionEgovAttController extends EgovAttController {
-
+  @Resource
+  private ProposalMng proposalMng;
   @Override
   public List<EgovAtt> getEgovAttByDocId(String docId, String type, boolean isCotainFile) {
     return super.getEgovAttByDocId(docId, type, isCotainFile);
@@ -46,7 +50,13 @@ public class ProposalMotionEgovAttController extends EgovAttController {
 
   @Override
   public EgovAtt uploadEgovAttFile(@CurrentUser SecurityUser user, @RequestParam("multipartFile") MultipartFile multipartFile, HttpServletRequest request) throws Exception {
-    return super.uploadEgovAttFile(user, multipartFile, request);
+    EgovAtt egovAtt = super.uploadEgovAttFile(user, multipartFile, request);
+    try{
+      proposalMng.addFlowRelationToFeedback(egovAtt);
+    }catch (Exception e ){
+      throw new BusinessException(e.getMessage());
+    }
+    return egovAtt;
   }
 
   @Override

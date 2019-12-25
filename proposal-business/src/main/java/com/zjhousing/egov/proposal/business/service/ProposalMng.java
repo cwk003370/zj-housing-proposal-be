@@ -1,11 +1,12 @@
 package com.zjhousing.egov.proposal.business.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.rongji.egov.doc.business.dispatch.model.Dispatch;
+import com.rongji.egov.attachutil.model.EgovAtt;
 import com.rongji.egov.doc.business.external.query.DealForm;
 import com.rongji.egov.utils.api.paging.Page;
 import com.rongji.egov.utils.api.paging.PagingRequest;
 import com.zjhousing.egov.proposal.business.model.Proposal;
+import com.zjhousing.egov.proposal.business.query.ProposalAssistQuery;
 import org.apache.ibatis.annotations.Param;
 import org.apache.solr.common.SolrDocument;
 
@@ -97,15 +98,38 @@ public interface ProposalMng {
   Page<SolrDocument> getProposalMotionBySolr(PagingRequest paging, Proposal proposal,
                                        Integer draftYear, Integer draftMonth, Integer draftDay, String word);
   /**
-   * 子流程-新增子流程文档
+   * 子流程-批量新增子流程文档
+   *
+   * @param mainDocId 主流程文档ID
+   * @param aid 主流程环节ID
+   * @return
+   */
+  boolean insertSubProposalMotions(String mainDocId,String aid) ;
+
+  /**
+   * 子流程-将阅办单保存为附件（隐藏）
+   *
+   * @param proposalAssistQuery
+   * @return
+   */
+  boolean insertSubDealForm(ProposalAssistQuery proposalAssistQuery);
+  /**
+   * 子流程-新增子流程文档(废弃)
    *
    * @param proposal
    * @return
    */
   int insertSubProposalMotion(Proposal proposal, String userNo,String userOrgNo,String docCate,String userName,String handleType, List<DealForm> dealForm);
+  /**
+   * 反馈文件记录新增
+   * @param egovAtt
+   * @return
+   * @throws Exception
+   */
+  int addFlowRelationToFeedback(EgovAtt egovAtt) throws Exception;
 
   /**
-   * 子流程-主流程重启
+   * 子流程-文件反馈
    *
    * @param assistDocId 子文档ID
    * @return
