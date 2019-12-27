@@ -252,6 +252,10 @@ public class Proposal extends FlowObject implements Serializable {
    */
   private String assignmentRequirements;
   /**
+   * 局交办信息备注-ASSIST_REMARK
+   */
+  private String  assistRemark;
+  /**
    * 办公室领导意见-OFFICE_OPINIONS
    */
   private String officeOpinions;
@@ -492,7 +496,7 @@ public class Proposal extends FlowObject implements Serializable {
     sb.append(", leadingPhoto='").append(leadingPhoto).append('\'');
     sb.append(", leadingPlace='").append(leadingPlace).append('\'');
     sb.append(", secondedNo='").append(secondedNo).append('\'');
-    sb.append(", secondedUsers=").append(secondedUsers);
+    sb.append(", secondedUsers='").append(secondedUsers).append('\'');
     sb.append(", secondedNum='").append(secondedNum).append('\'');
     sb.append(", causeAction='").append(causeAction).append('\'');
     sb.append(", mainOrganizer=").append(mainOrganizer);
@@ -510,6 +514,7 @@ public class Proposal extends FlowObject implements Serializable {
     sb.append(", assignmentPhoto='").append(assignmentPhoto).append('\'');
     sb.append(", importLevel='").append(importLevel).append('\'');
     sb.append(", assignmentRequirements='").append(assignmentRequirements).append('\'');
+    sb.append(", assistRemark='").append(assistRemark).append('\'');
     sb.append(", officeOpinions='").append(officeOpinions).append('\'');
     sb.append(", bureauOpinions='").append(bureauOpinions).append('\'');
     sb.append(", handleResult='").append(handleResult).append('\'');
@@ -548,6 +553,8 @@ public class Proposal extends FlowObject implements Serializable {
     sb.append(", subJudge='").append(subJudge).append('\'');
     sb.append(", assistFlag='").append(assistFlag).append('\'');
     sb.append(", convergeFlag='").append(convergeFlag).append('\'');
+    sb.append(", assistAid='").append(assistAid).append('\'');
+    sb.append(", dealFormNo='").append(dealFormNo).append('\'');
     sb.append(", docType='").append(docType).append('\'');
     sb.append(", publicCate='").append(publicCate).append('\'');
     sb.append(", beginDate=").append(beginDate);
@@ -556,6 +563,14 @@ public class Proposal extends FlowObject implements Serializable {
     sb.append(", front_RangeEndDate=").append(front_RangeEndDate);
     sb.append('}');
     return sb.toString();
+  }
+
+  public String getAssistRemark() {
+    return assistRemark;
+  }
+
+  public void setAssistRemark(String assistRemark) {
+    this.assistRemark = assistRemark;
   }
 
   public String getAssistAid() {
