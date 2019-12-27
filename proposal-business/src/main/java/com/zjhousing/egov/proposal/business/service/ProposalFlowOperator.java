@@ -1,6 +1,8 @@
 package com.zjhousing.egov.proposal.business.service;
 
 import com.alibaba.fastjson.JSONObject;
+import com.rongji.egov.attachutil.model.EgovAtt;
+import com.rongji.egov.attachutil.service.EgovAttMng;
 import com.rongji.egov.doc.business.constant.ExternalToOthersConstant;
 import com.rongji.egov.docconfig.business.annotation.DocReadLogAn;
 import com.rongji.egov.flowrelation.business.constant.FlowTypeConstant;
@@ -21,9 +23,7 @@ import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 @Service
 public class ProposalFlowOperator implements ModuleOperator {
@@ -39,6 +39,9 @@ public class ProposalFlowOperator implements ModuleOperator {
 
   @Resource
   private FlowRelationMng flowRelationMng;
+
+  @Resource
+  private EgovAttMng egovAttMng;
   /**
    * 初始化时更新主表单
    * 1.变更flowStauts
@@ -120,10 +123,6 @@ public class ProposalFlowOperator implements ModuleOperator {
     if (TransferLibraryTypeEnum.FILE_DONE_TRANSFER.equals(proposal.getTransferLibraryType())) {
       proposal.setArchiveFlag("1");
     }
-    //更新流程关系
-    if("1".equals(proposal.getSubJudge())){
-      updateFlowRelation(docId,"PROPOSALMOTION", FlowTypeConstant.TO_DO);
-    }
     this.proposalMng.updateProposalMotion(proposal);
 
 
@@ -168,8 +167,8 @@ public class ProposalFlowOperator implements ModuleOperator {
    */
   @Override
   public void UpdateDocByFlowStatusAndReader(String docId, JSONObject returnInfo) {
-    Proposal proposal = this.proposalMng.getProposalMotionById(docId);
 
+    Proposal proposal = this.proposalMng.getProposalMotionById(docId);
     // 添加查阅用户
     HashSet<String> readersSet = (HashSet<String>) proposal.getReaders();
 
@@ -215,20 +214,33 @@ public class ProposalFlowOperator implements ModuleOperator {
    * 更新流程关系
    *
    * @param docId
-   * @param modulId
+   * @param moduleId
    * @param
    */
-  public int updateFlowRelation(String docId,String modulId,String flowType){
-    // 更改流程关系子文档办理时间
-    FlowRelation flowRelation = new FlowRelation();
-    flowRelation.setSonDocId(docId);
-    flowRelation.setSonModuleNo(modulId);
-    flowRelation.setFlowType(flowType);
-    flowRelation.setSonEndTime(new Timestamp(System.currentTimeMillis()));
+  public int updateFlowRelation(String docId,String moduleId,String flowType){
     try {
+      //添加反馈文件
+      List<String> typeList = new ArrayList<>();
+      typeList.add("feedback_file");
+      List<EgovAtt> egovAttList =this.egovAttMng.getEgovAttsByDocIdAndType(docId,typeList,false);
+      if(egovAttList!=null && !egovAttList.isEmpty()){
+        FlowRelation model = new FlowRelation();
+        model.setSonModuleNo(egovAttList.get(0).getModuleId());
+        model.setSonDocId(egovAttList.get(0).getDocId());
+        model.setFeedbackFile(egovAttList.get(0).getId());
+        model.setFlowType(FlowTypeConstant.TO_DO);
+        this.flowRelationMng.addFlowRelationToFeedback(model);
+      }
+      // 更改流程关系子文档办理时间
+      FlowRelation flowRelation = new FlowRelation();
+      flowRelation.setSonDocId(docId);
+      flowRelation.setSonModuleNo(moduleId);
+      flowRelation.setFlowType(flowType);
+      flowRelation.setSonEndTime(new Timestamp(System.currentTimeMillis()));
       return this.flowRelationMng.updateFlowRelationByDocId(flowRelation);
     } catch (Exception e) {
       throw new BusinessException(e.getMessage());
     }
+
   }
 }

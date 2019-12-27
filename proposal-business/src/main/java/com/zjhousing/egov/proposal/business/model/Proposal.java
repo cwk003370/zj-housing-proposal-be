@@ -406,18 +406,6 @@ public class Proposal extends FlowObject implements Serializable {
    */
   private String subJudge;
   /**
-   * 提案交办权限-ASSIST_FLAG
-   */
-  private String assistFlag;
-  /**
-   * 提案汇合权限-CONVERGE_FLAG
-   */
-  private String convergeFlag;
-  /**
-   * 交办环节ID-ASSIST_AID
-   */
-  private String assistAid;
-  /**
    * 阅办单附件ID-DEAL_FROM_NO
    */
   private String dealFormNo;
@@ -551,9 +539,6 @@ public class Proposal extends FlowObject implements Serializable {
     sb.append(", subAssignmentRequirements='").append(subAssignmentRequirements).append('\'');
     sb.append(", subLeaderOpinions='").append(subLeaderOpinions).append('\'');
     sb.append(", subJudge='").append(subJudge).append('\'');
-    sb.append(", assistFlag='").append(assistFlag).append('\'');
-    sb.append(", convergeFlag='").append(convergeFlag).append('\'');
-    sb.append(", assistAid='").append(assistAid).append('\'');
     sb.append(", dealFormNo='").append(dealFormNo).append('\'');
     sb.append(", docType='").append(docType).append('\'');
     sb.append(", publicCate='").append(publicCate).append('\'');
@@ -573,36 +558,12 @@ public class Proposal extends FlowObject implements Serializable {
     this.assistRemark = assistRemark;
   }
 
-  public String getAssistAid() {
-    return assistAid;
-  }
-
-  public void setAssistAid(String assistAid) {
-    this.assistAid = assistAid;
-  }
-
   public String getDealFormNo() {
     return dealFormNo;
   }
 
   public void setDealFormNo(String dealFormNo) {
     this.dealFormNo = dealFormNo;
-  }
-
-  public String getAssistFlag() {
-    return assistFlag;
-  }
-
-  public void setAssistFlag(String assistFlag) {
-    this.assistFlag = assistFlag;
-  }
-
-  public String getConvergeFlag() {
-    return convergeFlag;
-  }
-
-  public void setConvergeFlag(String convergeFlag) {
-    this.convergeFlag = convergeFlag;
   }
 
   public String getSubJudge() {

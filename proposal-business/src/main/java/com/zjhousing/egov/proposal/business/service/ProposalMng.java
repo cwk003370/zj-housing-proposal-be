@@ -5,6 +5,7 @@ import com.rongji.egov.attachutil.model.EgovAtt;
 import com.rongji.egov.doc.business.external.query.DealForm;
 import com.rongji.egov.utils.api.paging.Page;
 import com.rongji.egov.utils.api.paging.PagingRequest;
+import com.rongji.egov.wflow.business.model.dto.transfer.SubmitParam;
 import com.zjhousing.egov.proposal.business.model.Proposal;
 import com.zjhousing.egov.proposal.business.query.ProposalAssistQuery;
 import org.apache.ibatis.annotations.Param;
@@ -113,26 +114,7 @@ public interface ProposalMng {
    * @return
    */
   boolean insertSubDealForm(ProposalAssistQuery proposalAssistQuery);
-  /**
-   * 子流程-新增子流程文档(废弃)
-   *
-   * @param proposal
-   * @return
-   */
-  int insertSubProposalMotion(Proposal proposal, String userNo,String userOrgNo,String docCate,String userName,String handleType, List<DealForm> dealForm);
-  /**
-   * 反馈文件记录新增
-   * @param egovAtt
-   * @return
-   * @throws Exception
-   */
-  int addFlowRelationToFeedback(EgovAtt egovAtt) throws Exception;
 
-  /**
-   * 子流程-文件反馈
-   *
-   * @param assistDocId 子文档ID
-   * @return
-   */
-  boolean setProcessRestart(@Param("assistDocId")String assistDocId);
+
+
 }

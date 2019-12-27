@@ -241,23 +241,6 @@ public class ProposalController {
         return this.proposalMng.insertSubDealForm(proposalAssistQuery);
   }
   /**
-   * 子流程-提案登记
-   *
-   * @param
-   * @return
-   * @throws Exception
-   */
-  @PostMapping("/subprocess/insertProposalMotion")
-  public Proposal insertProposal(@RequestBody ProposalAssistQuery proposalAssistQuery) {
-    Proposal proposal = this.proposalMng.getProposalMotionById(proposalAssistQuery.getDocId());
-    int insertResult = this.proposalMng.insertSubProposalMotion(proposal,proposalAssistQuery.getUserNo(),proposalAssistQuery.getUserOrgNo(),proposalAssistQuery.getDocCate(),proposalAssistQuery.getUserName(),proposalAssistQuery.getHandleType(),proposalAssistQuery.getDealForm());
-    if (insertResult != 1) {
-      throw new BusinessException("子流程提案登记失败");
-    } else {
-      return this.proposalMng.getProposalMotionById(proposal.getId());
-    }
-  }
-  /**
    * 子流程-流程初始化
    * @param label 流程标识
    * @param version 流程版本

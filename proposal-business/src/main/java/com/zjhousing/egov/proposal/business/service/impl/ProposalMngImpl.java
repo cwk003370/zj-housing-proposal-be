@@ -31,11 +31,11 @@ import com.rongji.egov.utils.api.paging.PagingRequest;
 import com.rongji.egov.utils.api.paging.Sort;
 import com.rongji.egov.utils.common.IdUtil;
 import com.rongji.egov.utils.exception.BusinessException;
+import com.rongji.egov.wflow.business.model.dto.transfer.SubmitParam;
 import com.rongji.egov.wflow.business.service.engine.manage.ProcessManageMng;
 import com.rongji.egov.wflow.business.service.engine.transfer.TodoTransferMng;
 import com.zjhousing.egov.proposal.business.dao.ProposalDao;
 import com.zjhousing.egov.proposal.business.model.Proposal;
-import com.zjhousing.egov.proposal.business.model.ProposalAssigned;
 import com.zjhousing.egov.proposal.business.query.ProposalAssistQuery;
 import com.zjhousing.egov.proposal.business.service.ProposalMng;
 import org.apache.commons.lang.StringUtils;
@@ -43,6 +43,8 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.interceptor.TransactionAspectSupport;
+
 import javax.annotation.Resource;
 import java.sql.Timestamp;
 import java.text.DateFormat;
@@ -405,6 +407,7 @@ public class ProposalMngImpl implements ProposalMng {
     return page;
   }
 
+
   @Override
   public boolean insertSubProposalMotions(String mainDocId,String aid)  {
     Proposal proposal = this.proposalDao.getProposalMotionById(mainDocId);
@@ -476,8 +479,6 @@ public class ProposalMngImpl implements ProposalMng {
       proposal.setDraftUnit(unitName);
       proposal.setDocCate(null);
       proposal.setSignFlag("0");
-      proposal.setAssistFlag("0");
-      proposal.setConvergeFlag("0");
       //表示该实例是子流程实例
       proposal.setSubJudge("1");
 
@@ -573,131 +574,6 @@ public class ProposalMngImpl implements ProposalMng {
     return true;
   }
 
-
-  @Override
-  public int insertSubProposalMotion(Proposal proposal, String userNo, String userOrgNo, String docCate, String userName, String handleType, List<DealForm> dealForm) {
-    List<UmsUserOrgRelate> userList = umsUserOrgRelateDao.listUmsOrgByUserNo(userNo);
-    UmsUserOrgRelate umsUserOrgRelate =null;
-    for(UmsUserOrgRelate u : userList){
-      if(userOrgNo!=null&&userOrgNo.equals(u.getOrgNo())){
-        umsUserOrgRelate=u;
-      }
-    }
-    if (umsUserOrgRelate == null) {
-      throw new BusinessException("指定人员不存在");
-    }
-    String targetId =IdUtil.getUID();
-    String mainDocId = proposal.getId();
-
-    //初始化流程信息
-    proposal.setId(targetId);
-    proposal.setFlowDoneUser(null);
-    proposal.setFlowLabel(null);
-    proposal.setFlowPid(null);
-    proposal.setFlowStatus(null);
-    proposal.setFlowVersion(null);
-    proposal.setDraftUserNo(umsUserOrgRelate.getUserNo());
-    proposal.setDraftUserName(userName);
-    proposal.setDraftDeptNo(umsUserOrgRelate.getOrgNo());
-    proposal.setDraftDept(umsUserOrgRelate.getOrgName());
-    proposal.setDocCate(docCate);
-    proposal.setFlowStatus("0");
-    proposal.setSignFlag("0");
-    //表示该实例是子流程实例
-    proposal.setSubJudge("1");
-
-    if (StringUtils.isBlank(proposal.getDocMark())) {
-      proposal.setDocMark("");
-    }
-
-    // 添加查阅用户
-    HashSet<String> readers = new HashSet<>();
-    readers.add(proposal.getDraftUserNo());
-    proposal.setReaders(readers);
-
-    //过滤头尾空格
-    if (StringUtils.isNotBlank(proposal.getSubject())) {
-      proposal.setSubject(StringUtils.trim(proposal.getSubject()));
-    }
-    int result = this.proposalDao.insertProposalMotion(proposal);
-    if (result < 1) {
-      throw new BusinessException("登记提案议案失败");
-    }
-    final String MODULE_NO = "PROPOSALMOTION";
-    //拷贝正文
-    this.egovAttMng.copyEgovAttByDocId(mainDocId, targetId, "main_doc", "main_doc");
-    //拷贝普通附件
-    this.egovAttMng.copyEgovAttByDocId(mainDocId, targetId, "attach", "attach");
-    //保存办理单为附件
-    if (dealForm != null &&dealForm.size()>0 ) {
-      SecurityUser user = SecurityUtils.getPrincipal();
-      byte[] fileByte = dealForm.get(0).getFile().getBytes();
-      String dealFormTitle = dealForm.get(0).getFileName();
-      EgovAtt egovAtt = new EgovAtt();
-      String dealFormAttachId = IdUtil.getUID();
-      egovAtt.setId(dealFormAttachId);
-      egovAtt.setModuleId(MODULE_NO);
-      egovAtt.setDocId(targetId);
-      egovAtt.setFileSize(fileByte.length);
-      egovAtt.setStatus("1");
-      egovAtt.setType("attach");
-      egovAtt.setFile(fileByte);
-      egovAtt.setFileName(dealFormTitle);
-      egovAtt.setFileSuffix("html");
-      //egovAtt.setContentType("text/html");
-      egovAtt.setSystemNo(user.getSystemNo());
-      this.egovAttMng.insertEgovAtt(egovAtt, user);
-    }
-    //添加交办关系
-    ProposalAssigned proposalAssigned = new ProposalAssigned();
-    proposalAssigned.setId(IdUtil.getUID());
-    proposalAssigned.setMainDocId(mainDocId);
-    proposalAssigned.setAssistDocId(proposal.getId());
-    proposalAssigned.setHandleType(handleType);
-    this.proposalDao.insertProposalMotionAssigned(proposalAssigned);
-    //新增记录日志
-    this.operatorLogMng.insertOperatorLog("PROPOSALMOTION", "提案议案", proposal.getSubject(), DocLogConstant.LOG_ADD, proposal.getId());
-
-    // 添加数据到solr
-    try {
-      this.solrDataDao.add(proposal.toSolrMap());
-    } catch (Exception e) {
-      e.printStackTrace();
-      throw new BusinessException("solr数据添加失败");
-    }
-    return result;
-  }
-
-  @Override
-  public int addFlowRelationToFeedback(EgovAtt egovAtt) throws Exception {
-    FlowRelation model = new FlowRelation();
-    model.setSonModuleNo(egovAtt.getModuleId());
-    model.setSonDocId(egovAtt.getDocId());
-    model.setFeedbackFile(egovAtt.getId());
-    model.setFlowType(FlowTypeConstant.TO_DO);
-    return this.flowRelationMng.addFlowRelationToFeedback(model);
-  }
-
-  @Override
-  public boolean setProcessRestart(String assistDocId) {
-    String id = proposalDao.selectProposalDocIdByAssistDocId(assistDocId);
-
-    List<Proposal> proposalList = proposalDao.getSubProposalById(id);
-    if(proposalList == null || proposalList.size() == 0){
-      return false;
-    }
-    for(Proposal p : proposalList){
-      if(!"9".equals(p.getFlowStatus())){
-        return false;
-      }
-    }
-
-    Proposal proposal = proposalDao.getProposalMotionById(id);
-    List<String> pidList = new ArrayList<>();
-    pidList.add(proposal.getFlowPid());
-    System.out.println(pidList.toString());
-    return processManageMng.setProcessRestart(pidList);
-  }
 
   /**
    * 添加重要信息修改日志

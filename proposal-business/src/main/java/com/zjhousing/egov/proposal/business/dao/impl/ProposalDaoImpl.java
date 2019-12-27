@@ -52,19 +52,7 @@ public class ProposalDaoImpl implements ProposalDao {
     return this.mapper.batchUpdateProposalRelReceivalMark(list);
   }
 
-  @Override
-  public int insertProposalMotionAssigned(ProposalAssigned proposalAssigned) {
-    return mapper.insertProposalMotionAssigned(proposalAssigned);
-  }
 
-  @Override
-  public String selectProposalDocIdByAssistDocId(String assistDocId) {
-    return mapper.selectProposalDocIdByAssistDocId(assistDocId);
-  }
 
-  @Override
-  public List<Proposal> getSubProposalById(String id) {
-    return mapper.getSubProposalById(id);
-  }
 
 }

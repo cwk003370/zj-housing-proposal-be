@@ -72,27 +72,6 @@ public interface ProposalMapper {
    */
   int batchUpdateProposalRelReceivalMark(@Param("list") List<Proposal> list);
 
-  /**
-   * 子流程-新增交办关系
-   *
-   * @param proposalAssigned 交办关系
-   * @return
-   */
-  int insertProposalMotionAssigned(ProposalAssigned proposalAssigned);
 
-  /**
-   * 子流程-通过子文档ID查询主文档ID
-   *
-   * @param assistDocId 文档Id
-   * @return
-   */
-  String selectProposalDocIdByAssistDocId(@Param("assistDocId") String assistDocId);
 
-  /**
-   * 子流程-通过文档ID查询所有子文档数据
-   *
-   * @param id 文档Id
-   * @return
-   */
-  List<Proposal> getSubProposalById(@Param("id") String id);
 }

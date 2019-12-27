@@ -102,9 +102,6 @@
     <result column="SUB_ASSIGNMENT_REQUIREMENTS" property="subAssignmentRequirements"/>
     <result column="SUB_LEADER_OPINIONS" property="subLeaderOpinions"/>
     <result column="SUB_JUDGE" property="subJudge"/>
-    <result column="ASSIST_FLAG" property="assistFlag"/>
-    <result column="CONVERGE_FLAG" property="convergeFlag"/>
-    <result column="ASSIST_AID" property="assistAid"/>
     <result column="DEAL_FROM_NO" property="dealFormNo"/>
   </resultMap>
   <!-- 可重复利用的sql -->
@@ -201,9 +198,6 @@
     SUB_ASSIGNMENT_REQUIREMENTS,
     SUB_LEADER_OPINIONS,
     SUB_JUDGE,
-    ASSIST_FLAG,
-    CONVERGE_FLAG,
-    ASSIST_AID,
     DEAL_FROM_NO
 	</sql>
   <!-- 新增提案 -->
@@ -486,15 +480,6 @@
       <if test="subJudge !=null">
         SUB_JUDGE,
       </if>
-      <if test="assistFlag !=null">
-        ASSIST_FLAG,
-      </if>
-      <if test="convergeFlag !=null">
-        CONVERGE_FLAG,
-      </if>
-      <if test="assistAid !=null">
-        ASSIST_AID,
-      </if>
       <if test="dealFormNo !=null">
         DEAL_FROM_NO,
       </if>
@@ -775,15 +760,6 @@
       </if>
       <if test="subJudge !=null">
         #{subJudge},
-      </if>
-      <if test="assistFlag !=null">
-        #{assistFlag},
-      </if>
-      <if test="convergeFlag !=null">
-        #{convergeFlag},
-      </if>
-      <if test="assistAid !=null">
-        #{assistAid},
       </if>
       <if test="dealFormNo !=null">
         #{dealFormNo},
@@ -1076,15 +1052,6 @@
       <if test="subJudge !=null">
         SUB_JUDGE = #{subJudge},
       </if>
-      <if test="assistFlag !=null">
-        ASSIST_FLAG = #{assistFlag},
-      </if>
-      <if test="convergeFlag !=null">
-        CONVERGE_FLAG = #{convergeFlag},
-      </if>
-      <if test="assistAid !=null">
-        ASSIST_AID = #{assistAid},
-      </if>
       <if test="dealFormNo !=null">
         DEAL_FROM_NO = #{dealFormNo},
       </if>
@@ -1185,153 +1152,4 @@
       WHERE ID = #{model.id}
     </foreach>
   </update>
-
-  <!-- 新增交办关系 -->
-  <insert id="insertProposalMotionAssigned" parameterType="com.zjhousing.egov.proposal.business.model.ProposalAssigned">
-  INSERT INTO EGOV_PROPOSAL_MOTION_ASSIGNED
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        ID,
-      </if>
-      <if test="mainDocId != null">
-        MAIN_DOC_ID,
-      </if>
-      <if test="assistDocId != null">
-        ASSIST_DOC_ID,
-      </if>
-      <if test="handleType != null">
-        HANDLE_TYPE,
-      </if>
-      <if test="createTime != null">
-        CREATE_TIME,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id !=null">
-        #{id},
-      </if>
-      <if test="mainDocId !=null">
-        #{mainDocId},
-      </if>
-      <if test="assistDocId !=null">
-        #{assistDocId},
-      </if>
-      <if test="handleType != null">
-        #{handleType},
-      </if>
-      <if test="createTime !=null">
-        #{createTime},
-      </if>
-    </trim>
-  </insert>
-
-  <select id="selectProposalDocIdByAssistDocId" resultType="java.lang.String" parameterType="java.lang.String">
-    SELECT
-    MAIN_DOC_ID
-    FROM EGOV_PROPOSAL_MOTION_ASSIGNED
-    WHERE ASSIST_DOC_ID = #{assistDocId}
-  </select>
-
-  <select id="getSubProposalById" resultMap="BaseResultMap">
-    SELECT
-    assist.ID as ID,
-		SUBJECT,
-		DOC_MARK_NUM,
-		DOC_MARK_YEAR,
-		DOC_SEQUENCE,
-		DOC_SEQUENCE_YEAR,
-		DOC_WORD,
-		DOC_CATE,
-		FLOW_LABEL,
-		FLOW_VERSION,
-		FLOW_PID,
-		FLOW_STATUS,
-		FLOW_DONE_USER,
-		DRAFT_DATE,
-		DRAFT_USER_NO,
-		DRAFT_USER_NAME,
-		DRAFT_DEPT,
-		DRAFT_DEPT_NO,
-		DRAFT_UNIT,
-		DRAFT_UNIT_NO,
-		SIGN_USER_NO,
-		SIGN_USER_NAME,
-		SIGN_DEPT,
-		SIGN_DEPT_NO,
-		SIGN_UNIT,
-		SIGN_UNIT_NO,
-		SIGN_DATE,
-		SIGN_FLAG,
-    PROPOSAL_PARENT_CLASS,
-    PROPOSAL_CHILDREN_CLASS,
-    REFLECTION_CATEGORY,
-    MEETING_SESSION,
-		DOC_MARK,
-    REL_RECEIVAL_MARK,
-    LEADING_USER_NO,
-    LEADING_USER,
-    LEADING_USER_PHOTO,
-    LEADING_USER_PLACE,
-    SECONDED_USERS_NO,
-    SECONDED_USERS,
-    CAUSE_ACTION,
-    MAIN_ORGANIZER,
-    ASSIST_ORGANIZER,
-    MAIN_CONTENT,
-    ASSIGNMENT_NUM,
-    ASSIGNMENT_DATE,
-    REQUEST_DATE,
-    UNDERTAKE_DEPARTMENT,
-    HANDLING_MODE,
-    URGENT_LEVEL,
-    ASSIGNMENT_USER_NO,
-    ASSIGNMENT_USER,
-    ASSIGNMENT_PHOTO,
-    IMPORT_LEVEL,
-    ASSIGNMENT_REQUIREMENTS,
-    ASSIST_REMARK,
-    OFFICE_OPINIONS,
-    BUREAU_OPINIONS,
-    HANDLE_RESULT,
-    REMARK,
-    MAIN_SEND,
-    COPY_SEND,
-    HANDLE_USER_NO,
-    HANDLE_USER,
-    HANDLE_PHOTO,
-    RESULT_ATTITUDE,
-    SERVICE_ATTITUDE,
-    DEAL_FORM_ID,
-    SYSTEM_NO,
-    READERS,
-    SEC_LEVEL,
-    TRANSFER_LIBRARY_TYPE,
-    ARCHIVE_TYPE,
-    ARCHIVE_FLAG,
-    PAGE_NUM,
-    PRINT_NUM,
-    TASK_FLAG,
-    TURN_NUM,
-    IN_READERS,
-    SUB_ASSIGNMENT_NUM,
-    SUB_ASSIGNMENT_DATE,
-    SUB_REQUEST_DATE,
-    SUB_UNDERTAKE_DEPARTMENT,
-    SUB_HANDLING_MODE,
-    SUB_URGENT_LEVEL,
-    SUB_ASSIGNMENT_USER_NO,
-    SUB_ASSIGNMENT_USER,
-    SUB_ASSIGNMENT_PHOTO,
-    SUB_IMPORT_LEVEL,
-    SUB_ASSIGNMENT_REQUIREMENTS,
-    SUB_LEADER_OPINIONS,
-    SUB_JUDGE,
-    ASSIST_FLAG,
-    CONVERGE_FLAG,
-    ASSIST_AID,
-    DEAL_FROM_NO
-    FROM  EGOV_PROPOSAL_MOTION_ASSIGNED mta JOIN EGOV_PROPOSAL_MOTION assist
-    ON mta.ASSIST_DOC_ID = assist.ID
-    WHERE mta.MAIN_DOC_ID = #{id}
-  </select>
 </mapper>

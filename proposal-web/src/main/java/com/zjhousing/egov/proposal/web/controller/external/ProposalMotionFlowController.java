@@ -77,18 +77,7 @@ public class ProposalMotionFlowController implements FlowTransferController, Flo
   }
   @Override
   public boolean setProcessDone(@RequestBody List<String> finishInfo) {
-    boolean result = this.processManageMng.setProcessDone(finishInfo, this.proposalFlowOperator);
-    if(result){
-      if(finishInfo.size()>0){
-        String[] doc =finishInfo.get(0).split(";");
-        if(doc.length==2){
-          System.out.println("doc[1] = "+doc[1]);
-          this.proposalMng.setProcessRestart(doc[1]);
-        }
-      }
-
-    }
-    return result;
+    return  this.processManageMng.setProcessDone(finishInfo, this.proposalFlowOperator);
   }
 
   @Override
@@ -128,7 +117,6 @@ public class ProposalMotionFlowController implements FlowTransferController, Flo
   @Transactional
   public Boolean submitProcessUsers(@RequestBody SubmitParam submitParam)  {
     try {
-
       Proposal proposal = this.proposalMng.getProposalMotionById(submitParam.getDocId());
       JSONObject permission = this.todoTransferMng.getProcessPermission(submitParam.getAid(), proposal.toMap());
       if(permission!=null && !"".equals(permission)){
@@ -144,7 +132,6 @@ public class ProposalMotionFlowController implements FlowTransferController, Flo
       }
       return this.todoTransferMng.submitProcessUsers(submitParam.getAid(), proposal.toMap(), this.proposalFlowOperator, submitParam.getNextStates(), submitParam.getMsgType());
     }catch (Exception e){
-      System.out.println(e.toString());
       TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
       throw new BusinessException(e.getMessage());
     }
@@ -153,11 +140,7 @@ public class ProposalMotionFlowController implements FlowTransferController, Flo
   @Override
   public Boolean submitProcessWithoutUsers(@RequestBody SubmitParam submitParam) throws Exception {
     Proposal proposal = this.proposalMng.getProposalMotionById(submitParam.getDocId());
-    Boolean result = this.todoTransferMng.submitProcessWithoutUsers(submitParam.getAid(), proposal.toMap(), this.proposalFlowOperator);
-    if(result){
-      proposalMng.setProcessRestart(submitParam.getDocId());
-    }
-    return result;
+    return this.todoTransferMng.submitProcessWithoutUsers(submitParam.getAid(), proposal.toMap(), this.proposalFlowOperator);
   }
 
   @Override
