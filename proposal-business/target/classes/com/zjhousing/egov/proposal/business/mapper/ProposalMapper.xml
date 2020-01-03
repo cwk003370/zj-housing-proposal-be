@@ -100,7 +100,9 @@
     <result column="SUB_ASSIGNMENT_REQUIREMENTS" property="subAssignmentRequirements"/>
     <result column="SUB_LEADER_OPINIONS" property="subLeaderOpinions"/>
     <result column="SUB_JUDGE" property="subJudge"/>
+
     <result column="DEAL_FROM_NO" property="dealFormNo"/>
+    <result column="EXTENSION" property="extension"/>
   </resultMap>
   <!-- 可重复利用的sql -->
   <sql id="allColumns">
@@ -196,7 +198,8 @@
     SUB_ASSIGNMENT_REQUIREMENTS,
     SUB_LEADER_OPINIONS,
     SUB_JUDGE,
-    DEAL_FROM_NO
+    DEAL_FROM_NO,
+    EXTENSION
 	</sql>
   <!-- 新增提案 -->
   <insert id="insertProposalMotion" parameterType="com.zjhousing.egov.proposal.business.model.Proposal">
@@ -475,6 +478,9 @@
       <if test="dealFormNo !=null">
         DEAL_FROM_NO,
       </if>
+      <if test="extension !=null">
+        EXTENSION,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -749,6 +755,9 @@
       </if>
       <if test="dealFormNo !=null">
         #{dealFormNo},
+      </if>
+      <if test="extension !=null">
+        #{extension},
       </if>
     </trim>
   </insert>
@@ -1034,6 +1043,9 @@
       </if>
       <if test="dealFormNo !=null">
         DEAL_FROM_NO = #{dealFormNo},
+      </if>
+      <if test="extension != null">
+        EXTENSION = #{extension},
       </if>
     </set>
     <where>

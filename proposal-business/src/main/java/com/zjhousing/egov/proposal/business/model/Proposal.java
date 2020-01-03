@@ -404,7 +404,11 @@ public class Proposal extends FlowObject implements Serializable {
    * 阅办单附件ID-DEAL_FROM_NO
    */
   private String dealFormNo;
-
+  /**
+   * 扩展字段-EXTENSION json字符串{"feedbackTime":"yyyy-MM-dd HH:mm:ss"}
+   * feedbackTime 反馈时间
+   */
+  private String extension;
   /**
    * 归档需要
    * 文件种类
@@ -533,6 +537,7 @@ public class Proposal extends FlowObject implements Serializable {
     sb.append(", subLeaderOpinions='").append(subLeaderOpinions).append('\'');
     sb.append(", subJudge='").append(subJudge).append('\'');
     sb.append(", dealFormNo='").append(dealFormNo).append('\'');
+    sb.append(", extension='").append(extension).append('\'');
     sb.append(", docType='").append(docType).append('\'');
     sb.append(", publicCate='").append(publicCate).append('\'');
     sb.append(", beginDate=").append(beginDate);
@@ -541,6 +546,14 @@ public class Proposal extends FlowObject implements Serializable {
     sb.append(", front_RangeEndDate=").append(front_RangeEndDate);
     sb.append('}');
     return sb.toString();
+  }
+
+  public String getExtension() {
+    return extension;
+  }
+
+  public void setExtension(String extension) {
+    this.extension = extension;
   }
 
   public String getAssistRemark() {
@@ -1320,7 +1333,11 @@ public class Proposal extends FlowObject implements Serializable {
     map.put(ModuleFiledConst.BUSINESS_CATE, "003");
     map.put(ModuleFiledConst.REG_ORG_NAME, this.draftDept);
     map.put(ModuleFiledConst.PRIORITY, this.urgentLevel);
-
+    if(this.getRequestDate()!=null){
+      SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+      this.setExtension("{\"feedbackTime\":\""+formatter.format(this.getRequestDate())+"\"}");
+    }
+    map.put(ModuleFiledConst.EXTENSION, this.extension);
     return map;
   }
   public HashMap<String, Object> toSolrMap() {
