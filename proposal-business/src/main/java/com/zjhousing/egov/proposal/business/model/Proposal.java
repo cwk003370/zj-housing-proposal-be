@@ -1,13 +1,16 @@
 package com.zjhousing.egov.proposal.business.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.rongji.egov.doc.business.enums.ArchiveTypeEnum;
+import com.rongji.egov.doc.business.enums.CleanFlagEnum;
+import com.rongji.egov.doc.business.enums.TransferLibraryTypeEnum;
 import com.rongji.egov.utils.spring.validation.InsertValidate;
 import com.rongji.egov.utils.spring.validation.UpdateValidate;
 import com.rongji.egov.wflow.business.constant.ModuleFiledConst;
 import com.rongji.egov.wflow.business.model.FlowObject;
-import com.zjhousing.egov.proposal.business.enums.ArchiveTypeEnum;
-import com.zjhousing.egov.proposal.business.enums.CleanFlagEnum;
-import com.zjhousing.egov.proposal.business.enums.TransferLibraryTypeEnum;
+
+
+
 
 import com.zjhousing.egov.proposal.business.utils.ToSolrMapUtil;
 import org.apache.commons.lang.StringUtils;
@@ -42,14 +45,6 @@ public class Proposal extends FlowObject implements Serializable {
    * 文号-DOC_MARK
    */
   private String docMark;
-  /**
-   * 文号序号-DOC_MARK_NUM
-   */
-  private Integer docMarkNum;
-  /**
-   * 文号年度-DOC_MARK_YEAR
-   */
-  private Integer docMarkYear;
   /**
    * 流水号-DOC_SEQUENCE
    */
@@ -317,7 +312,7 @@ public class Proposal extends FlowObject implements Serializable {
   private String secLevel;
   /**
    * 转历史文库类型-TRANSFER_LIBRARY_TYPE
-   * 取值: 办结转、手动转、指定权限转
+   * 取值: 办结转、手动转、指定权限转,
    */
   private TransferLibraryTypeEnum transferLibraryType;
   /**
@@ -451,8 +446,6 @@ public class Proposal extends FlowObject implements Serializable {
     sb.append("id='").append(id).append('\'');
     sb.append(", subject='").append(subject).append('\'');
     sb.append(", docMark='").append(docMark).append('\'');
-    sb.append(", docMarkNum=").append(docMarkNum);
-    sb.append(", docMarkYear=").append(docMarkYear);
     sb.append(", docSequence='").append(docSequence).append('\'');
     sb.append(", docSequenceYear=").append(docSequenceYear);
     sb.append(", docWord='").append(docWord).append('\'');
@@ -788,22 +781,6 @@ public class Proposal extends FlowObject implements Serializable {
 
   public void setPrintNum(Integer printNum) {
     this.printNum = printNum;
-  }
-
-  public Integer getDocMarkNum() {
-    return docMarkNum;
-  }
-
-  public void setDocMarkNum(Integer docMarkNum) {
-    this.docMarkNum = docMarkNum;
-  }
-
-  public Integer getDocMarkYear() {
-    return docMarkYear;
-  }
-
-  public void setDocMarkYear(Integer docMarkYear) {
-    this.docMarkYear = docMarkYear;
   }
 
   public Integer getDocSequenceYear() {
@@ -1350,7 +1327,7 @@ public class Proposal extends FlowObject implements Serializable {
     HashMap<String, Object> map = new HashMap<>(15);
 
     DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    Calendar c = null;
+    Calendar c ;
 
     map.put("S_module", "PROPOSALMOTION");
     map.put("S_moduleDes", "提案议案");
@@ -1377,7 +1354,7 @@ public class Proposal extends FlowObject implements Serializable {
     if (!StringUtils.equals(this.getFlowStatus(), "8")) {
       Set<String> strings = new HashSet();
       strings.add("sys_manager");
-      strings.add("dispatch_manager");
+      strings.add("proposal_manager");
       if (this.readers != null && this.readers.size() > 0) {
         strings.addAll(this.readers);
       }
@@ -1394,11 +1371,12 @@ public class Proposal extends FlowObject implements Serializable {
     if (this.mainSend != null && this.mainSend.size() > 0) {
       map.put("R_mainSend", this.mainSend.toArray(new String[this.mainSend.size()]));
     }
-
+    if (this.copySend != null && this.copySend.size() > 0) {
+      map.put("R_copySend", this.copySend.toArray(new String[this.copySend.size()]));
+    }
     if (this.docMark != null) {
       map.put("S_docMark", this.docMark);
     }
-
     if (StringUtils.isNotBlank(this.docSequence)) {
       map.put("S_docSequence", this.docSequence);
     }
@@ -1410,9 +1388,7 @@ public class Proposal extends FlowObject implements Serializable {
     }
 
 
-    if (StringUtils.isNotBlank(this.signUserName)) {
-      map.put("S_signUserName", this.signUserName);
-    }
+
 
     if (StringUtils.isNotBlank(this.draftDept)) {
       map.put("S_draftDept", this.draftDept);
@@ -1422,6 +1398,10 @@ public class Proposal extends FlowObject implements Serializable {
     }
     if (StringUtils.isNotBlank(this.systemNo)) {
       map.put("S_systemNo", this.systemNo);
+    }
+
+    if (StringUtils.isNotBlank(this.signUserName)) {
+      map.put("S_signUserName", this.signUserName);
     }
     if (StringUtils.isNotBlank(this.signFlag)) {
       map.put("S_signFlag", this.signFlag);
@@ -1451,12 +1431,6 @@ public class Proposal extends FlowObject implements Serializable {
       map.put("I_signYear", c.get(Calendar.YEAR));
       map.put("I_signMonth", c.get(Calendar.MONTH) + 1);
       map.put("I_signDay", c.get(Calendar.DAY_OF_MONTH));
-    } else if (this.getSignDateCleanFlag() == CleanFlagEnum.CLEAN_UP) {
-      map.put("S_signDateDes", null);
-      map.put("T_signDate", null);
-      map.put("I_signYear", null);
-      map.put("I_signMonth", null);
-      map.put("I_signDay", null);
     }
     List<String> body = ToSolrMapUtil.getFileStringByTikaList(this.id, this.getFlowStatus());
     if (body != null && body.size() > 0) {

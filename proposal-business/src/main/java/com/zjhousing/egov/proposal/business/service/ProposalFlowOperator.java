@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONObject;
 import com.rongji.egov.attachutil.model.EgovAtt;
 import com.rongji.egov.attachutil.service.EgovAttMng;
 import com.rongji.egov.doc.business.constant.ExternalToOthersConstant;
+import com.rongji.egov.doc.business.enums.TransferLibraryTypeEnum;
 import com.rongji.egov.docconfig.business.annotation.DocReadLogAn;
 import com.rongji.egov.flowrelation.business.constant.FlowTypeConstant;
 import com.rongji.egov.flowrelation.business.model.FlowRelation;
@@ -14,10 +15,8 @@ import com.rongji.egov.user.business.util.SecurityUtils;
 import com.rongji.egov.utils.exception.BusinessException;
 import com.rongji.egov.wflow.business.service.ModuleOperator;
 import com.rongji.egov.wflow.business.service.engine.manage.ProcessManageMng;
-import com.zjhousing.egov.proposal.business.enums.TransferLibraryTypeEnum;
 import com.zjhousing.egov.proposal.business.model.Proposal;
 import com.zjhousing.egov.proposal.business.query.ProToOthersQuery;
-import com.zjhousing.egov.proposal.business.query.ProposalAssistQuery;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -88,20 +87,9 @@ public class ProposalFlowOperator implements ModuleOperator {
 
     }else{
       proposal.setFlowStatus("8");
-      // 清号
-      if(StringUtils.isNotBlank(proposal.getDocMark())){
-        SecurityUser user = SecurityUtils.getPrincipal();
-        this.proposalMng.cleanUpNum(proposal.getDocWord(), proposal.getDocMarkNum(), proposal.getDocMarkYear(), user.getSystemNo());
-        proposal.setDocMark("");
-        proposal.setDocMarkNum(-1);
-        proposal.setDocMarkYear(-1);
-      }
     }
     this.processManageMng.updateTodo(proposal.toMap());
     proposalMng.updateProposalMotion(proposal);
-        /*List<String> list = new ArrayList<>();
-        list.add(docId);
-        this.proposalMng.delProposal(list);*/
   }
 
   /**
@@ -117,8 +105,8 @@ public class ProposalFlowOperator implements ModuleOperator {
     proposal.setId(docId);
     proposal.setFlowStatus("9");
 
-    Proposal dis = this.proposalMng.getProposalMotionById(docId);
-    this.disToOthers(dis);
+    Proposal pro = this.proposalMng.getProposalMotionById(docId);
+    this.proToOthers(pro);
     // 归历史公文库（转历史公文库类型：办结转）
     if (TransferLibraryTypeEnum.FILE_DONE_TRANSFER.equals(proposal.getTransferLibraryType())) {
       proposal.setArchiveFlag("1");
@@ -133,7 +121,7 @@ public class ProposalFlowOperator implements ModuleOperator {
    *
    * @param proposal
    */
-  public void disToOthers(Proposal proposal) {
+  public void proToOthers(Proposal proposal) {
     if (TransferLibraryTypeEnum.FILE_DONE_TRANSFER.equals(proposal.getTransferLibraryType())) {
       ProToOthersQuery disToOthersQuery = new ProToOthersQuery();
       disToOthersQuery.setType(ExternalToOthersConstant.TO_ARCHIVE);
@@ -199,7 +187,7 @@ public class ProposalFlowOperator implements ModuleOperator {
       proposal.setFlowDoneUser(securityUser.getUserNo());
 
       // 归历史公文库（转历史公文库类型：办结转）
-      this.disToOthers(proposal);
+      this.proToOthers(proposal);
       if (TransferLibraryTypeEnum.FILE_DONE_TRANSFER.equals(proposal.getTransferLibraryType())) {
         proposal.setArchiveFlag("1");
       }

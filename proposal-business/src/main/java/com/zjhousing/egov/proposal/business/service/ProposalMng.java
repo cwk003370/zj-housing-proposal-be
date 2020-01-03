@@ -68,14 +68,6 @@ public interface ProposalMng {
   Page<Proposal> getProposalMotion4Page(PagingRequest<Proposal> paging, Proposal proposal, String[] word);
 
 
-  /**
-   * 清号
-   *
-   * @param docWord
-   * @param docMarkNum
-   * @param docMarkYear
-   */
-  void cleanUpNum(String docWord, Integer docMarkNum, Integer docMarkYear, String systemNo);
 
   /**
    * 批量更新提案-关联文件字段值
@@ -99,13 +91,16 @@ public interface ProposalMng {
   Page<SolrDocument> getProposalMotionBySolr(PagingRequest paging, Proposal proposal,
                                        Integer draftYear, Integer draftMonth, Integer draftDay, String word);
   /**
-   * 子流程-批量新增子流程文档
+   * 子流程-批量新增子流程文档/补充协办子流程文档
    *
    * @param mainDocId 主流程文档ID
    * @param aid 主流程环节ID
+   * @param deptNos 补交协办部门ID
+   * @param methodType  0-新增交办 1-补充交办
    * @return
    */
-  boolean insertSubProposalMotions(String mainDocId,String aid) ;
+  boolean insertSubProposalMotions(String mainDocId,String aid,List<String> deptNos,String methodType);
+
 
   /**
    * 子流程-将阅办单保存为附件（隐藏）
@@ -115,6 +110,12 @@ public interface ProposalMng {
    */
   boolean insertSubDealForm(ProposalAssistQuery proposalAssistQuery);
 
-
+  /**
+   * 子流程-判断是否可以继续流转
+   * @param docId 主流程文档ID
+   * @return true 表示子流程都办结 or 作废 or 暂停 ，否则抛出异常
+   * @throws Exception
+   */
+  boolean getFlowStatus(String docId) throws Exception;
 
 }

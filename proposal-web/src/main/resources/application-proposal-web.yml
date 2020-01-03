@@ -72,7 +72,7 @@ server:
   port: 6063
 logging:
   level:
-    com.rongji.egov: debug
+    com: debug
   file: logfile
 elastic-job:
   zk:

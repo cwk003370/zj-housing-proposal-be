@@ -20,7 +20,6 @@ import com.rongji.egov.flowrelation.business.model.FlowRelation;
 import com.rongji.egov.flowrelation.business.service.FlowRelationMng;
 import com.rongji.egov.flowutil.business.service.DocResourceMng;
 import com.rongji.egov.solrData.business.dao.SolrDataDao;
-import com.rongji.egov.user.business.dao.UmsUserOrgRelateDao;
 import com.rongji.egov.user.business.dao.UserDao;
 import com.rongji.egov.user.business.model.*;
 import com.rongji.egov.user.business.model.vo.DraftUser;
@@ -31,8 +30,6 @@ import com.rongji.egov.utils.api.paging.PagingRequest;
 import com.rongji.egov.utils.api.paging.Sort;
 import com.rongji.egov.utils.common.IdUtil;
 import com.rongji.egov.utils.exception.BusinessException;
-import com.rongji.egov.wflow.business.model.dto.transfer.SubmitParam;
-import com.rongji.egov.wflow.business.service.engine.manage.ProcessManageMng;
 import com.rongji.egov.wflow.business.service.engine.transfer.TodoTransferMng;
 import com.zjhousing.egov.proposal.business.dao.ProposalDao;
 import com.zjhousing.egov.proposal.business.model.Proposal;
@@ -43,7 +40,7 @@ import org.apache.solr.client.solrj.SolrQuery;
 import org.apache.solr.client.solrj.response.QueryResponse;
 import org.apache.solr.common.SolrDocument;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.sql.Timestamp;
@@ -71,10 +68,6 @@ public class ProposalMngImpl implements ProposalMng {
   private DocResourceMng docResourceMng;
   @Resource
   private ReceivalMng receivalMng;
-  @Resource
-  private ProcessManageMng processManageMng;
-  @Resource
-  private UmsUserOrgRelateDao umsUserOrgRelateDao;
   @Resource
   private UserDao userDao;
   @Resource
@@ -157,20 +150,17 @@ public class ProposalMngImpl implements ProposalMng {
 
   @Override
   public int delProposalMotion(List<String> list) {
-    List<Proposal> disList = this.proposalDao.getProposalMotionListByIds(list);
-    if (disList == null || disList.size() <= 0) {
+    List<Proposal> proList = this.proposalDao.getProposalMotionListByIds(list);
+    if (proList == null || proList.size() <= 0) {
       return 0;
     }
 
     int r = this.proposalDao.delProposalMotion(list);
     List<Receival> receivalList = new ArrayList<>();
-    for (Proposal proposal : disList) {
+    for (Proposal proposal : proList) {
       String id = proposal.getId();
       if (StringUtils.isNotBlank(proposal.getDocMark())) {
-        this.cleanUpNum(proposal.getDocWord(), proposal.getDocMarkNum(), proposal.getDocMarkYear(), proposal.getSystemNo());
         proposal.setDocMark("");
-        proposal.setDocMarkNum(-1);
-        proposal.setDocMarkYear(-1);
         this.proposalDao.updateProposalMotion(proposal);
       }
       //记录提案删除操作
@@ -224,25 +214,6 @@ public class ProposalMngImpl implements ProposalMng {
     if (!StringUtils.equals("0", proposal.getFlowStatus())) {
       try {
         permission = this.todoTransferMng.getProcessPermission(aid, proposal.toMap());
-//        if(permission!=null && !"".equals(permission)){
-//          String buttons =permission.getJSONObject("business").getString("buttons");
-//          //判断当前环节是否存在分发权限
-//          if(buttons != null && buttons.indexOf("proposalAssist") > -1){
-//            proposal.setAssistFlag("1");
-//          }else {
-//            proposal.setAssistFlag("0");
-//          }
-//          //判断当前环节是否存在汇合权限
-//          if(buttons != null && buttons.indexOf("proposalConverge") > -1){
-//            proposal.setConvergeFlag("1");
-//          }else {
-//            proposal.setConvergeFlag("0");
-//          }
-//        }else {
-//          proposal.setAssistFlag("0");
-//          proposal.setConvergeFlag("0");
-//        }
-//        this.proposalDao.updateProposalMotion(proposal);
       } catch (Exception e) {
         e.printStackTrace();
       }
@@ -263,10 +234,6 @@ public class ProposalMngImpl implements ProposalMng {
     return this.proposalDao.getProposalMotion4Page(paging, proposal, word);
   }
 
-  @Override
-  public void cleanUpNum(String docWord, Integer docMarkNum, Integer docMarkYear, String systemNo) {
-
-  }
 
   @Override
   public int batchUpdateProposalRelReceivalMark(List<Proposal> list) {
@@ -409,21 +376,40 @@ public class ProposalMngImpl implements ProposalMng {
 
 
   @Override
-  public boolean insertSubProposalMotions(String mainDocId,String aid)  {
+  @Transactional
+  public boolean insertSubProposalMotions(String mainDocId,String aid,List<String> deptNos,String methodType)  {
+
     Proposal proposal = this.proposalDao.getProposalMotionById(mainDocId);
     if(proposal == null ){
       throw new BusinessException("文档不存在");
     }
-
-    List<String> department = proposal.getUndertakeDepartment();
-    if(department == null || department.size() == 0){
-      throw new BusinessException("请先配置承办单位");
+    List<String> department;
+    if("0".equals(methodType)){
+      try {
+        List<String> docIdList = this.flowRelationMng.getDraftSonDocIdList(mainDocId, "PROPOSALMOTION", FlowTypeConstant.TO_DO, "1");
+        if(docIdList!=null &&!docIdList.isEmpty()){
+          this.delProposalMotion(docIdList);
+        }
+      }catch (Exception e){
+        throw new BusinessException(e.getMessage());
+      }
+      department = proposal.getUndertakeDepartment();
+      if(department == null || department.size() == 0){
+        throw new BusinessException("请先配置承办单位");
+      }
+    }else {
+      //将新增交办单位添加到承办单位
+      proposal.getUndertakeDepartment().addAll(deptNos);
+      this.proposalDao.updateProposalMotion(proposal);
+      department =deptNos;
     }
     String dealFormNo = proposal.getDealFormNo();
     if (dealFormNo == null || "".equals(dealFormNo)) {
       throw new BusinessException("阅办单附件不存在");
     }
     SecurityUser securityUser = SecurityUtils.getPrincipal();
+    //添加流程关系批次
+    String flowVersion = System.currentTimeMillis()+"";
     for (int i= 0; i<department.size(); i++){
       String targetId =IdUtil.getUID();
       // 添加查阅用户 TODO 提案议案受理人
@@ -513,13 +499,19 @@ public class ProposalMngImpl implements ProposalMng {
       flowRelation.setCreateTime(new Timestamp(System.currentTimeMillis()));
       flowRelation.setSonDept(umsOrg.getOrgName());
       flowRelation.setSonDeptNo(department.get(i));
-      if(i==0){
+      flowRelation.setFlowVersion(flowVersion);
+      if(i==0 && "0".equals(methodType)){
         flowRelation.setUnitType(UnitTypeConstant.MAIN);
       }else {
         flowRelation.setUnitType(UnitTypeConstant.OTHER);
       }
       try{
-        flowRelationMng.addFlowRelationToFlow(flowRelation);
+        if("0".equals(methodType)){
+          flowRelationMng.addFlowRelationToFlow(flowRelation);
+        }else{
+          flowRelationMng.insertFlowRelation(flowRelation);
+        }
+
       }catch (Exception e) {
         throw new BusinessException(e.getMessage());
       }
@@ -534,8 +526,11 @@ public class ProposalMngImpl implements ProposalMng {
         throw new BusinessException("solr数据添加失败");
       }
     }
+
     return true;
   }
+
+
 
   @Override
   public boolean insertSubDealForm(ProposalAssistQuery proposalAssistQuery) {
@@ -572,6 +567,12 @@ public class ProposalMngImpl implements ProposalMng {
       throw new BusinessException("阅办单转附件失败");
     }
     return true;
+  }
+
+  @Override
+  public boolean getFlowStatus(String docId) throws Exception {
+    String moduleId = "PROPOSALMOTION";
+    return this.flowRelationMng.getFlowStatus(docId,moduleId,FlowTypeConstant.TO_DO);
   }
 
 

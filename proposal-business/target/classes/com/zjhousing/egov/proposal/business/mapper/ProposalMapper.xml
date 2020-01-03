@@ -12,8 +12,6 @@
   <resultMap id="BaseResultMap" type="com.zjhousing.egov.proposal.business.model.Proposal" extends="FlowObjectResult">
     <id column="ID" property="id"/>
     <result column="SUBJECT" property="subject"/>
-    <result column="DOC_MARK_NUM" property="docMarkNum" javaType="java.lang.Integer"/>
-    <result column="DOC_MARK_YEAR" property="docMarkYear" javaType="java.lang.Integer" jdbcType="INTEGER"/>
     <result column="DOC_SEQUENCE" property="docSequence"/>
     <result column="DOC_SEQUENCE_YEAR" property="docSequenceYear" javaType="java.lang.Integer" jdbcType="INTEGER"/>
     <result column="DOC_WORD" property="docWord"/>
@@ -47,7 +45,7 @@
     <result column="LEADING_USER_PHOTO" property="leadingPhoto"/>
     <result column="LEADING_USER_PLACE" property="leadingPlace"/>
     <result column="SECONDED_USERS_NO" property="secondedNo"/>
-    <result column="SECONDED_USERS" property="secondedUsers" javaType="java.util.Set" jdbcType="VARCHAR"/>
+    <result column="SECONDED_USERS" property="secondedUsers"/>
     <result column="CAUSE_ACTION" property="causeAction"/>
     <result column="MAIN_ORGANIZER" property="mainOrganizer" javaType="java.util.Set" jdbcType="VARCHAR"/>
     <result column="ASSIST_ORGANIZER" property="assistOrganizer" javaType="java.util.Set" jdbcType="VARCHAR"/>
@@ -55,7 +53,7 @@
     <result column="ASSIGNMENT_NUM" property="assignmentNum"/>
     <result column="ASSIGNMENT_DATE" property="assignmentDate"/>
     <result column="REQUEST_DATE" property="requestDate"/>
-    <result column="UNDERTAKE_DEPARTMENT" property="undertakeDepartment"/>
+    <result column="UNDERTAKE_DEPARTMENT" property="undertakeDepartment" javaType="java.util.List" jdbcType="VARCHAR"/>
     <result column="HANDLING_MODE" property="handlingMode"/>
     <result column="URGENT_LEVEL" property="urgentLevel"/>
     <result column="ASSIGNMENT_USER_NO" property="assignmentUserNo"/>
@@ -63,6 +61,7 @@
     <result column="ASSIGNMENT_PHOTO" property="assignmentPhoto"/>
     <result column="IMPORT_LEVEL" property="importLevel"/>
     <result column="ASSIGNMENT_REQUIREMENTS" property="assignmentRequirements"/>
+    <result column="ASSIST_REMARK" property="assistRemark"/>
     <result column="OFFICE_OPINIONS" property="officeOpinions"/>
     <result column="BUREAU_OPINIONS" property="bureauOpinions"/>
     <result column="HANDLE_RESULT" property="handleResult"/>
@@ -80,14 +79,13 @@
     <result column="READERS" property="readers" javaType="java.util.Set" jdbcType="VARCHAR"/>
     <result column="SEC_LEVEL" property="secLevel"/>
     <result column="TRANSFER_LIBRARY_TYPE" property="transferLibraryType"/>
-    <result column="ARCHIVE_TYPE" property="archiveType"
-            javaType="com.zjhousing.egov.proposal.business.enums.ArchiveTypeEnum"/>
+    <result column="ARCHIVE_TYPE" property="archiveType" javaType="com.zjhousing.egov.proposal.business.enums.ArchiveTypeEnum"/>
     <result column="ARCHIVE_FLAG" property="archiveFlag"/>
     <result column="PAGE_NUM" property="pageNum"/>
     <result column="PRINT_NUM" property="printNum"/>
-    <result property="taskFlag" column="TASK_FLAG" javaType="java.lang.String" jdbcType="VARCHAR"/>
-    <result property="turnNum" column="TURN_NUM" javaType="java.lang.String" jdbcType="VARCHAR"/>
-    <result property="inReaders" column="IN_READERS" javaType="java.util.Set" jdbcType="VARCHAR"/>
+    <result column="TASK_FLAG" property="taskFlag" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result column="TURN_NUM" property="turnNum" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result column="IN_READERS" property="inReaders" javaType="java.util.Set" jdbcType="VARCHAR"/>
 
     <result column="SUB_ASSIGNMENT_NUM" property="subAssignmentNum"/>
     <result column="SUB_ASSIGNMENT_DATE" property="subAssignmentDate"/>
@@ -102,7 +100,7 @@
     <result column="SUB_ASSIGNMENT_REQUIREMENTS" property="subAssignmentRequirements"/>
     <result column="SUB_LEADER_OPINIONS" property="subLeaderOpinions"/>
     <result column="SUB_JUDGE" property="subJudge"/>
-
+    <result column="DEAL_FROM_NO" property="dealFormNo"/>
   </resultMap>
   <!-- 可重复利用的sql -->
   <sql id="allColumns">
@@ -161,6 +159,7 @@
     ASSIGNMENT_PHOTO,
     IMPORT_LEVEL,
     ASSIGNMENT_REQUIREMENTS,
+    ASSIST_REMARK,
     OFFICE_OPINIONS,
     BUREAU_OPINIONS,
     HANDLE_RESULT,
@@ -196,7 +195,8 @@
     SUB_IMPORT_LEVEL,
     SUB_ASSIGNMENT_REQUIREMENTS,
     SUB_LEADER_OPINIONS,
-    SUB_JUDGE
+    SUB_JUDGE,
+    DEAL_FROM_NO
 	</sql>
   <!-- 新增提案 -->
   <insert id="insertProposalMotion" parameterType="com.zjhousing.egov.proposal.business.model.Proposal">
@@ -207,12 +207,6 @@
       </if>
       <if test="subject != null">
         SUBJECT,
-      </if>
-      <if test="docMarkNum != null">
-        DOC_MARK_NUM,
-      </if>
-      <if test="docMarkYear != null">
-        DOC_MARK_YEAR,
       </if>
       <if test="docSequence != null">
         DOC_SEQUENCE,
@@ -424,6 +418,9 @@
       <if test="inReaders !=null">
         IN_READERS,
       </if>
+      <if test="assistRemark !=null">
+        ASSIST_REMARK,
+      </if>
       <if test="officeOpinions !=null">
         OFFICE_OPINIONS,
       </if>
@@ -475,6 +472,9 @@
       <if test="subJudge !=null">
         SUB_JUDGE,
       </if>
+      <if test="dealFormNo !=null">
+        DEAL_FROM_NO,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -482,12 +482,6 @@
       </if>
       <if test="subject != null">
         #{subject},
-      </if>
-      <if test="docMarkNum != null">
-        #{docMarkNum},
-      </if>
-      <if test="docMarkYear != null">
-        #{docMarkYear},
       </if>
       <if test="docSequence != null">
         #{docSequence},
@@ -699,6 +693,9 @@
       <if test="inReaders !=null">
         #{inReaders},
       </if>
+      <if test="assistRemark !=null">
+        #{assistRemark},
+      </if>
       <if test="officeOpinions !=null">
         #{officeOpinions},
       </if>
@@ -750,6 +747,9 @@
       <if test="subJudge !=null">
         #{subJudge},
       </if>
+      <if test="dealFormNo !=null">
+        #{dealFormNo},
+      </if>
     </trim>
   </insert>
   <!-- 新增提案 -->
@@ -758,12 +758,6 @@
     <set>
       <if test="subject != null">
         SUBJECT = #{subject },
-      </if>
-      <if test="docMarkNum != null">
-        DOC_MARK_NUM = #{docMarkNum},
-      </if>
-      <if test="docMarkYear != null">
-        DOC_MARK_YEAR = #{docMarkYear},
       </if>
       <if test="docSequence != null">
         DOC_SEQUENCE = #{docSequence},
@@ -984,6 +978,9 @@
         IN_READERS = #{inReaders},
       </if>
       <if test="officeOpinions !=null">
+        ASSIST_REMARK = #{assistRemark},
+      </if>
+      <if test="assistRemark !=null">
         OFFICE_OPINIONS = #{officeOpinions},
       </if>
       <if test="bureauOpinions !=null">
@@ -1034,6 +1031,9 @@
       </if>
       <if test="subJudge !=null">
         SUB_JUDGE = #{subJudge},
+      </if>
+      <if test="dealFormNo !=null">
+        DEAL_FROM_NO = #{dealFormNo},
       </if>
     </set>
     <where>
@@ -1132,148 +1132,4 @@
       WHERE ID = #{model.id}
     </foreach>
   </update>
-
-  <!-- 新增交办关系 -->
-  <insert id="insertProposalMotionAssigned" parameterType="com.zjhousing.egov.proposal.business.model.ProposalAssigned">
-  INSERT INTO EGOV_PROPOSAL_MOTION_ASSIGNED
-    <trim prefix="(" suffix=")" suffixOverrides=",">
-      <if test="id != null">
-        ID,
-      </if>
-      <if test="mainDocId != null">
-        MAIN_DOC_ID,
-      </if>
-      <if test="assistDocId != null">
-        ASSIST_DOC_ID,
-      </if>
-      <if test="handleType != null">
-        HANDLE_TYPE,
-      </if>
-      <if test="createTime != null">
-        CREATE_TIME,
-      </if>
-    </trim>
-    <trim prefix="values (" suffix=")" suffixOverrides=",">
-      <if test="id !=null">
-        #{id},
-      </if>
-      <if test="mainDocId !=null">
-        #{mainDocId},
-      </if>
-      <if test="assistDocId !=null">
-        #{assistDocId},
-      </if>
-      <if test="handleType != null">
-        #{handleType},
-      </if>
-      <if test="createTime !=null">
-        #{createTime},
-      </if>
-    </trim>
-  </insert>
-
-  <select id="selectProposalDocIdByAssistDocId" resultType="java.lang.String" parameterType="java.lang.String">
-    SELECT
-    MAIN_DOC_ID
-    FROM EGOV_PROPOSAL_MOTION_ASSIGNED
-    WHERE ASSIST_DOC_ID = #{assistDocId}
-  </select>
-
-  <select id="getSubProposalById" resultMap="BaseResultMap">
-    SELECT
-    assist.ID as ID,
-		SUBJECT,
-		DOC_MARK_NUM,
-		DOC_MARK_YEAR,
-		DOC_SEQUENCE,
-		DOC_SEQUENCE_YEAR,
-		DOC_WORD,
-		DOC_CATE,
-		FLOW_LABEL,
-		FLOW_VERSION,
-		FLOW_PID,
-		FLOW_STATUS,
-		FLOW_DONE_USER,
-		DRAFT_DATE,
-		DRAFT_USER_NO,
-		DRAFT_USER_NAME,
-		DRAFT_DEPT,
-		DRAFT_DEPT_NO,
-		DRAFT_UNIT,
-		DRAFT_UNIT_NO,
-		SIGN_USER_NO,
-		SIGN_USER_NAME,
-		SIGN_DEPT,
-		SIGN_DEPT_NO,
-		SIGN_UNIT,
-		SIGN_UNIT_NO,
-		SIGN_DATE,
-		SIGN_FLAG,
-    PROPOSAL_PARENT_CLASS,
-    PROPOSAL_CHILDREN_CLASS,
-    REFLECTION_CATEGORY,
-    MEETING_SESSION,
-		DOC_MARK,
-    REL_RECEIVAL_MARK,
-    LEADING_USER_NO,
-    LEADING_USER,
-    LEADING_USER_PHOTO,
-    LEADING_USER_PLACE,
-    SECONDED_USERS_NO,
-    SECONDED_USERS,
-    CAUSE_ACTION,
-    MAIN_ORGANIZER,
-    ASSIST_ORGANIZER,
-    MAIN_CONTENT,
-    ASSIGNMENT_NUM,
-    ASSIGNMENT_DATE,
-    REQUEST_DATE,
-    UNDERTAKE_DEPARTMENT,
-    HANDLING_MODE,
-    URGENT_LEVEL,
-    ASSIGNMENT_USER_NO,
-    ASSIGNMENT_USER,
-    ASSIGNMENT_PHOTO,
-    IMPORT_LEVEL,
-    ASSIGNMENT_REQUIREMENTS,
-    OFFICE_OPINIONS,
-    BUREAU_OPINIONS,
-    HANDLE_RESULT,
-    REMARK,
-    MAIN_SEND,
-    COPY_SEND,
-    HANDLE_USER_NO,
-    HANDLE_USER,
-    HANDLE_PHOTO,
-    RESULT_ATTITUDE,
-    SERVICE_ATTITUDE,
-    DEAL_FORM_ID,
-    SYSTEM_NO,
-    READERS,
-    SEC_LEVEL,
-    TRANSFER_LIBRARY_TYPE,
-    ARCHIVE_TYPE,
-    ARCHIVE_FLAG,
-    PAGE_NUM,
-    PRINT_NUM,
-    TASK_FLAG,
-    TURN_NUM,
-    IN_READERS,
-    SUB_ASSIGNMENT_NUM,
-    SUB_ASSIGNMENT_DATE,
-    SUB_REQUEST_DATE,
-    SUB_UNDERTAKE_DEPARTMENT,
-    SUB_HANDLING_MODE,
-    SUB_URGENT_LEVEL,
-    SUB_ASSIGNMENT_USER_NO,
-    SUB_ASSIGNMENT_USER,
-    SUB_ASSIGNMENT_PHOTO,
-    SUB_IMPORT_LEVEL,
-    SUB_ASSIGNMENT_REQUIREMENTS,
-    SUB_LEADER_OPINIONS,
-    SUB_JUDGE
-    FROM  EGOV_PROPOSAL_MOTION_ASSIGNED mta JOIN EGOV_PROPOSAL_MOTION assist
-    ON mta.ASSIST_DOC_ID = assist.ID
-    WHERE mta.MAIN_DOC_ID = #{id}
-  </select>
 </mapper>

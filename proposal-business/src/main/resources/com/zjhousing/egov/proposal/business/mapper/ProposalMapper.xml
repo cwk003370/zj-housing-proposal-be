@@ -12,8 +12,6 @@
   <resultMap id="BaseResultMap" type="com.zjhousing.egov.proposal.business.model.Proposal" extends="FlowObjectResult">
     <id column="ID" property="id"/>
     <result column="SUBJECT" property="subject"/>
-    <result column="DOC_MARK_NUM" property="docMarkNum" javaType="java.lang.Integer"/>
-    <result column="DOC_MARK_YEAR" property="docMarkYear" javaType="java.lang.Integer" jdbcType="INTEGER"/>
     <result column="DOC_SEQUENCE" property="docSequence"/>
     <result column="DOC_SEQUENCE_YEAR" property="docSequenceYear" javaType="java.lang.Integer" jdbcType="INTEGER"/>
     <result column="DOC_WORD" property="docWord"/>
@@ -209,12 +207,6 @@
       </if>
       <if test="subject != null">
         SUBJECT,
-      </if>
-      <if test="docMarkNum != null">
-        DOC_MARK_NUM,
-      </if>
-      <if test="docMarkYear != null">
-        DOC_MARK_YEAR,
       </if>
       <if test="docSequence != null">
         DOC_SEQUENCE,
@@ -491,12 +483,6 @@
       <if test="subject != null">
         #{subject},
       </if>
-      <if test="docMarkNum != null">
-        #{docMarkNum},
-      </if>
-      <if test="docMarkYear != null">
-        #{docMarkYear},
-      </if>
       <if test="docSequence != null">
         #{docSequence},
       </if>
@@ -772,12 +758,6 @@
     <set>
       <if test="subject != null">
         SUBJECT = #{subject },
-      </if>
-      <if test="docMarkNum != null">
-        DOC_MARK_NUM = #{docMarkNum},
-      </if>
-      <if test="docMarkYear != null">
-        DOC_MARK_YEAR = #{docMarkYear},
       </if>
       <if test="docSequence != null">
         DOC_SEQUENCE = #{docSequence},

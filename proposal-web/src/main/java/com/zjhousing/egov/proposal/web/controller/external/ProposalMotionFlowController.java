@@ -122,12 +122,12 @@ public class ProposalMotionFlowController implements FlowTransferController, Flo
       if(permission!=null && !"".equals(permission)){
         String buttons =permission.getJSONObject("business").getString("buttons");
         //判断当前环节是否存在分发权限
-        if(buttons != null && buttons.indexOf("proposalAssist") > -1){
-          this.proposalMng.insertSubProposalMotions(submitParam.getDocId(),submitParam.getAid());
+        if(buttons != null && buttons.indexOf("assist") > -1){
+          this.proposalMng.insertSubProposalMotions(submitParam.getDocId(),submitParam.getAid(),null,"0");
         }
         //判断当前环节是否存在汇合权限
         if(buttons != null && buttons.indexOf("proposalConverge") > -1){
-
+          this.proposalMng.getFlowStatus(submitParam.getDocId());
         }
       }
       return this.todoTransferMng.submitProcessUsers(submitParam.getAid(), proposal.toMap(), this.proposalFlowOperator, submitParam.getNextStates(), submitParam.getMsgType());

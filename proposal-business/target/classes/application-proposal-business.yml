@@ -65,6 +65,6 @@ spring:
     ZkConnectTimeout: 50000
 logging:
   level:
-    com.rongji: debug
+    com.zjhousing.egov.proposal.business: debug
 server:
   port: 6063

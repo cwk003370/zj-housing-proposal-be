@@ -264,4 +264,18 @@ public class ProposalController {
       }
     }
   }
+  /**
+   * 子流程-补充协办子流程
+   * @param docId   文档ID
+   * @param deptNos 交办部门ID集合
+   * @param aid   流程环节ID
+   * @throws Exception
+   */
+  @GetMapping("/subprocess/addSubProposalMotions")
+  public boolean addSubProposalMotions(@RequestParam(name = "docId") String docId,
+                                       @RequestParam(name = "aId") String aid,
+                                       @RequestParam(name = "deptNos[]") List<String> deptNos) {
+    return this.proposalMng.insertSubProposalMotions(docId,aid,deptNos,"1");
+
+  }
 }

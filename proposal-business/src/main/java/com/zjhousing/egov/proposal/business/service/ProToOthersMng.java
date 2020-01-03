@@ -11,7 +11,7 @@ import com.zjhousing.egov.proposal.business.query.ProToOthersQuery;
 public interface ProToOthersMng {
 
   /**
-   * 发文转其他文<br/>
+   * 提案转其他文<br/>
    * <p>type: 操作类型 必填</p>
    * <p>      取值："归历史公文库";"转部门阅办";"转依申请公开库";</p>
    * <p>docId: 文档id 必填</p>
