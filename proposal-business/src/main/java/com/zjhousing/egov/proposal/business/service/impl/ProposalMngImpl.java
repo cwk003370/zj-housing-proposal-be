@@ -380,8 +380,11 @@ public class ProposalMngImpl implements ProposalMng {
   public boolean insertSubProposalMotions(String mainDocId,String aid,List<String> deptNos,String methodType)  {
 
     Proposal proposal = this.proposalDao.getProposalMotionById(mainDocId);
-    if(proposal == null ){
+    if(StringUtils.isBlank(mainDocId) ||proposal == null ){
       throw new BusinessException("文档不存在");
+    }
+    if("1".equals(proposal.getSubJudge())){
+      throw new BusinessException("不支持再次交办");
     }
     List<String> department;
     if("0".equals(methodType)){
