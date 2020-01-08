@@ -9,9 +9,6 @@ import com.rongji.egov.utils.spring.validation.UpdateValidate;
 import com.rongji.egov.wflow.business.constant.ModuleFiledConst;
 import com.rongji.egov.wflow.business.model.FlowObject;
 
-
-
-
 import com.zjhousing.egov.proposal.business.utils.ToSolrMapUtil;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.Length;
@@ -410,6 +407,10 @@ public class Proposal extends FlowObject implements Serializable {
    */
   private String extension;
   /**
+   * 承办处-UNDERTAKE_DEPARTMENT_NAME
+   */
+  private List<String> undertakeDepartmentName;
+  /**
    * 归档需要
    * 文件种类
    */
@@ -538,6 +539,7 @@ public class Proposal extends FlowObject implements Serializable {
     sb.append(", subJudge='").append(subJudge).append('\'');
     sb.append(", dealFormNo='").append(dealFormNo).append('\'');
     sb.append(", extension='").append(extension).append('\'');
+    sb.append(", undertakeDepartmentName=").append(undertakeDepartmentName);
     sb.append(", docType='").append(docType).append('\'');
     sb.append(", publicCate='").append(publicCate).append('\'');
     sb.append(", beginDate=").append(beginDate);
@@ -546,6 +548,14 @@ public class Proposal extends FlowObject implements Serializable {
     sb.append(", front_RangeEndDate=").append(front_RangeEndDate);
     sb.append('}');
     return sb.toString();
+  }
+
+  public List<String> getUndertakeDepartmentName() {
+    return undertakeDepartmentName;
+  }
+
+  public void setUndertakeDepartmentName(List<String> undertakeDepartmentName) {
+    this.undertakeDepartmentName = undertakeDepartmentName;
   }
 
   public String getExtension() {

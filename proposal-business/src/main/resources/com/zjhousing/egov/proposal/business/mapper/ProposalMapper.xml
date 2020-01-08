@@ -103,6 +103,7 @@
 
     <result column="DEAL_FROM_NO" property="dealFormNo"/>
     <result column="EXTENSION" property="extension"/>
+    <result column="UNDERTAKE_DEPARTMENT_NAME" property="undertakeDepartmentName" javaType="java.util.List" jdbcType="VARCHAR"/>
   </resultMap>
   <!-- 可重复利用的sql -->
   <sql id="allColumns">
@@ -199,7 +200,8 @@
     SUB_LEADER_OPINIONS,
     SUB_JUDGE,
     DEAL_FROM_NO,
-    EXTENSION
+    EXTENSION,
+    UNDERTAKE_DEPARTMENT_NAME
 	</sql>
   <!-- 新增提案 -->
   <insert id="insertProposalMotion" parameterType="com.zjhousing.egov.proposal.business.model.Proposal">
@@ -481,6 +483,9 @@
       <if test="extension !=null">
         EXTENSION,
       </if>
+      <if test="undertakeDepartmentName !=null">
+        UNDERTAKE_DEPARTMENT_NAME,
+      </if>
     </trim>
     <trim prefix="values (" suffix=")" suffixOverrides=",">
       <if test="id != null">
@@ -758,6 +763,9 @@
       </if>
       <if test="extension !=null">
         #{extension},
+      </if>
+      <if test="undertakeDepartmentName !=null">
+        #{undertakeDepartmentName},
       </if>
     </trim>
   </insert>
@@ -1046,6 +1054,9 @@
       </if>
       <if test="extension != null">
         EXTENSION = #{extension},
+      </if>
+      <if test="undertakeDepartmentName != null">
+        UNDERTAKE_DEPARTMENT_NAME = #{undertakeDepartmentName},
       </if>
     </set>
     <where>
