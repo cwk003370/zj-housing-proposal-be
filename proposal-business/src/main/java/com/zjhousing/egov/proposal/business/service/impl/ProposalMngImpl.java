@@ -272,11 +272,10 @@ public class ProposalMngImpl implements ProposalMng {
       if (strings != null && strings.length > 0) {
         for (int i = strings.length - 1; i >= 0; i--) {
           sqStrWord.append(" OR S_subject2:*" + strings[i] + "*");
-          sqStrWord.append(" OR S_docWord:*" + strings[i] + "*");
-          sqStrWord.append(" OR R_mainSend:*" + strings[i] + "*");
-          sqStrWord.append(" OR S_draftDept:*" + strings[i] + "*");
           sqStrWord.append(" OR S_draftUserName:*" + strings[i] + "*");
           sqStrWord.append(" OR S_docMark:*" + strings[i] + "*");
+          sqStrWord.append(" OR S_draftDept:*" + strings[i] + "*");
+          sqStrWord.append(" OR S_signUserName:*" + strings[i] + "*");
         }
         sqStrWord.replace(0,3," AND (");
         sqStrWord.append(" )");
@@ -293,9 +292,6 @@ public class ProposalMngImpl implements ProposalMng {
     if (StringUtils.isNotBlank(proposal.getDocMark())) {
       sqStr.append(" AND S_docMark:*" + proposal.getDocMark() + "*");
     }
-    if (StringUtils.isNotBlank(proposal.getDocWord())) {
-      sqStr.append(" AND S_docWord:" + proposal.getDocWord());
-    }
     if (StringUtils.isNotBlank(proposal.getDraftDept())) {
       if (StringUtils.equals(proposal.getDraftDept(), "办公室")) {
         sqStr.append(" AND S_draftDept:" + proposal.getDraftDept());
@@ -306,12 +302,7 @@ public class ProposalMngImpl implements ProposalMng {
     if (StringUtils.isNotBlank(proposal.getDocSequence())) {
       sqStr.append(" AND S_docSequence:*" + proposal.getDocSequence() + "*");
     }
-    if (StringUtils.isNotBlank(proposal.getUrgentLevel())) {
-      sqStr.append(" AND S_urgenLevel:*" + proposal.getUrgentLevel() + "*");
-    }
-    if (StringUtils.isNotBlank(proposal.getSecLevel())) {
-      sqStr.append(" AND S_secLevel:*" + proposal.getSecLevel() + "*");
-    }
+
     if (StringUtils.isNotBlank(proposal.getArchiveFlag())) {
       sqStr.append(" AND S_archiveFlag:*" + proposal.getArchiveFlag() + "*");
     }
@@ -412,7 +403,7 @@ public class ProposalMngImpl implements ProposalMng {
     }
     SecurityUser securityUser = SecurityUtils.getPrincipal();
     //添加流程关系批次
-    String flowVersion = System.currentTimeMillis()+"";
+    String flowVersion = Long.toString(System.currentTimeMillis());
     for (int i= 0; i<department.size(); i++){
       String targetId =IdUtil.getUID();
       // 添加查阅用户 TODO 提案议案受理人

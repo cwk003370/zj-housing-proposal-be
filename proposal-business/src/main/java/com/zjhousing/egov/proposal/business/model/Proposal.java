@@ -1433,6 +1433,9 @@ public class Proposal extends FlowObject implements Serializable {
     if (StringUtils.isNotBlank(this.signFlag)) {
       map.put("S_signFlag", this.signFlag);
     }
+    if (StringUtils.isNotBlank(this.subJudge)) {
+      map.put("S_subJudge", this.subJudge);
+    }
 
     if (this.draftDate != null) {
       // 写入时间 年月
