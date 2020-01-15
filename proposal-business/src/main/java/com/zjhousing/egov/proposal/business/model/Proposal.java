@@ -1345,7 +1345,16 @@ public class Proposal extends FlowObject implements Serializable {
     map.put(ModuleFiledConst.PRIORITY, this.urgentLevel);
     if(this.getRequestDate()!=null){
       SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-      this.setExtension("{\"feedbackTime\":\""+formatter.format(this.getRequestDate())+"\"}");
+      if("1".equals(this.getSubJudge())){
+        if(this.getSubRequestDate()!=null){
+          this.setExtension("{\"feedbackTime\":\""+formatter.format(this.getSubRequestDate())+"\"}");
+        }
+      }else{
+        if(this.getRequestDate()!=null){
+          this.setExtension("{\"feedbackTime\":\""+formatter.format(this.getRequestDate())+"\"}");
+        }
+      }
+
     }
     map.put(ModuleFiledConst.EXTENSION, this.extension);
     return map;

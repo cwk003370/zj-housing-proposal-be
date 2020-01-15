@@ -1,14 +1,10 @@
 package com.zjhousing.egov.proposal.business.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.rongji.egov.attachutil.model.EgovAtt;
-import com.rongji.egov.doc.business.external.query.DealForm;
 import com.rongji.egov.utils.api.paging.Page;
 import com.rongji.egov.utils.api.paging.PagingRequest;
-import com.rongji.egov.wflow.business.model.dto.transfer.SubmitParam;
 import com.zjhousing.egov.proposal.business.model.Proposal;
 import com.zjhousing.egov.proposal.business.query.ProposalAssistQuery;
-import org.apache.ibatis.annotations.Param;
 import org.apache.solr.common.SolrDocument;
 
 import java.util.List;

@@ -459,6 +459,7 @@ public class ProposalMngImpl implements ProposalMng {
       proposal.setDraftUnit(unitName);
       proposal.setDocCate(null);
       proposal.setSignFlag("0");
+      proposal.setExtension(null);
       //表示该实例是子流程实例
       proposal.setSubJudge("1");
 
