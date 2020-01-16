@@ -591,20 +591,7 @@ public class ProposalMngImpl implements ProposalMng {
         EgovDocUpdateItemLog egovDocUpdateItemLog = new EgovDocUpdateItemLog(docId, "标题", oldSubject, newSubject, "PROPOSALMOTION");
         list.add(egovDocUpdateItemLog);
       }
-      String oldSecLevel = oldProposal.getSecLevel();
-      String newSecLevel = newProposal.getSecLevel();
-      if (!StringUtils.equals(oldSecLevel, newSecLevel)) {
-        EgovDocUpdateItemLog egovDocUpdateItemLog = new EgovDocUpdateItemLog(docId, "密级", oldSecLevel, newSecLevel, "PROPOSALMOTION");
-        list.add(egovDocUpdateItemLog);
-      }
-      String oldDocWord = oldProposal.getDocWord();
-      String newDocWord = newProposal.getDocWord();
-      if (!StringUtils.equals(oldDocWord, newDocWord)) {
-        EgovDocUpdateItemLog egovDocUpdateItemLog = new EgovDocUpdateItemLog(docId, "机关代字", oldDocWord, newDocWord, "PROPOSALMOTION");
-        list.add(egovDocUpdateItemLog);
-      }
-
-
+      
       if (list.size() > 0) {
         this.egovDocUpdateItemLogMng.batchInsertEgovDocUpdateItemLog(list, user);
       }

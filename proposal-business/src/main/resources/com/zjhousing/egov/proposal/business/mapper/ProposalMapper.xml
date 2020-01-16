@@ -13,8 +13,6 @@
     <id column="ID" property="id"/>
     <result column="SUBJECT" property="subject"/>
     <result column="DOC_SEQUENCE" property="docSequence"/>
-    <result column="DOC_SEQUENCE_YEAR" property="docSequenceYear" javaType="java.lang.Integer" jdbcType="INTEGER"/>
-    <result column="DOC_WORD" property="docWord"/>
     <result column="DOC_CATE" property="docCate"/>
 
     <result column="DRAFT_DATE" property="draftDate"/>
@@ -46,7 +44,6 @@
     <result column="LEADING_USER_PLACE" property="leadingPlace"/>
     <result column="SECONDED_USERS_NO" property="secondedNo"/>
     <result column="SECONDED_USERS" property="secondedUsers"/>
-    <result column="CAUSE_ACTION" property="causeAction"/>
     <result column="MAIN_ORGANIZER" property="mainOrganizer" javaType="java.util.Set" jdbcType="VARCHAR"/>
     <result column="ASSIST_ORGANIZER" property="assistOrganizer" javaType="java.util.Set" jdbcType="VARCHAR"/>
     <result column="MAIN_CONTENT" property="mainContent"/>
@@ -109,11 +106,7 @@
   <sql id="allColumns">
 		ID,
 		SUBJECT,
-		DOC_MARK_NUM,
-		DOC_MARK_YEAR,
 		DOC_SEQUENCE,
-		DOC_SEQUENCE_YEAR,
-		DOC_WORD,
 		DOC_CATE,
 		FLOW_LABEL,
 		FLOW_VERSION,
@@ -147,7 +140,6 @@
     LEADING_USER_PLACE,
     SECONDED_USERS_NO,
     SECONDED_USERS,
-    CAUSE_ACTION,
     MAIN_ORGANIZER,
     ASSIST_ORGANIZER,
     MAIN_CONTENT,
@@ -215,12 +207,6 @@
       </if>
       <if test="docSequence != null">
         DOC_SEQUENCE,
-      </if>
-      <if test="docSequenceYear != null">
-        DOC_SEQUENCE_YEAR,
-      </if>
-      <if test="docWord != null">
-        DOC_WORD,
       </if>
       <if test="docCate != null">
         DOC_CATE,
@@ -320,9 +306,6 @@
       </if>
       <if test="secondedUsers !=null">
         SECONDED_USERS,
-      </if>
-      <if test="causeAction !=null">
-        CAUSE_ACTION,
       </if>
       <if test="mainOrganizer !=null">
         MAIN_ORGANIZER,
@@ -497,12 +480,6 @@
       <if test="docSequence != null">
         #{docSequence},
       </if>
-      <if test="docSequenceYear != null">
-        #{docSequenceYear},
-      </if>
-      <if test="docWord != null">
-        #{docWord},
-      </if>
       <if test="docCate != null">
         #{docCate},
       </if>
@@ -601,9 +578,6 @@
       </if>
       <if test="secondedUsers !=null">
         #{secondedUsers},
-      </if>
-      <if test="causeAction !=null">
-        #{causeAction},
       </if>
       <if test="mainOrganizer !=null">
         #{mainOrganizer},
@@ -779,12 +753,6 @@
       <if test="docSequence != null">
         DOC_SEQUENCE = #{docSequence},
       </if>
-      <if test="docSequenceYear != null">
-        DOC_SEQUENCE_YEAR = #{docSequenceYear},
-      </if>
-      <if test="docWord != null">
-        DOC_WORD = #{docWord},
-      </if>
       <if test="docCate != null">
         DOC_CATE = #{docCate},
       </if>
@@ -891,9 +859,6 @@
       </if>
       <if test="secondedUsers !=null">
         SECONDED_USERS = #{secondedUsers},
-      </if>
-      <if test="causeAction !=null">
-        CAUSE_ACTION = #{causeAction},
       </if>
       <if test="mainOrganizer !=null">
         MAIN_ORGANIZER = #{mainOrganizer},
@@ -1110,14 +1075,10 @@
         <bind name="likeDraftUserName" value="'%'+ proposal.draftUserName + '%'"></bind>
         AND DRAFT_USER_NAME like #{likeDraftUserName}
       </if>
-      <if test="proposal.docWord != null">
-        <bind name="likeDocWord" value="'%'+ proposal.docWord + '%'"></bind>
-        AND DOC_WORD like #{likeDocWord}
-      </if>
       <if test="word!=null">
         AND (
         <foreach collection="word" item="item" separator="OR">
-          SUBJECT like concat(concat('%',#{item}),'%') OR DRAFT_USER_NAME like concat(concat('%',#{item}),'%') OR DOC_WORD like concat(concat('%',#{item}),'%') OR DOC_MARK like concat(concat('%',#{item}),'%') OR MAIN_SEND like concat(concat('%',#{item}),'%') OR DRAFT_DEPT like concat(concat('%',#{item}),'%')
+          SUBJECT like concat(concat('%',#{item}),'%') OR DRAFT_USER_NAME like concat(concat('%',#{item}),'%') OR DOC_MARK like concat(concat('%',#{item}),'%') OR MAIN_SEND like concat(concat('%',#{item}),'%') OR DRAFT_DEPT like concat(concat('%',#{item}),'%')
         </foreach>
         )
       </if>

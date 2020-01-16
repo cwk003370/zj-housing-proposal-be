@@ -38,22 +38,11 @@ public class Proposal extends FlowObject implements Serializable {
   @NotEmpty(message = "标题不能为空", groups = {InsertValidate.class})
   @Length(max = 256, message = "标题{fixedLength}", groups = {UpdateValidate.class, InsertValidate.class})
   private String subject;
-  /**
-   * 文号-DOC_MARK
-   */
-  private String docMark;
+
   /**
    * 流水号-DOC_SEQUENCE
    */
   private String docSequence;
-  /**
-   * 流水年份-DOC_SEQUENCE_YEAR
-   */
-  private Integer docSequenceYear;
-  /**
-   * 机关代字(文件字)-DOC_WORD
-   */
-  private String docWord;
   /**
    * 文件类型-DOC_CATE
    */
@@ -140,6 +129,10 @@ public class Proposal extends FlowObject implements Serializable {
    */
   private String meetingSession;
   /**
+   * 编号-DOC_MARK
+   */
+  private String docMark;
+  /**
    * 提案议案编号-PROPOSAL_NUM
    */
   private String proposalNum;
@@ -171,14 +164,6 @@ public class Proposal extends FlowObject implements Serializable {
    * 附议代表及人数-SECONDED_USERS
    */
   private String secondedUsers;
-  /**
-   * 附议人数***
-   */
-  private String secondedNum;
-  /**
-   * 案由-CAUSE_ACTION
-   */
-  private String causeAction;
   /**
    * 主办单位-MAIN_ORGANIZER
    */
@@ -284,7 +269,7 @@ public class Proposal extends FlowObject implements Serializable {
    */
   private String handlePhoto;
   /**
-   * 服务意见-RESULT_ATTITUDE
+   * 办理结果意见-RESULT_ATTITUDE
    */
   private String resultAttitude;
   /**
@@ -445,110 +430,6 @@ public class Proposal extends FlowObject implements Serializable {
     this.relReceivalMark = relReceivalMark;
   }
 
-  @Override
-  public String toString() {
-    final StringBuffer sb = new StringBuffer("Proposal{");
-    sb.append("id='").append(id).append('\'');
-    sb.append(", subject='").append(subject).append('\'');
-    sb.append(", docMark='").append(docMark).append('\'');
-    sb.append(", docSequence='").append(docSequence).append('\'');
-    sb.append(", docSequenceYear=").append(docSequenceYear);
-    sb.append(", docWord='").append(docWord).append('\'');
-    sb.append(", docCate='").append(docCate).append('\'');
-    sb.append(", draftDate=").append(draftDate);
-    sb.append(", draftUserNo='").append(draftUserNo).append('\'');
-    sb.append(", draftUserName='").append(draftUserName).append('\'');
-    sb.append(", draftDept='").append(draftDept).append('\'');
-    sb.append(", draftDeptNo='").append(draftDeptNo).append('\'');
-    sb.append(", draftUnit='").append(draftUnit).append('\'');
-    sb.append(", draftUnitNo='").append(draftUnitNo).append('\'');
-    sb.append(", signUserNo='").append(signUserNo).append('\'');
-    sb.append(", signUserName='").append(signUserName).append('\'');
-    sb.append(", signDept='").append(signDept).append('\'');
-    sb.append(", signDeptNo='").append(signDeptNo).append('\'');
-    sb.append(", signUnit='").append(signUnit).append('\'');
-    sb.append(", signUnitNo='").append(signUnitNo).append('\'');
-    sb.append(", signDate=").append(signDate);
-    sb.append(", signDateCleanFlag=").append(signDateCleanFlag);
-    sb.append(", signFlag='").append(signFlag).append('\'');
-    sb.append(", parentClass='").append(parentClass).append('\'');
-    sb.append(", childrenClass='").append(childrenClass).append('\'');
-    sb.append(", reflectionCategory='").append(reflectionCategory).append('\'');
-    sb.append(", meetingSession='").append(meetingSession).append('\'');
-    sb.append(", proposalNum='").append(proposalNum).append('\'');
-    sb.append(", relReceivalMark='").append(relReceivalMark).append('\'');
-    sb.append(", leadingNo='").append(leadingNo).append('\'');
-    sb.append(", leadingUser='").append(leadingUser).append('\'');
-    sb.append(", leadingPhoto='").append(leadingPhoto).append('\'');
-    sb.append(", leadingPlace='").append(leadingPlace).append('\'');
-    sb.append(", secondedNo='").append(secondedNo).append('\'');
-    sb.append(", secondedUsers='").append(secondedUsers).append('\'');
-    sb.append(", secondedNum='").append(secondedNum).append('\'');
-    sb.append(", causeAction='").append(causeAction).append('\'');
-    sb.append(", mainOrganizer=").append(mainOrganizer);
-    sb.append(", assistOrganizer=").append(assistOrganizer);
-    sb.append(", mainContent='").append(mainContent).append('\'');
-    sb.append(", attachDesc='").append(attachDesc).append('\'');
-    sb.append(", assignmentNum='").append(assignmentNum).append('\'');
-    sb.append(", assignmentDate=").append(assignmentDate);
-    sb.append(", requestDate=").append(requestDate);
-    sb.append(", undertakeDepartment=").append(undertakeDepartment);
-    sb.append(", handlingMode='").append(handlingMode).append('\'');
-    sb.append(", urgentLevel='").append(urgentLevel).append('\'');
-    sb.append(", assignmentUserNo='").append(assignmentUserNo).append('\'');
-    sb.append(", assignmentUser='").append(assignmentUser).append('\'');
-    sb.append(", assignmentPhoto='").append(assignmentPhoto).append('\'');
-    sb.append(", importLevel='").append(importLevel).append('\'');
-    sb.append(", assignmentRequirements='").append(assignmentRequirements).append('\'');
-    sb.append(", assistRemark='").append(assistRemark).append('\'');
-    sb.append(", officeOpinions='").append(officeOpinions).append('\'');
-    sb.append(", bureauOpinions='").append(bureauOpinions).append('\'');
-    sb.append(", handleResult='").append(handleResult).append('\'');
-    sb.append(", remark='").append(remark).append('\'');
-    sb.append(", mainSend=").append(mainSend);
-    sb.append(", copySend=").append(copySend);
-    sb.append(", handleUserNo='").append(handleUserNo).append('\'');
-    sb.append(", handleUser='").append(handleUser).append('\'');
-    sb.append(", handlePhoto='").append(handlePhoto).append('\'');
-    sb.append(", resultAttitude='").append(resultAttitude).append('\'');
-    sb.append(", serviceAttitude='").append(serviceAttitude).append('\'');
-    sb.append(", dealFormId='").append(dealFormId).append('\'');
-    sb.append(", systemNo='").append(systemNo).append('\'');
-    sb.append(", readers=").append(readers);
-    sb.append(", secLevel='").append(secLevel).append('\'');
-    sb.append(", transferLibraryType=").append(transferLibraryType);
-    sb.append(", archiveType=").append(archiveType);
-    sb.append(", archiveFlag='").append(archiveFlag).append('\'');
-    sb.append(", pageNum=").append(pageNum);
-    sb.append(", printNum=").append(printNum);
-    sb.append(", taskFlag='").append(taskFlag).append('\'');
-    sb.append(", turnNum='").append(turnNum).append('\'');
-    sb.append(", inReaders=").append(inReaders);
-    sb.append(", subAssignmentNum='").append(subAssignmentNum).append('\'');
-    sb.append(", subAssignmentDate=").append(subAssignmentDate);
-    sb.append(", subRequestDate=").append(subRequestDate);
-    sb.append(", subUndertakeDepartment='").append(subUndertakeDepartment).append('\'');
-    sb.append(", subHandlingMode='").append(subHandlingMode).append('\'');
-    sb.append(", subUrgentLevel='").append(subUrgentLevel).append('\'');
-    sb.append(", subAssignmentUserNo='").append(subAssignmentUserNo).append('\'');
-    sb.append(", subAssignmentUser='").append(subAssignmentUser).append('\'');
-    sb.append(", subAssignmentPhoto='").append(subAssignmentPhoto).append('\'');
-    sb.append(", subImportLevel='").append(subImportLevel).append('\'');
-    sb.append(", subAssignmentRequirements='").append(subAssignmentRequirements).append('\'');
-    sb.append(", subLeaderOpinions='").append(subLeaderOpinions).append('\'');
-    sb.append(", subJudge='").append(subJudge).append('\'');
-    sb.append(", dealFormNo='").append(dealFormNo).append('\'');
-    sb.append(", extension='").append(extension).append('\'');
-    sb.append(", undertakeDepartmentName=").append(undertakeDepartmentName);
-    sb.append(", docType='").append(docType).append('\'');
-    sb.append(", publicCate='").append(publicCate).append('\'');
-    sb.append(", beginDate=").append(beginDate);
-    sb.append(", endDate=").append(endDate);
-    sb.append(", front_RangeStartDate=").append(front_RangeStartDate);
-    sb.append(", front_RangeEndDate=").append(front_RangeEndDate);
-    sb.append('}');
-    return sb.toString();
-  }
 
   public List<String> getUndertakeDepartmentName() {
     return undertakeDepartmentName;
@@ -806,13 +687,6 @@ public class Proposal extends FlowObject implements Serializable {
     this.printNum = printNum;
   }
 
-  public Integer getDocSequenceYear() {
-    return docSequenceYear;
-  }
-
-  public void setDocSequenceYear(Integer docSequenceYear) {
-    this.docSequenceYear = docSequenceYear;
-  }
 
   public ArchiveTypeEnum getArchiveType() {
     return archiveType;
@@ -924,22 +798,6 @@ public class Proposal extends FlowObject implements Serializable {
 
   public void setSecondedUsers(String secondedUsers) {
     this.secondedUsers = secondedUsers;
-  }
-
-  public String getSecondedNum() {
-    return secondedNum;
-  }
-
-  public void setSecondedNum(String secondedNum) {
-    this.secondedNum = secondedNum;
-  }
-
-  public String getCauseAction() {
-    return causeAction;
-  }
-
-  public void setCauseAction(String causeAction) {
-    this.causeAction = causeAction;
   }
 
   public Set<String> getMainOrganizer() {
@@ -1282,13 +1140,6 @@ public class Proposal extends FlowObject implements Serializable {
     this.readers = readers;
   }
 
-  public String getDocWord() {
-    return docWord;
-  }
-
-  public void setDocWord(String docWord) {
-    this.docWord = docWord;
-  }
 
   public String getDocCate() {
     return docCate;
