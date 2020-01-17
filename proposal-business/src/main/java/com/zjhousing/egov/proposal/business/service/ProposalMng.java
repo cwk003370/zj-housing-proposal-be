@@ -3,6 +3,7 @@ package com.zjhousing.egov.proposal.business.service;
 import com.alibaba.fastjson.JSONObject;
 import com.rongji.egov.utils.api.paging.Page;
 import com.rongji.egov.utils.api.paging.PagingRequest;
+import com.rongji.egov.wflow.business.model.dto.transfer.SubmitParam;
 import com.zjhousing.egov.proposal.business.model.Proposal;
 import com.zjhousing.egov.proposal.business.query.ProposalAssistQuery;
 import org.apache.solr.common.SolrDocument;
@@ -113,5 +114,12 @@ public interface ProposalMng {
    * @throws Exception
    */
   boolean getFlowStatus(String docId) throws Exception;
+
+  /**
+   * 子流程-正常流转人员提交
+   * @param submitParam
+   * @throws Exception
+   */
+  Boolean submitProcessUsers(SubmitParam submitParam) throws Exception;
 
 }

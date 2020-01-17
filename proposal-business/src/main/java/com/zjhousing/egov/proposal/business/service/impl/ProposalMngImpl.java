@@ -30,10 +30,12 @@ import com.rongji.egov.utils.api.paging.PagingRequest;
 import com.rongji.egov.utils.api.paging.Sort;
 import com.rongji.egov.utils.common.IdUtil;
 import com.rongji.egov.utils.exception.BusinessException;
+import com.rongji.egov.wflow.business.model.dto.transfer.SubmitParam;
 import com.rongji.egov.wflow.business.service.engine.transfer.TodoTransferMng;
 import com.zjhousing.egov.proposal.business.dao.ProposalDao;
 import com.zjhousing.egov.proposal.business.model.Proposal;
 import com.zjhousing.egov.proposal.business.query.ProposalAssistQuery;
+import com.zjhousing.egov.proposal.business.service.ProposalFlowOperator;
 import com.zjhousing.egov.proposal.business.service.ProposalMng;
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -72,6 +74,8 @@ public class ProposalMngImpl implements ProposalMng {
   private UserDao userDao;
   @Resource
   private FlowRelationMng flowRelationMng;
+  @Resource
+  private ProposalFlowOperator proposalFlowOperator;
 
   @Override
   public int insertProposalMotion(Proposal proposal) {
@@ -570,6 +574,25 @@ public class ProposalMngImpl implements ProposalMng {
     return this.flowRelationMng.getFlowStatus(docId,moduleId,FlowTypeConstant.TO_DO);
   }
 
+  @Override
+  @Transactional
+  public Boolean submitProcessUsers(SubmitParam submitParam) throws Exception {
+    Proposal proposal = this.getProposalMotionById(submitParam.getDocId());
+    JSONObject permission = this.todoTransferMng.getProcessPermission(submitParam.getAid(), proposal.toMap());
+    if(permission!=null && !"".equals(permission)){
+      String buttons =permission.getJSONObject("business").getString("buttons");
+      //判断当前环节是否存在分发权限
+      if(buttons != null && buttons.indexOf("assist") > -1){
+        this.insertSubProposalMotions(submitParam.getDocId(),submitParam.getAid(),null,"0");
+      }
+      //判断当前环节是否存在汇合权限
+      if(buttons != null && buttons.indexOf("converge") > -1){
+        this.getFlowStatus(submitParam.getDocId());
+      }
+    }
+    return this.todoTransferMng.submitProcessUsers(submitParam.getAid(), proposal.toMap(), this.proposalFlowOperator, submitParam.getNextStates(), submitParam.getMsgType());
+  }
+
 
   /**
    * 添加重要信息修改日志
@@ -591,7 +614,7 @@ public class ProposalMngImpl implements ProposalMng {
         EgovDocUpdateItemLog egovDocUpdateItemLog = new EgovDocUpdateItemLog(docId, "标题", oldSubject, newSubject, "PROPOSALMOTION");
         list.add(egovDocUpdateItemLog);
       }
-      
+
       if (list.size() > 0) {
         this.egovDocUpdateItemLogMng.batchInsertEgovDocUpdateItemLog(list, user);
       }

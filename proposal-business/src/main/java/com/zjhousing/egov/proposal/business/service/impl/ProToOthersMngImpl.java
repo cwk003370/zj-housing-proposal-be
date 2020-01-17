@@ -62,8 +62,6 @@ public class ProToOthersMngImpl implements ProToOthersMng {
   @Resource
   private RmsParamDao rmsParamDao;
   @Resource
-  private FlowWorkItemInstanceDao flowWorkItemInstanceDao;
-  @Resource
   private DocBusinessProperties docBusinessProperties;
   @Resource
   private FlowWorkTodoDao flowWorkTodoDao;

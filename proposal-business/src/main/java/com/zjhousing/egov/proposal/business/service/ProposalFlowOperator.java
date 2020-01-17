@@ -123,13 +123,13 @@ public class ProposalFlowOperator implements ModuleOperator {
    */
   public void proToOthers(Proposal proposal) {
     if (TransferLibraryTypeEnum.FILE_DONE_TRANSFER.equals(proposal.getTransferLibraryType())) {
-      ProToOthersQuery disToOthersQuery = new ProToOthersQuery();
-      disToOthersQuery.setType(ExternalToOthersConstant.TO_ARCHIVE);
-      disToOthersQuery.setDocId(proposal.getId());
-      disToOthersQuery.setPublicFlag("PUBLIC");
+      ProToOthersQuery proToOthersQuery = new ProToOthersQuery();
+      proToOthersQuery.setType(ExternalToOthersConstant.TO_ARCHIVE);
+      proToOthersQuery.setDocId(proposal.getId());
+      proToOthersQuery.setPublicFlag("PUBLIC");
       Set<String> readers = new HashSet<>();
-      disToOthersQuery.setReaders(readers);
-      this.proToOthersMng.proToOthers(disToOthersQuery);
+      proToOthersQuery.setReaders(readers);
+      this.proToOthersMng.proToOthers(proToOthersQuery);
     }
   }
 

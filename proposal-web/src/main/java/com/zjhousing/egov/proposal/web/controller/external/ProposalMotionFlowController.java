@@ -115,26 +115,8 @@ public class ProposalMotionFlowController implements FlowTransferController, Flo
 
   @Override
   @Transactional
-  public Boolean submitProcessUsers(@RequestBody SubmitParam submitParam)  {
-    try {
-      Proposal proposal = this.proposalMng.getProposalMotionById(submitParam.getDocId());
-      JSONObject permission = this.todoTransferMng.getProcessPermission(submitParam.getAid(), proposal.toMap());
-      if(permission!=null && !"".equals(permission)){
-        String buttons =permission.getJSONObject("business").getString("buttons");
-        //判断当前环节是否存在分发权限
-        if(buttons != null && buttons.indexOf("assist") > -1){
-          this.proposalMng.insertSubProposalMotions(submitParam.getDocId(),submitParam.getAid(),null,"0");
-        }
-        //判断当前环节是否存在汇合权限
-        if(buttons != null && buttons.indexOf("converge") > -1){
-          this.proposalMng.getFlowStatus(submitParam.getDocId());
-        }
-      }
-      return this.todoTransferMng.submitProcessUsers(submitParam.getAid(), proposal.toMap(), this.proposalFlowOperator, submitParam.getNextStates(), submitParam.getMsgType());
-    }catch (Exception e){
-      TransactionAspectSupport.currentTransactionStatus().setRollbackOnly();
-      throw new BusinessException(e.getMessage());
-    }
+  public Boolean submitProcessUsers(@RequestBody SubmitParam submitParam) throws Exception {
+    return this.proposalMng.submitProcessUsers(submitParam);
   }
 
   @Override

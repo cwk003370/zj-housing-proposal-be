@@ -26,7 +26,6 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
  * @author chenwenkang
  * @date 2019-11-22
  **/
-@EnableTransactionManagement
 @SpringBootApplication
 @Configuration
 @Import({
