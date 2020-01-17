@@ -114,7 +114,6 @@ public class ProposalMotionFlowController implements FlowTransferController, Flo
   }
 
   @Override
-  @Transactional
   public Boolean submitProcessUsers(@RequestBody SubmitParam submitParam) throws Exception {
     return this.proposalMng.submitProcessUsers(submitParam);
   }
