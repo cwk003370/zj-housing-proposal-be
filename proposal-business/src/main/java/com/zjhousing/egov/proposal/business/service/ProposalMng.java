@@ -92,7 +92,7 @@ public interface ProposalMng {
    * @param mainDocId 主流程文档ID
    * @param aid 主流程环节ID
    * @param deptNos 补交协办部门ID
-   * @param methodType  0-新增交办 1-补充交办
+   * @param methodType  0-流程交办 1-追加协办
    * @return
    */
   boolean insertSubProposalMotions(String mainDocId,String aid,List<String> deptNos,String methodType);
