@@ -1296,6 +1296,9 @@ public class Proposal extends FlowObject implements Serializable {
     if (StringUtils.isNotBlank(this.subJudge)) {
       map.put("S_subJudge", this.subJudge);
     }
+    if (StringUtils.isNotBlank(this.extension)) {
+      map.put("S_extension", this.extension);
+    }
 
     if (this.draftDate != null) {
       // 写入时间 年月
