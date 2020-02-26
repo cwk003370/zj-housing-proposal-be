@@ -1089,7 +1089,7 @@
         <![CDATA[ AND  DRAFT_DATE >= #{proposal.beginDate} ]]>
       </if>
       <if test="proposal.endDate!=null">
-        <![CDATA[ AND DRAFT_DATE <= #{proposal.endDate} ]]>
+        <![CDATA[ AND DRAFT_DATE <= DATE_ADD(DATE_ADD(#{proposal.endDate},INTERVAL 1 DAY),INTERVAL -1 SECOND) ]]>
       </if>
 
     </where>

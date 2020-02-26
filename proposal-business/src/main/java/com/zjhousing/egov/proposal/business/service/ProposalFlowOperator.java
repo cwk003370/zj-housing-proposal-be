@@ -106,10 +106,15 @@ public class ProposalFlowOperator implements ModuleOperator {
     proposal.setFlowStatus("9");
 
     Proposal pro = this.proposalMng.getProposalMotionById(docId);
+
     this.proToOthers(pro);
     // 归历史公文库（转历史公文库类型：办结转）
     if (TransferLibraryTypeEnum.FILE_DONE_TRANSFER.equals(proposal.getTransferLibraryType())) {
       proposal.setArchiveFlag("1");
+    }
+    //更新流程关系
+    if("1".equals(pro.getSubJudge())){
+      updateFlowRelation(docId,"PROPOSALMOTION", FlowTypeConstant.TO_DO);
     }
     this.proposalMng.updateProposalMotion(proposal);
 
@@ -190,10 +195,6 @@ public class ProposalFlowOperator implements ModuleOperator {
       this.proToOthers(proposal);
       if (TransferLibraryTypeEnum.FILE_DONE_TRANSFER.equals(proposal.getTransferLibraryType())) {
         proposal.setArchiveFlag("1");
-      }
-      //更新流程关系
-      if("1".equals(proposal.getSubJudge())){
-        updateFlowRelation(docId,"PROPOSALMOTION", FlowTypeConstant.TO_DO);
       }
     }
 
