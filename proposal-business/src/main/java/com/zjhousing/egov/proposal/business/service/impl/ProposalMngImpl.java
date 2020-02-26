@@ -417,9 +417,6 @@ public class ProposalMngImpl implements ProposalMng {
       // 得到提案议案受理，根据群组拿到用户
       UmsGroup umsGroup = userDao.getUmsGroup(department.get(i) + "_" + "PRO", securityUser.getSystemNo());
       UmsGroupCate umsGroupCate = userDao.getUmsGroupCate("PRO", securityUser.getSystemNo());
-      if(umsGroup==null ||StringUtils.isBlank(umsGroup.toString())){
-        throw new BusinessException("承办单位群组的提案受理人未配置");
-      }
       if (umsGroup != null && umsGroupCate != null) {
         List<UmsUser> umsUsers = userDao.listGroupUser(umsGroup.getGroupNo(), securityUser.getSystemNo());
         for (UmsUser umsUser : umsUsers) {
@@ -440,7 +437,7 @@ public class ProposalMngImpl implements ProposalMng {
       }
 
       if (readers.size() == 0) {
-        throw new BusinessException("【" + umsOrg.getOrgName() + "】未配置收文登记人，请及时联系管理员进行配置");
+        throw new BusinessException("【" + umsOrg.getOrgName() + "】未配置提案受理人，请及时联系管理员进行配置");
       }
       String unitName ="";
       if(umsOrg.getUnitNo()!=null){
