@@ -63,8 +63,11 @@ public class ProposalFlowOperator implements ModuleOperator {
     proposal.setFlowStatus("1");
     // 添加查阅用户
     HashSet<String> readersSet = (HashSet<String>) proposal.getReaders();
+
     String read = readers.split("/")[0];
     readersSet.add(read);
+    SecurityUser user = SecurityUtils.getPrincipal();
+    readersSet.add(user.getUserNo());
     proposal.setReaders(readersSet);
     //TODO 阅办单初始化
 
@@ -106,7 +109,11 @@ public class ProposalFlowOperator implements ModuleOperator {
     proposal.setFlowStatus("9");
 
     Proposal pro = this.proposalMng.getProposalMotionById(docId);
-
+    // 添加查阅用户
+    Set<String> readersSet = pro.getReaders();
+    SecurityUser user = SecurityUtils.getPrincipal();
+    readersSet.add(user.getUserNo());
+    proposal.setReaders(readersSet);
     this.proToOthers(pro);
     // 归历史公文库（转历史公文库类型：办结转）
     if (TransferLibraryTypeEnum.FILE_DONE_TRANSFER.equals(proposal.getTransferLibraryType())) {

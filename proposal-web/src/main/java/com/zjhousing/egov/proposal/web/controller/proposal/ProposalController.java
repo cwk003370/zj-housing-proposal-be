@@ -148,7 +148,7 @@ public class ProposalController {
   }
   /**
    * 提案议案分页
-   * 界面：登记、办结
+   * 界面：登记
    *
    * @param paging
    * @param proposal
@@ -168,6 +168,24 @@ public class ProposalController {
       //拟稿人
       proposal.setDraftUserNo(user.getUserNo());
     }
+    proposal.setSystemNo(user.getSystemNo());
+    String[] strings = null;
+    if (StringUtils.isNotBlank(word)) {
+      strings = word.trim().split("\\s+");
+    }
+    return this.proposalMng.getProposalMotion4Page(paging, proposal, strings);
+  }
+  /**
+   * 提案议案分页
+   * 界面：回收站
+   *
+   * @param paging
+   * @param proposal
+   * @param word
+   * @return
+   */
+  @GetMapping("/proposalMotionPageJsonRecycle")
+  public Page<Proposal> proposalPageJsonRecycle(@CurrentUser SecurityUser user, PagingRequest<Proposal> paging, Proposal proposal, String word) {
     proposal.setSystemNo(user.getSystemNo());
     String[] strings = null;
     if (StringUtils.isNotBlank(word)) {
