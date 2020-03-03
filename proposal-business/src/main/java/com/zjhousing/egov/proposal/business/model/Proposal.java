@@ -1194,26 +1194,24 @@ public class Proposal extends FlowObject implements Serializable {
     map.put(ModuleFiledConst.BUSINESS_CATE, "003");
     map.put(ModuleFiledConst.REG_ORG_NAME, this.draftDept);
     map.put(ModuleFiledConst.PRIORITY, this.urgentLevel);
-    if(this.getRequestDate()!=null){
-      SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-      Calendar c = Calendar.getInstance();
-      if("1".equals(this.getSubJudge())){
-        if(this.getSubRequestDate()!=null){
-          c.setTime(this.getSubRequestDate());
-          c.add(Calendar.DAY_OF_MONTH, 1);
-          c.add(Calendar.SECOND, -1);
-          this.setExtension("{\"feedbackTime\":\""+formatter.format(c.getTime())+"\"}");
-        }
-      }else{
-        if(this.getRequestDate()!=null){
-          c.setTime(this.getRequestDate());
-          c.add(Calendar.DAY_OF_MONTH, 1);
-          c.add(Calendar.SECOND, -1);
-          this.setExtension("{\"feedbackTime\":\""+formatter.format(c.getTime())+"\"}");
-        }
+    SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    Calendar c = Calendar.getInstance();
+    if("1".equals(this.getSubJudge())){
+      if(this.getSubRequestDate()!=null){
+        c.setTime(this.getSubRequestDate());
+        c.add(Calendar.DAY_OF_MONTH, 1);
+        c.add(Calendar.SECOND, -1);
+        this.setExtension("{\"feedbackTime\":\""+formatter.format(c.getTime())+"\"}");
       }
-
+    }else{
+      if(this.getRequestDate()!=null){
+        c.setTime(this.getRequestDate());
+        c.add(Calendar.DAY_OF_MONTH, 1);
+        c.add(Calendar.SECOND, -1);
+        this.setExtension("{\"feedbackTime\":\""+formatter.format(c.getTime())+"\"}");
+      }
     }
+
     map.put(ModuleFiledConst.EXTENSION, this.extension);
     return map;
   }
@@ -1245,6 +1243,10 @@ public class Proposal extends FlowObject implements Serializable {
     if (StringUtils.isNotBlank(this.getFlowStatus())) {
       map.put("S_flowStatus", this.getFlowStatus());
     }
+    if (StringUtils.isNotBlank(this.getMeetingSession())) {
+      map.put("S_meetingSession", this.getMeetingSession());
+    }
+
     if (!StringUtils.equals(this.getFlowStatus(), "8")) {
       Set<String> strings = new HashSet();
       strings.add("sys_manager");
