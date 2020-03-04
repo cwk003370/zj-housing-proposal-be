@@ -203,6 +203,10 @@ public class ProposalFlowOperator implements ModuleOperator {
       if (TransferLibraryTypeEnum.FILE_DONE_TRANSFER.equals(proposal.getTransferLibraryType())) {
         proposal.setArchiveFlag("1");
       }
+      //更新流程关系
+      if("1".equals(proposal.getSubJudge())){
+        updateFlowRelation(docId,"PROPOSALMOTION", FlowTypeConstant.TO_DO);
+      }
     }
 
     this.proposalMng.updateProposalMotion(proposal);
