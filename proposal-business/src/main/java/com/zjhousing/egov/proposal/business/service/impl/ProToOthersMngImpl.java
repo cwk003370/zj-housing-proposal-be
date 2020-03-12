@@ -295,7 +295,7 @@ public class ProToOthersMngImpl implements ProToOthersMng {
     // 文件标题
     map.put(ArchiveConstant.TITLE, proposal.getSubject());
     // 文件字号
-    String docMark = proposal.getDocMark();
+    String docMark = proposal.getRelReceivalMark();
     map.put(ArchiveConstant.DOC_MARK, docMark);
 //    // 文件单位
 //    map.put(ArchiveConstant.FILE_UNIT, proposal.getSourceUnit());
@@ -416,7 +416,7 @@ public class ProToOthersMngImpl implements ProToOthersMng {
       throw new BusinessException("请选择部门");
     }
     HashMap<String, Object> map = new HashMap<>(16);
-    map.put(DepartmentConstant.DOCMARK, proposal.getDocMark());
+    map.put(DepartmentConstant.DOCMARK, proposal.getRelReceivalMark());
     map.put(DepartmentConstant.SOURCE_CATEGORY, "提案议案");
     SecurityUser user = SecurityUtils.getPrincipal();
     map.put(DepartmentConstant.SOURCE_UNIT, user.getUnitName());
@@ -471,7 +471,7 @@ public class ProToOthersMngImpl implements ProToOthersMng {
     writ.addElement(ELEMENT).addAttribute(NAME, "writ_file_type").setText("发文");
     //文号
     writ.addElement(ELEMENT).addAttribute(NAME, "writ_code")
-      .setText(StringUtils.defaultString(proposal.getDocMark()));
+      .setText(StringUtils.defaultString(proposal.getRelReceivalMark()));
     //归档年度
     Calendar calendar = Calendar.getInstance();
     int year = calendar.get(Calendar.YEAR);
