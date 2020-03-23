@@ -431,8 +431,10 @@ public class ProposalMngImpl implements ProposalMng {
           }
           readers.add(umsUser.getUserNo());
         }
-        if (null != umsUsers && umsUsers.size() > 0) {
+        if (null != umsUsers && umsUsers.size() == 1) {
           deptProUser = umsUsers.get(0);
+        } else if (null != umsUsers && umsUsers.size() > 1){
+          throw new BusinessException("【" + umsOrg.getOrgName() + "】只能配置一个提案受理人，请及时联系管理员进行配置");
         }
       }
 
