@@ -122,4 +122,6 @@ public interface ProposalMng {
    */
   Boolean submitProcessUsers(SubmitParam submitParam) throws Exception;
 
+
+
 }

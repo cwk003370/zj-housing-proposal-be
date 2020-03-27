@@ -4,6 +4,7 @@ import com.rongji.egov.flowutil.business.model.EgovTemplateFile;
 import com.rongji.egov.flowutil.business.service.EgovTemplateFileMng;
 import com.rongji.egov.user.business.model.SecurityUser;
 import com.rongji.egov.user.business.util.SecurityUtils;
+import com.rongji.egov.user.web.annotation.CurrentUser;
 import com.rongji.egov.utils.api.paging.Page;
 import com.rongji.egov.utils.api.paging.PagingRequest;
 import com.rongji.egov.utils.exception.BusinessException;
@@ -15,6 +16,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +33,8 @@ public class ProposalSequenceController {
   private ProSequenceMng proSequenceMng;
   @Autowired
   private EgovTemplateFileMng templateFileMng;
-
+  @Resource
+  private EgovTemplateFileMng egovTemplateFileMng;
   /**
    * @apiDefine group 收文-流水号配置
    */
@@ -140,7 +143,49 @@ public class ProposalSequenceController {
     return this.proSequenceMng.getTemplateFileByDocCate(docCate, type, os, systemNo);
   }
 
+  /**
+   * 根据文件字及模板类别得到模板信息列表
+   *
+   * @param docCate 文件类型
+   * @param systemNo 系统编码
+   * @return
+   */
+  @GetMapping("/disfileword/getTemplateFileByFileWordName")
+  public List<EgovTemplateFile> getTemplateFileByFileWordName(@CurrentUser SecurityUser user, @RequestParam(value = "type") String type,
+                                                              @RequestParam(value = "docCate") String docCate, String os, String systemNo) {
+    ProposalSequence proposalSequence = new ProposalSequence();
+    proposalSequence.setDocCate(docCate);
+    if (StringUtils.isBlank(systemNo)) {
+      systemNo = user.getSystemNo();
+    }
+    proposalSequence.setSystemNo(systemNo);
+    //流水号
+    List<ProposalSequence> proposalSequencelist = this.proSequenceMng.getSequenceList(proposalSequence);
+    if (null == proposalSequencelist|| proposalSequencelist.size() == 0) {
+      throw new BusinessException("请为相应的文件类型配置流水号");
+    }
+    List<String> templateIdList = new ArrayList<>();
+    for (ProposalSequence rs : proposalSequencelist) {
+      if (rs.getMainId() != null) {
+        templateIdList = rs.getMainId();
+        break;
+      }
+    }
 
+    if (!templateIdList.isEmpty()) {
+      List<EgovTemplateFile> list = this.egovTemplateFileMng.getEgovTemplateFileByTemplateIds(templateIdList, os);
+
+      List<EgovTemplateFile> templateFiles = new ArrayList<>();
+      for (EgovTemplateFile egovTemplateFile : list) {
+        if (egovTemplateFile.getStatus().equals("1")) {
+          templateFiles.add(egovTemplateFile);
+        }
+      }
+      return templateFiles;
+    } else {
+      return null;
+    }
+  }
   /**
    * 根据文件类型、办阅件获取阅办单集合
    *

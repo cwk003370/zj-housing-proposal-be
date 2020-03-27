@@ -76,7 +76,6 @@ public class ProposalSequence {
    * 阅办单ID集合
    */
   private List<String> dealFormId;
-
   /**
    * 运转单ID集合
    */
@@ -93,6 +92,11 @@ public class ProposalSequence {
    * 统一部署所属系统编码
    */
   private String systemNo;
+
+  /**
+   * 正文模板ID集合
+   */
+  private List<String> mainId;
 
   public String getId() {
     return this.id;
@@ -199,6 +203,14 @@ public class ProposalSequence {
     this.systemNo = systemNo;
   }
 
+  public List<String> getMainId() {
+    return mainId;
+  }
+
+  public void setMainId(List<String> mainId) {
+    this.mainId = mainId;
+  }
+
   @Override
   public String toString() {
     final StringBuffer sb = new StringBuffer("ProposalSequence{");
@@ -215,6 +227,7 @@ public class ProposalSequence {
     sb.append(", errorId=").append(errorId);
     sb.append(", sortNo=").append(sortNo);
     sb.append(", systemNo='").append(systemNo).append('\'');
+    sb.append(", mainId=").append(mainId);
     sb.append('}');
     return sb.toString();
   }

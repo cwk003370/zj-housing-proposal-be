@@ -15,6 +15,7 @@
     <result property="errorId" column="ERROR_ID"/>
     <result property="sortNo" column="SORT_NO"/>
     <result property="systemNo" column="SYSTEM_NO" javaType="java.lang.String" jdbcType="VARCHAR"/>
+    <result property="mainId" column="MAIN_ID"/>
   </resultMap>
 
   <sql id="allColumns">
@@ -30,7 +31,8 @@
         TRANSPORT_ID,
         ERROR_ID,
         SORT_NO,
-        SYSTEM_NO
+        SYSTEM_NO,
+        MAIN_ID
     </sql>
 
   <insert id="insertSequence" parameterType="com.zjhousing.egov.proposal.business.model.ProposalSequence">
@@ -51,6 +53,7 @@
     #{errorId,jdbcType=VARCHAR},
     #{sortNo,jdbcType=INTEGER},
     #{systemNo,jdbcType=VARCHAR,javaType=java.lang.String }
+    #{mainId,jdbcType=VARCHAR},
     )
   </insert>
 
@@ -89,6 +92,9 @@
       </if>
       <if test="sortNo!=null ">
         SORT_NO = #{sortNo},
+      </if>
+      <if test="mainId!=null ">
+        MAIN_ID = #{mainId},
       </if>
     </set>
     <where>

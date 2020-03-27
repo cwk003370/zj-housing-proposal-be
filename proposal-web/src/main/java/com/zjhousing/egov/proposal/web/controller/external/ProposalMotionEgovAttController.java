@@ -2,17 +2,18 @@ package com.zjhousing.egov.proposal.web.controller.external;
 
 import com.rongji.egov.attachutil.controller.EgovAttController;
 import com.rongji.egov.attachutil.model.EgovAtt;
+import com.rongji.egov.attachutil.service.EgovAttMng;
 import com.rongji.egov.user.business.model.SecurityUser;
 import com.rongji.egov.user.web.annotation.CurrentUser;
 import com.rongji.egov.utils.exception.BusinessException;
+import com.zjhousing.egov.proposal.business.model.Proposal;
 import com.zjhousing.egov.proposal.business.service.ProposalMng;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
-
-import javax.annotation.Resource;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -26,6 +27,11 @@ import java.util.List;
 @RequestMapping("/proposalmotion")
 @RestController
 public class ProposalMotionEgovAttController extends EgovAttController {
+  @Autowired
+  private ProposalMng ProposalMng;
+  @Autowired
+  private EgovAttMng egovAttMng;
+
   @Override
   public List<EgovAtt> getEgovAttByDocId(String docId, String type, boolean isCotainFile) {
     return super.getEgovAttByDocId(docId, type, isCotainFile);
@@ -53,6 +59,23 @@ public class ProposalMotionEgovAttController extends EgovAttController {
 
   @Override
   public String handleFileUpload(@CurrentUser SecurityUser user, HttpServletRequest request) {
+    String type = request.getParameter("type");
+    String docId = request.getParameter("docId");
+
+    if ("main_doc".equals(type)) {
+      Proposal model = ProposalMng.getProposalMotionById(docId);
+      //判断是否是局提案
+      if (model!=null && !"1".equals(model.getSubJudge())) {
+        throw new BusinessException("你不能上传正文，你的正文只能由主办单位传递上来！");
+      }
+
+      //判断是否有反馈附件
+      List<EgovAtt> egovAttsTemp = egovAttMng.getEgovAttsByDocIdAndType(docId, "main_doc", false);
+      if (!egovAttsTemp.isEmpty()) {
+        throw new BusinessException("只能上传一份正文！");
+      }
+    }
+
     return super.handleFileUpload(user, request);
   }
 

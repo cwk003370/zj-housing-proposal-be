@@ -5,7 +5,6 @@ import com.rongji.egov.utils.api.paging.PagingRequest;
 import com.zjhousing.egov.proposal.business.dao.ProposalDao;
 import com.zjhousing.egov.proposal.business.mapper.ProposalMapper;
 import com.zjhousing.egov.proposal.business.model.Proposal;
-import com.zjhousing.egov.proposal.business.model.ProposalAssigned;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.Resource;

@@ -221,17 +221,7 @@ public class ProposalFlowOperator implements ModuleOperator {
   public int updateFlowRelation(String docId,String moduleId,String flowType){
     try {
       //添加反馈文件
-      List<String> typeList = new ArrayList<>();
-      typeList.add("feedback_file");
-      List<EgovAtt> egovAttList =this.egovAttMng.getEgovAttsByDocIdAndType(docId,typeList,false);
-      if(egovAttList!=null && !egovAttList.isEmpty()){
-        FlowRelation model = new FlowRelation();
-        model.setSonModuleNo(egovAttList.get(0).getModuleId());
-        model.setSonDocId(egovAttList.get(0).getDocId());
-        model.setFeedbackFile(egovAttList.get(0).getId());
-        model.setFlowType(FlowTypeConstant.TO_DO);
-        this.flowRelationMng.addFlowRelationToFeedback(model);
-      }
+      this.flowRelationMng.addFlowRelationMainToFeedback(docId,moduleId);
       // 更改流程关系子文档办理时间
       FlowRelation flowRelation = new FlowRelation();
       flowRelation.setSonDocId(docId);

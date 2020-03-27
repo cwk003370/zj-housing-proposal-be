@@ -3,8 +3,6 @@ package com.zjhousing.egov.proposal.business.dao;
 import com.rongji.egov.utils.api.paging.Page;
 import com.rongji.egov.utils.api.paging.PagingRequest;
 import com.zjhousing.egov.proposal.business.model.Proposal;
-import com.zjhousing.egov.proposal.business.model.ProposalAssigned;
-import org.apache.ibatis.annotations.Param;
 
 
 import java.util.List;
