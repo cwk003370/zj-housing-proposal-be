@@ -24,7 +24,7 @@ public interface ProposalMng {
    */
   int insertProposalMotion(Proposal proposal);
   /**
-   * 修改发文
+   * 修改提案
    *
    * @param proposal
    * @return
@@ -63,7 +63,17 @@ public interface ProposalMng {
    * @return
    */
   Page<Proposal> getProposalMotion4Page(PagingRequest<Proposal> paging, Proposal proposal, String[] word);
-
+  /**
+   * 修改提案交办单意见
+   *
+   * @param docId 文档ID
+   * @param bureauOpinions 局领导意见
+   * @param officeOpinions 办公室领导意见
+   * @param subAssignmentRequirements 交办要求
+   * @param subLeaderOpinions 领导意见
+   * @return true 更新成功，false更新失败
+   */
+   boolean updateProposalOption(String docId,String bureauOpinions,String officeOpinions,String subAssignmentRequirements ,String subLeaderOpinions);
 
 
   /**
@@ -121,6 +131,14 @@ public interface ProposalMng {
    * @throws Exception
    */
   Boolean submitProcessUsers(SubmitParam submitParam) throws Exception;
+
+  /**
+   * 子流程-同步子流程局交办单意见
+   * @param  sonDocId
+   * @return true 表示更新成功，false表示未更新
+   * @throws Exception
+   */
+  Boolean updateSubOption(String sonDocId) throws Exception;
 
 
 

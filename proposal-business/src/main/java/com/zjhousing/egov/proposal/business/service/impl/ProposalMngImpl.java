@@ -17,6 +17,7 @@ import com.rongji.egov.docconfig.business.service.DocOperatorLogMng;
 import com.rongji.egov.flowrelation.business.constant.UnitTypeConstant;
 import com.rongji.egov.flowrelation.business.constant.FlowTypeConstant;
 import com.rongji.egov.flowrelation.business.model.FlowRelation;
+import com.rongji.egov.flowrelation.business.model.query.FlowRelationQuery;
 import com.rongji.egov.flowrelation.business.service.FlowRelationMng;
 import com.rongji.egov.flowutil.business.service.DocResourceMng;
 import com.rongji.egov.solrData.business.dao.SolrDataDao;
@@ -236,6 +237,22 @@ public class ProposalMngImpl implements ProposalMng {
   @Override
   public Page<Proposal> getProposalMotion4Page(PagingRequest<Proposal> paging, Proposal proposal, String[] word) {
     return this.proposalDao.getProposalMotion4Page(paging, proposal, word);
+  }
+
+  @Override
+  public boolean updateProposalOption(String docId, String bureauOpinions, String officeOpinions, String subAssignmentRequirements, String subLeaderOpinions) {
+    Proposal proposal =this.proposalDao.getProposalMotionById(docId);
+    if(proposal!=null && "1".equals(proposal.getSubJudge())){
+      proposal.setSubAssignmentRequirements(subAssignmentRequirements);
+      proposal.setSubLeaderOpinions(subLeaderOpinions);
+    } else if(proposal!=null&& !"1".equals(proposal.getSubJudge())){
+      proposal.setBureauOpinions(bureauOpinions);
+      proposal.setOfficeOpinions(officeOpinions);
+    }else{
+      return false;
+    }
+    this.proposalDao.updateProposalMotion(proposal);
+    return true;
   }
 
 
@@ -590,6 +607,28 @@ public class ProposalMngImpl implements ProposalMng {
       }
     }
     return this.todoTransferMng.submitProcessUsers(submitParam.getAid(), proposal.toMap(), this.proposalFlowOperator, submitParam.getNextStates(), submitParam.getMsgType());
+  }
+
+  @Override
+  public Boolean updateSubOption(String sonDocId) throws Exception {
+    FlowRelationQuery flowRelationQuery = new FlowRelationQuery();
+    flowRelationQuery.setSonDocId(sonDocId);
+    flowRelationQuery.setSonModuleNo("PROPOSALMOTION");
+    flowRelationQuery.setFlowType(FlowTypeConstant.TO_DO);
+    List<FlowRelation> flowRelationList = this.flowRelationMng.getFlowRelationAll(flowRelationQuery);
+    if(flowRelationList!=null && !flowRelationList.isEmpty()){
+      FlowRelation flowRelation = flowRelationList.get(0);
+      if(flowRelation!=null){
+        //同步子流程局交办单领导意见和办公室意见
+        Proposal parentProposal =this.proposalDao.getProposalMotionById(flowRelation.getParentDocId());
+        Proposal sonProposal = this.proposalDao.getProposalMotionById(flowRelation.getSonDocId());
+        sonProposal.setBureauOpinions(parentProposal.getBureauOpinions());
+        sonProposal.setOfficeOpinions(parentProposal.getOfficeOpinions());
+        this.proposalDao.updateProposalMotion(sonProposal);
+        return true;
+      }
+    }
+    return false;
   }
 
 

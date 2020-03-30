@@ -74,7 +74,8 @@ public class ProposalController {
    */
   @GetMapping("/getProposalMotionDetailById")
   @DocReadLogAn(moduleId = "proposalMotion", operator = "insert")
-  public JSONObject getProposalDetailById(@RequestParam("docId") String docId, @RequestParam(name = "aid", required = false) String aid) {
+  public JSONObject getProposalDetailById(@RequestParam("docId") String docId, @RequestParam(name = "aid", required = false) String aid) throws Exception {
+    this.proposalMng.updateSubOption(docId);
     return this.proposalMng.getProposalMotionDetailById(docId, aid);
   }
 
@@ -296,4 +297,19 @@ public class ProposalController {
     return this.proposalMng.insertSubProposalMotions(docId,aid,deptNos,"1");
 
   }
+
+  /**
+   * 修改提案交办单意见
+   *
+   * @param docId 文档ID
+   * @param bureauOpinions 局领导意见
+   * @param officeOpinions 办公室领导意见
+   * @param subAssignmentRequirements 交办要求
+   * @param subLeaderOpinions 领导意见
+   * @return
+   */
+  @GetMapping("/updateProposalOption")
+   public boolean updateProposalOption(String docId,String bureauOpinions,String officeOpinions,String subAssignmentRequirements ,String subLeaderOpinions){
+     return this.proposalMng.updateProposalOption(docId,bureauOpinions,officeOpinions,subAssignmentRequirements,subLeaderOpinions);
+   }
 }
