@@ -15,17 +15,21 @@ import com.rongji.egov.doc.business.external.query.DealForm;
 import com.rongji.egov.doc.business.external.service.ComToOthersMng;
 import com.rongji.egov.doc.business.external.util.ArchiveUtil;
 import com.rongji.egov.doc.business.external.util.WebServiceUtil;
+import com.rongji.egov.flowrelation.business.constant.FlowTypeConstant;
+import com.rongji.egov.flowrelation.business.constant.UnitTypeConstant;
+import com.rongji.egov.flowrelation.business.model.FlowRelation;
+import com.rongji.egov.flowrelation.business.service.FlowRelationMng;
 import com.rongji.egov.user.business.dao.RmsParamDao;
 import com.rongji.egov.user.business.dao.UserDao;
 import com.rongji.egov.user.business.ex.ExCommon;
-import com.rongji.egov.user.business.model.SecurityUser;
-import com.rongji.egov.user.business.model.UmsUser;
+import com.rongji.egov.user.business.model.*;
 import com.rongji.egov.user.business.util.SecurityUtils;
 import com.rongji.egov.utils.common.IdUtil;
 import com.rongji.egov.utils.exception.BusinessException;
 import com.rongji.egov.wflow.business.dao.engine.FlowWorkItemInstanceDao;
 import com.rongji.egov.wflow.business.dao.engine.FlowWorkTodoDao;
 import com.rongji.egov.wflow.business.model.po.engine.FlowWorkTodo;
+import com.zjhousing.egov.proposal.business.constant.ReceivalConstant;
 import com.zjhousing.egov.proposal.business.model.Proposal;
 
 import com.zjhousing.egov.proposal.business.query.ProToOthersQuery;
@@ -40,6 +44,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.client.RestTemplate;
 
 import javax.annotation.Resource;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import static com.rongji.egov.doc.business.constant.ExternalToOthersConstant.*;
@@ -69,6 +74,8 @@ public class ProToOthersMngImpl implements ProToOthersMng {
   private UserDao userDao;
   @Resource
   private ComToOthersMng comToOthersMng;
+  @Resource
+  private FlowRelationMng flowRelationMng;
 
   @Override
   public boolean proToOthers(ProToOthersQuery proToOthersQuery) {
@@ -106,6 +113,47 @@ public class ProToOthersMngImpl implements ProToOthersMng {
           throw new BusinessException(jsonObject.getString("msg"));
         }
         fianl = res;
+        break;
+      case ExternalToOthersConstant.INNER_RECEIVAL:
+        String deptNo = proToOthersQuery.getDeptNo();
+        boolean recResult =false;
+        if (StringUtils.isBlank(deptNo)) {
+          throw new BusinessException("请选择部门");
+        }
+        String[] deptNos = deptNo.split(";");
+        for(String deptId :deptNos){
+          proToOthersQuery.setDeptNo(deptId);
+          map = this.getToReceivalHashMap(pro, proToOthersQuery);
+          JSONObject recJsonObject = this.withTokenRestTemplate.postForObject(this.docBusinessProperties.getRequestPrefix() + "/receival/insertOtherToReceival", map, JSONObject.class);
+          if (!"1".equals(recJsonObject.getString("status"))) {
+            throw new BusinessException(recJsonObject.getString("msg"));
+          }else {
+            recResult = true;
+          }
+          //添加流程关系
+          String mainDocId =map.get(ReceivalConstant.RESOURCE_ID).toString();
+          String recTargetId = map.get(ReceivalConstant.ID).toString();
+          FlowRelation flowRelation = new FlowRelation();
+          flowRelation.setId(IdUtil.getUID());
+          flowRelation.setParentDocId(mainDocId);
+          flowRelation.setSonDocId(recTargetId);
+          flowRelation.setParentModuleNo(MODULE_NO);
+          flowRelation.setSonModuleNo("RECEIVAL");
+          flowRelation.setFlowType(FlowTypeConstant.TO_READ);
+          flowRelation.setCreateTime((Date) map.get(ReceivalConstant.DRAFT_DATE));
+          flowRelation.setSonDept(map.get(ReceivalConstant.DRAFT_USER_DEPT).toString());
+          flowRelation.setSonDeptNo(map.get(ReceivalConstant.DRAFT_USER_DEPT_NO).toString());
+          flowRelation.setFlowVersion(Long.toString(System.currentTimeMillis()));
+          flowRelation.setUnitType(UnitTypeConstant.MAIN);
+          try{
+            flowRelationMng.addFlowRelationToFlow(flowRelation);
+          }catch (Exception e) {
+            e.printStackTrace();
+          }
+          //拷贝正文
+          this.egovAttMng.copyEgovAttByDocId(mainDocId,recTargetId, "attach", "main_doc");
+        }
+        fianl = recResult;
         break;
       case ExternalToOthersConstant.TO_OFFICE:
         break;
@@ -272,7 +320,7 @@ public class ProToOthersMngImpl implements ProToOthersMng {
             fianl = true;
           }
         } else {
-          throw new BusinessException(result.getString("msg"));
+          throw new BusinessException(result.getString("message"));
         }
         break;
       default:
@@ -437,6 +485,89 @@ public class ProToOthersMngImpl implements ProToOthersMng {
     JSONArray dealFromJsonArr = JSONArray.parseArray(JSON.toJSONString(dealForm));
     map.put(DepartmentConstant.DEAL_FORM, dealFromJsonArr);
     map.put(DepartmentConstant.FILE_LINK, "");
+    return map;
+  }
+  /**
+   * 格式转换：转部门阅办<br/>
+   * - map字段说明
+   * - 来文字号（收文） docMark 必填
+   * - 编号（发文） docMark 必填
+   * - 模块名称（收文、发文） sourceCategory 收文；发文；手动登记 必填
+   * - 来文单位（收文） sourceUnit 必填
+   * - 拟稿单位（发文） sourceUnit 必填
+   * - 文件标题（收文、发文） subject 必填
+   * - 部门编码 deptNo 要转给哪个部门阅办 必填
+   * - 紧急程度 urgenLevel 必填
+   * - 文件密级 secLevel 默认无 只有这个选项 必填
+   * - 转入人编码 sourceUserNo 必填
+   * - 转入人名称 sourceUser 必填
+   * - 源文件id sourceId 收发文文件id
+   * - 阅办单（收文、发文）dealFormId 阅办单【文件】id， 多个以分号隔开
+   * - 文件链接 fileLink 文件链接
+   *
+   * @param proposal 发文对象
+   * @return
+   */
+  public HashMap<String, Object> getToReceivalHashMap(Proposal proposal, ProToOthersQuery proToOthersQuery) {
+    HashMap<String, Object> map = new HashMap<>(16);
+    String receivalId = IdUtil.getUID();
+    map.put(ReceivalConstant.ID, receivalId);
+    map.put(ReceivalConstant.DOC_MARK, proposal.getDocMark());
+    map.put(ReceivalConstant.DOC_SEQUENCE, proposal.getRelReceivalMark());
+    map.put(ReceivalConstant.DOC_SEQUENCE_NUM,"-1");
+    map.put(ReceivalConstant.DOC_SEQUENCE_YEAR,"-1");
+    map.put(ReceivalConstant.SOURCE_UNIT,proposal.getDraftDept());
+
+
+    SecurityUser securityUser = SecurityUtils.getPrincipal();
+    HashSet<String> readers = new HashSet<>();
+    UmsOrg umsOrg = userDao.getUmsOrg(proToOthersQuery.getDeptNo());
+    UmsUser recProUser = new UmsUser();
+    // 得到提案议案受理，根据群组拿到用户
+    UmsGroup umsGroup = userDao.getUmsGroup(proToOthersQuery.getDeptNo() + "_" + "REG", securityUser.getSystemNo());
+    UmsGroupCate umsGroupCate = userDao.getUmsGroupCate("REG", securityUser.getSystemNo());
+    if (umsGroup != null && umsGroupCate != null) {
+      List<UmsUser> umsUsers = userDao.listGroupUser(umsGroup.getGroupNo(), securityUser.getSystemNo());
+      for (UmsUser umsUser : umsUsers) {
+        List<UmsUserProxy> umsUserProxies = userDao.listUserProxy(umsUser.getUserNo(), umsUser.getOrgNo());
+        long longTime = System.currentTimeMillis();
+        for (UmsUserProxy umsUserProxy : umsUserProxies) {
+          // 添加等效代理人，存在代理的情况
+          if (umsUserProxy.getProxyEndTime().getTime() >= longTime
+            && umsUserProxy.getProxyBeginTime().getTime() <= longTime) {
+            readers.add(umsUserProxy.getUserNoProxy());
+          }
+        }
+        readers.add(umsUser.getUserNo());
+      }
+      if (null != umsUsers && umsUsers.size() == 1) {
+        recProUser = umsUsers.get(0);
+      }
+    }
+
+    if (readers.size() == 0) {
+      throw new BusinessException("【" + umsOrg.getOrgName() + "】未配置收文受理人，请及时联系管理员进行配置");
+    }
+    String unitName ="";
+    if(umsOrg.getUnitNo()!=null){
+      unitName = this.userDao.getUmsOrg(umsOrg.getUnitNo()).getOrgName();
+    }
+    map.put(ReceivalConstant.DRAFT_USER,recProUser.getUserName());
+    map.put(ReceivalConstant.DRAFT_USER_NO,recProUser.getUserNo());
+    map.put(ReceivalConstant.DRAFT_USER_DEPT,umsOrg.getOrgName());
+    map.put(ReceivalConstant.DRAFT_USER_DEPT_NO,proToOthersQuery.getDeptNo());
+    map.put(ReceivalConstant.DRAFT_USER_UNIT,unitName);
+    map.put(ReceivalConstant.DRAFT_USER_UNIT_NO,umsOrg.getUnitNo());
+    map.put(ReceivalConstant.SUBJECT,proposal.getSubject());
+    Timestamp draftDate =new Timestamp(System.currentTimeMillis());
+    map.put(ReceivalConstant.DRAFT_DATE,draftDate);
+    map.put(ReceivalConstant.READERS,readers);
+    map.put(ReceivalConstant.MAIN_SEND,proposal.getMainSend());
+    map.put(ReceivalConstant.COPY_SEND,proposal.getCopySend());
+    map.put(ReceivalConstant.RESOURCE_ID,proposal.getId());
+    map.put(ReceivalConstant.SYSTEM_NO,securityUser.getSystemNo());
+    map.put(ReceivalConstant.FLOW_STATUS,"0");
+    map.put(ReceivalConstant.RETURN_FLAG,"NOT_RETURN");
     return map;
   }
 
