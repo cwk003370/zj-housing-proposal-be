@@ -221,7 +221,7 @@ public class ProposalFlowOperator implements ModuleOperator {
   public int updateFlowRelation(String docId,String moduleId,String flowType){
     try {
       //添加反馈文件
-      this.flowRelationMng.addFlowRelationMainToFeedback(docId,moduleId,"1");
+      this.flowRelationMng.addFlowRelationMainToFeedback(docId,moduleId,FlowTypeConstant.TO_DO,"1");
       // 更改流程关系子文档办理时间
       FlowRelation flowRelation = new FlowRelation();
       flowRelation.setSonDocId(docId);
