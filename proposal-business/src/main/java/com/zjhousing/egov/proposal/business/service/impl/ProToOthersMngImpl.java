@@ -540,7 +540,7 @@ public class ProToOthersMngImpl implements ProToOthersMng {
         }
         readers.add(umsUser.getUserNo());
       }
-      if (null != umsUsers && umsUsers.size() == 1) {
+      if (null != umsUsers && umsUsers.size() > 0) {
         recProUser = umsUsers.get(0);
       }
     }
