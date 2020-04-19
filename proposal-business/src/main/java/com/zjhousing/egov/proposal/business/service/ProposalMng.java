@@ -93,10 +93,11 @@ public interface ProposalMng {
    * @param draftMonth
    * @param draftDay
    * @param word
+   * @param showDept 前端部门的接收参数（下属单位的部门只显示单位名称）
    * @return
    */
   Page<SolrDocument> getProposalMotionBySolr(PagingRequest paging, Proposal proposal,
-                                       Integer draftYear, Integer draftMonth, Integer draftDay, String word);
+                                       Integer draftYear, Integer draftMonth, Integer draftDay, String showDept, String word);
   /**
    * 子流程-批量新增子流程文档/补充协办子流程文档
    *

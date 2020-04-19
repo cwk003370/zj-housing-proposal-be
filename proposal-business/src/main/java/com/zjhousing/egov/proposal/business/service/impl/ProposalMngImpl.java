@@ -262,7 +262,7 @@ public class ProposalMngImpl implements ProposalMng {
   }
 
   @Override
-  public Page<SolrDocument> getProposalMotionBySolr(PagingRequest paging, Proposal proposal, Integer draftYear, Integer draftMonth, Integer draftDay, String word) {
+  public Page<SolrDocument> getProposalMotionBySolr(PagingRequest paging, Proposal proposal, Integer draftYear, Integer draftMonth, Integer draftDay, String showDept, String word) {
     SecurityUser securityUser = SecurityUtils.getPrincipal();
 
     Page<SolrDocument> page = new Page<>();
@@ -304,6 +304,9 @@ public class ProposalMngImpl implements ProposalMng {
       }
     }
     // 提案查询字段
+    if(StringUtils.isNotBlank(showDept)){
+      sqStr.append("AND S_showDept:" + showDept);
+    }
     if (StringUtils.isNotBlank(proposal.getSystemNo())) {
       sqStr.append(" AND S_systemNo:" + proposal.getSystemNo());
     }

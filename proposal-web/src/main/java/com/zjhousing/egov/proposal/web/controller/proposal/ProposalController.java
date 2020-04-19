@@ -236,6 +236,7 @@ public class ProposalController {
    * @param draftMonth 起草月份
    * @param draftDay   起草日
    * @param word       关键字模糊查询
+   * @param showDept   前端部门的接收参数（下属单位的部门只显示单位名称）
    * @return
    */
   @GetMapping("/proposalMotionSolrPageJson")
@@ -243,9 +244,10 @@ public class ProposalController {
                                                  @RequestParam(name = "draftYear", required = false) Integer draftYear,
                                                  @RequestParam(name = "draftMonth", required = false) Integer draftMonth,
                                                  @RequestParam(name = "draftDay", required = false) Integer draftDay,
+                                                 @RequestParam(name = "showDept", required = false) String showDept,
                                                  String word) {
     proposal.setSystemNo(user.getSystemNo());
-    return this.proposalMng.getProposalMotionBySolr(paging, proposal, draftYear, draftMonth, draftDay, word);
+    return this.proposalMng.getProposalMotionBySolr(paging, proposal, draftYear, draftMonth, draftDay, showDept, word);
   }
 
   /**

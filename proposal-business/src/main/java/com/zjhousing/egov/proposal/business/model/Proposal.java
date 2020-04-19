@@ -9,6 +9,7 @@ import com.rongji.egov.utils.spring.validation.UpdateValidate;
 import com.rongji.egov.wflow.business.constant.ModuleFiledConst;
 import com.rongji.egov.wflow.business.model.FlowObject;
 
+import com.rongji.utils.constant.ZjConst;
 import com.zjhousing.egov.proposal.business.utils.ToSolrMapUtil;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.Length;
@@ -1288,6 +1289,11 @@ public class Proposal extends FlowObject implements Serializable {
 
     if (StringUtils.isNotBlank(this.draftDept)) {
       map.put("S_draftDept", this.draftDept);
+        if(StringUtils.isNotBlank(this.draftUnitNo) && ZjConst.ROOT_UNIT_NO.equals(this.draftUnitNo)){
+            map.put("S_showDept", this.draftDept);
+        }else{
+            map.put("S_showDept", this.draftUnit);
+        }
     }
     if (StringUtils.isNotBlank(this.draftUserName)) {
       map.put("S_draftUserName", this.draftUserName);
