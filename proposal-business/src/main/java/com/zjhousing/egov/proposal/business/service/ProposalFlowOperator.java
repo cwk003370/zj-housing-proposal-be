@@ -193,7 +193,7 @@ public class ProposalFlowOperator implements ModuleOperator {
 
     proposal.setReaders(readersSet);
 
-    if (StringUtils.isNotBlank((String) returnInfo.get("isDone")) && returnInfo.get("isDone").equals("1")) {
+    if (StringUtils.isNotBlank((String) returnInfo.get("isDone")) && "1".equals(returnInfo.get("isDone"))) {
       SecurityUser securityUser = SecurityUtils.getPrincipal();
       proposal.setFlowStatus("9");
       proposal.setFlowDoneUser(securityUser.getUserNo());

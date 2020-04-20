@@ -114,9 +114,6 @@ public class ProposalMngImpl implements ProposalMng {
     if (result < 1) {
       throw new BusinessException("登记提案议案失败");
     }
-    //新增记录日志
-    this.operatorLogMng.insertOperatorLog("PROPOSALMOTION", "提案议案", proposal.getSubject(), DocLogConstant.LOG_ADD, proposal.getId());
-
     // 添加数据到solr
     try {
       this.solrDataDao.add(proposal.toSolrMap());
@@ -377,7 +374,7 @@ public class ProposalMngImpl implements ProposalMng {
     sq.addFilterQuery("S_module:PROPOSALMOTION");
     sq.setQuery(sqStr.toString());
 
-    if (paging.getSort() != null && ((Sort.Order) paging.getSort().getOrders().get(0)).getDirection().name().equals("ASC")) {
+    if (paging.getSort() != null && "ASC".equals(((Sort.Order) paging.getSort().getOrders().get(0)).getDirection().name())) {
       sq.addSort(((Sort.Order) paging.getSort().getOrders().get(0)).getProperty(), SolrQuery.ORDER.asc);
     } else if (paging.getSort() != null) {
       sq.addSort(((Sort.Order) paging.getSort().getOrders().get(0)).getProperty(), SolrQuery.ORDER.desc);
@@ -533,9 +530,6 @@ public class ProposalMngImpl implements ProposalMng {
       }catch (Exception e) {
         throw new BusinessException(e.getMessage());
       }
-      //新增记录日志
-      this.operatorLogMng.insertOperatorLog(MODULE_NO, "提案议案", proposal.getSubject(), DocLogConstant.LOG_ADD, proposal.getId());
-
       // 添加数据到solr
       try {
         this.solrDataDao.add(proposal.toSolrMap());

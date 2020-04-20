@@ -177,7 +177,7 @@ public class ProposalSequenceController {
 
       List<EgovTemplateFile> templateFiles = new ArrayList<>();
       for (EgovTemplateFile egovTemplateFile : list) {
-        if (egovTemplateFile.getStatus().equals("1")) {
+        if ("1".equals(egovTemplateFile.getStatus())) {
           templateFiles.add(egovTemplateFile);
         }
       }
@@ -223,7 +223,7 @@ public class ProposalSequenceController {
 
     List<EgovTemplateFile> templateFiles = new ArrayList<>();
     for (EgovTemplateFile egovTemplateFile : egovTemplateFiles) {
-      if (egovTemplateFile.getStatus().equals("1")) {
+      if ("1".equals(egovTemplateFile.getStatus())) {
         templateFiles.add(egovTemplateFile);
       }
     }

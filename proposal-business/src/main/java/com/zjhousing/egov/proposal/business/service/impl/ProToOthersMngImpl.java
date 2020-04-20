@@ -252,7 +252,7 @@ public class ProToOthersMngImpl implements ProToOthersMng {
           CommonToOthersQuery dealFormCtq = new CommonToOthersQuery(targetId, MODULE_NO, user, proToOthersQuery.getDealForm().get(0));
           this.comToOthersMng.insertDealFormToAtt(dealFormCtq);
         }
-        map = new HashMap<>();
+        map = new HashMap<>(16);
         map.put("id", targetId);
         map.put("subject", pro.getSubject());
         map.put("draftUser", pro.getDraftUserName());
@@ -297,7 +297,7 @@ public class ProToOthersMngImpl implements ProToOthersMng {
             }
           }
         }
-        map = new HashMap<>();
+        map = new HashMap<>(16);
         map.put("sourceCategory", "收文");
         map.put("sourceId", pro.getId());
         map.put("subject", pro.getSubject());
