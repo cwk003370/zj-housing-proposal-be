@@ -121,7 +121,11 @@ public class ProposalFlowOperator implements ModuleOperator {
     }
     //更新流程关系
     if("1".equals(pro.getSubJudge())){
-      updateFlowRelation(docId,"PROPOSALMOTION", FlowTypeConstant.TO_DO);
+      try {
+        this.flowRelationMng.updateFlowRelationMainWhenDone(docId,"PROPOSALMOTION", FlowTypeConstant.TO_DO,"1");
+      } catch (Exception e) {
+        e.printStackTrace();
+      }
     }
     this.proposalMng.updateProposalMotion(proposal);
 
@@ -157,6 +161,12 @@ public class ProposalFlowOperator implements ModuleOperator {
     proposal.setFlowStatus("1");
     proposal.setFlowDoneUser("");
     this.proposalMng.updateProposalMotion(proposal);
+    //更新流程关系
+    try {
+      this.flowRelationMng.updateFlowRelationCancel(docId,"PROPOSALMOTION", FlowTypeConstant.TO_DO,"1");
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   /**
@@ -205,33 +215,14 @@ public class ProposalFlowOperator implements ModuleOperator {
       }
       //更新流程关系
       if("1".equals(proposal.getSubJudge())){
-        updateFlowRelation(docId,"PROPOSALMOTION", FlowTypeConstant.TO_DO);
+        try {
+          this.flowRelationMng.updateFlowRelationMainWhenDone(docId,"PROPOSALMOTION", FlowTypeConstant.TO_DO,"1");
+        } catch (Exception e) {
+          e.printStackTrace();
+        }
       }
     }
 
     this.proposalMng.updateProposalMotion(proposal);
-  }
-  /**
-   * 更新流程关系
-   *
-   * @param docId
-   * @param moduleId
-   * @param
-   */
-  public int updateFlowRelation(String docId,String moduleId,String flowType){
-    try {
-      //添加反馈文件
-      this.flowRelationMng.addFlowRelationMainToFeedback(docId,moduleId,FlowTypeConstant.TO_DO,"1");
-      // 更改流程关系子文档办理时间
-      FlowRelation flowRelation = new FlowRelation();
-      flowRelation.setSonDocId(docId);
-      flowRelation.setSonModuleNo(moduleId);
-      flowRelation.setFlowType(flowType);
-      flowRelation.setSonEndTime(new Timestamp(System.currentTimeMillis()));
-      return this.flowRelationMng.updateFlowRelationByDocId(flowRelation);
-    } catch (Exception e) {
-      throw new BusinessException(e.getMessage());
-    }
-
   }
 }
