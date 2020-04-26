@@ -523,9 +523,9 @@ public class ProToOthersMngImpl implements ProToOthersMng {
     HashSet<String> readers = new HashSet<>();
     UmsOrg umsOrg = userDao.getUmsOrg(proToOthersQuery.getDeptNo());
     UmsUser recProUser = new UmsUser();
-    // 得到提案议案受理，根据群组拿到用户
-    UmsGroup umsGroup = userDao.getUmsGroup(proToOthersQuery.getDeptNo() + "_" + "REG", securityUser.getSystemNo());
-    UmsGroupCate umsGroupCate = userDao.getUmsGroupCate("REG", securityUser.getSystemNo());
+    // 得到转收文受理人，根据群组拿到用户
+    UmsGroup umsGroup = userDao.getUmsGroup(proToOthersQuery.getDeptNo() + "_" + "TOREG", securityUser.getSystemNo());
+    UmsGroupCate umsGroupCate = userDao.getUmsGroupCate("TOREG", securityUser.getSystemNo());
     if (umsGroup != null && umsGroupCate != null) {
       List<UmsUser> umsUsers = userDao.listGroupUser(umsGroup.getGroupNo(), securityUser.getSystemNo());
       for (UmsUser umsUser : umsUsers) {
