@@ -228,8 +228,7 @@ public class ProposalMotionFlowController implements FlowTransferController, Flo
 
   @Override
   public Boolean submitProcessCancleFinishedUsers(@RequestBody SubmitParam submitParam) throws Exception {
-    Proposal proposal = this.proposalMng.getProposalMotionById(submitParam.getDocId());
-    return this.doneTransferMng.submitProcessCancleFinishedUsers(submitParam.getDocId(), proposal.toMap(), this.proposalFlowOperator, submitParam.getNextStates(), submitParam.getMsgType());
+    return this.proposalMng.submitProcessCancelFinishedUsers(submitParam);
   }
 
   @Override

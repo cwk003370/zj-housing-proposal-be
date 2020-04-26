@@ -32,6 +32,7 @@ import com.rongji.egov.utils.api.paging.Sort;
 import com.rongji.egov.utils.common.IdUtil;
 import com.rongji.egov.utils.exception.BusinessException;
 import com.rongji.egov.wflow.business.model.dto.transfer.SubmitParam;
+import com.rongji.egov.wflow.business.service.engine.transfer.DoneTransferMng;
 import com.rongji.egov.wflow.business.service.engine.transfer.TodoTransferMng;
 import com.zjhousing.egov.proposal.business.dao.ProposalDao;
 import com.zjhousing.egov.proposal.business.model.Proposal;
@@ -77,6 +78,8 @@ public class ProposalMngImpl implements ProposalMng {
   private FlowRelationMng flowRelationMng;
   @Resource
   private ProposalFlowOperator proposalFlowOperator;
+  @Resource
+  private DoneTransferMng doneTransferMng;
 
   @Override
   public int insertProposalMotion(Proposal proposal) {
@@ -626,6 +629,14 @@ public class ProposalMngImpl implements ProposalMng {
       }
     }
     return false;
+  }
+
+  @Override
+  public Boolean submitProcessCancelFinishedUsers(SubmitParam submitParam) throws Exception {
+    Proposal proposal = this.getProposalMotionById(submitParam.getDocId());
+    //更新流程关系
+    this.flowRelationMng.updateFlowRelationCancel(submitParam.getDocId(),"PROPOSALMOTION", FlowTypeConstant.TO_DO,"1");
+    return this.doneTransferMng.submitProcessCancleFinishedUsers(submitParam.getDocId(), proposal.toMap(), this.proposalFlowOperator, submitParam.getNextStates(), submitParam.getMsgType());
   }
 
 

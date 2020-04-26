@@ -133,6 +133,7 @@ public interface ProposalMng {
    */
   Boolean submitProcessUsers(SubmitParam submitParam) throws Exception;
 
+
   /**
    * 子流程-同步子流程局交办单意见
    * @param  sonDocId
@@ -140,6 +141,13 @@ public interface ProposalMng {
    * @throws Exception
    */
   Boolean updateSubOption(String sonDocId) throws Exception;
+
+  /**
+   * 流程-取消办结修改表单
+   * @param submitParam
+   * @throws Exception
+   */
+  Boolean submitProcessCancelFinishedUsers(SubmitParam submitParam) throws Exception;
 
 
 

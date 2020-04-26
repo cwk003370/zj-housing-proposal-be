@@ -1,14 +1,11 @@
 package com.zjhousing.egov.proposal.business.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.rongji.egov.attachutil.model.EgovAtt;
 import com.rongji.egov.attachutil.service.EgovAttMng;
 import com.rongji.egov.doc.business.constant.ExternalToOthersConstant;
 import com.rongji.egov.doc.business.enums.TransferLibraryTypeEnum;
 import com.rongji.egov.docconfig.business.annotation.DocReadLogAn;
 import com.rongji.egov.flowrelation.business.constant.FlowTypeConstant;
-import com.rongji.egov.flowrelation.business.model.FlowRelation;
-import com.rongji.egov.flowrelation.business.model.query.FlowRelationQuery;
 import com.rongji.egov.flowrelation.business.service.FlowRelationMng;
 import com.rongji.egov.user.business.model.SecurityUser;
 import com.rongji.egov.user.business.util.SecurityUtils;
@@ -21,7 +18,6 @@ import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.sql.Timestamp;
 import java.util.*;
 
 @Service
@@ -156,17 +152,12 @@ public class ProposalFlowOperator implements ModuleOperator {
    */
   @Override
   public void UpdateDocWhenDoneCancle(String docId) {
+
     Proposal proposal = new Proposal();
     proposal.setId(docId);
     proposal.setFlowStatus("1");
     proposal.setFlowDoneUser("");
     this.proposalMng.updateProposalMotion(proposal);
-    //更新流程关系
-    try {
-      this.flowRelationMng.updateFlowRelationCancel(docId,"PROPOSALMOTION", FlowTypeConstant.TO_DO,"1");
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
   }
 
   /**
