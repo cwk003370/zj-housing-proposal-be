@@ -5,10 +5,11 @@ import com.rongji.egov.wflow.business.service.engine.transfer.TodoTransferMng;
 import com.zjhousing.egov.proposal.business.model.Proposal;
 import com.zjhousing.egov.proposal.business.service.ProposalFlowOperator;
 import com.zjhousing.egov.proposal.business.service.ProposalMng;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import javax.annotation.Resource;
 
 /**
  * 提案议案-流水号配置
@@ -19,13 +20,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/proposalmotion")
 public class ProposalFlowRelation {
-  @Autowired
+  @Resource
   ProposalMng proposalMng;
-  @Autowired
+  @Resource
   TodoTransferMng todoTransferMng;
-  @Autowired
+  @Resource
   ProposalFlowOperator proposalFlowOperator;
-  @Autowired
+  @Resource
   AtdoTransferMng atdoTransferMng;
   @GetMapping({"/wflow/submitProcessAutoSend"})
   public  Boolean submitProcessAutoSend(String aid,String docId,String transitionLabel)throws Exception{
