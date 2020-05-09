@@ -107,7 +107,7 @@ public interface ProposalMng {
    * @param methodType  0-流程交办 1-追加协办
    * @return
    */
-  boolean insertSubProposalMotions(String mainDocId,String aid,List<String> deptNos,String methodType);
+  boolean insertSubProposalMotions(String mainDocId,String aid,List<String> deptNos,String methodType)throws Exception;
 
 
   /**

@@ -3,11 +3,10 @@ package com.zjhousing.egov.proposal.web.controller.proposal;
 
 import com.alibaba.fastjson.JSONObject;
 import com.rongji.egov.docconfig.business.annotation.DocReadLogAn;
+import com.rongji.egov.flowrelation.business.service.FlowRelationMng;
 import com.rongji.egov.user.business.dao.UserDao;
 import com.rongji.egov.user.business.model.RmsRole;
 import com.rongji.egov.user.business.model.SecurityUser;
-import com.rongji.egov.user.business.model.vo.DraftUser;
-import com.rongji.egov.user.business.util.UserDraftUtils;
 import com.rongji.egov.user.web.annotation.CurrentUser;
 import com.rongji.egov.utils.api.paging.Page;
 import com.rongji.egov.utils.api.paging.PagingRequest;
@@ -20,6 +19,7 @@ import com.rongji.egov.wflow.business.service.engine.transfer.TodoTransferMng;
 import com.zjhousing.egov.proposal.business.model.Proposal;
 import com.zjhousing.egov.proposal.business.query.ProposalAssistQuery;
 import com.zjhousing.egov.proposal.business.service.ProposalFlowOperator;
+import com.zjhousing.egov.proposal.business.service.ProposalFlowRelationOperator;
 import com.zjhousing.egov.proposal.business.service.ProposalMng;
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.common.SolrDocument;
@@ -52,6 +52,12 @@ public class ProposalController {
   private TodoTransferMng todoTransferMng;
   @Resource
   private ProposalFlowOperator proposalFlowOperator;
+  @Resource
+  private FlowRelationMng flowRelationMng;
+  @Resource
+  private ProposalFlowRelationOperator proposalFlowRelationOperator;
+
+
 
   /**
    * 根据ID得到提案议案信息
@@ -294,9 +300,9 @@ public class ProposalController {
    */
   @GetMapping("/subprocess/addSubProposalMotions")
   public boolean addSubProposalMotions(@RequestParam(name = "docId") String docId,
-                                       @RequestParam(name = "aId") String aid,
-                                       @RequestParam(name = "deptNos[]") List<String> deptNos) {
-    return this.proposalMng.insertSubProposalMotions(docId,aid,deptNos,"1");
+                                       @RequestParam(name = "moduleNo") String moduleNo,
+                                       @RequestParam(name = "deptNos[]") List<String> deptNos) throws Exception {
+    return this.flowRelationMng.insertRedeliveryFlowRelation(docId,moduleNo,deptNos,proposalFlowRelationOperator);
 
   }
 

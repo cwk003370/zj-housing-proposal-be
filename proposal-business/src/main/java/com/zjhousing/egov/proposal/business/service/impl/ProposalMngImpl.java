@@ -392,7 +392,7 @@ public class ProposalMngImpl implements ProposalMng {
 
   @Override
   @Transactional
-  public boolean insertSubProposalMotions(String mainDocId,String aid,List<String> deptNos,String methodType)  {
+  public boolean insertSubProposalMotions(String mainDocId,String aid,List<String> deptNos,String methodType) throws Exception {
 
     Proposal proposal = this.proposalDao.getProposalMotionById(mainDocId);
     if(StringUtils.isBlank(mainDocId) ||proposal == null ){
@@ -401,41 +401,24 @@ public class ProposalMngImpl implements ProposalMng {
     if("1".equals(proposal.getSubJudge())){
       throw new BusinessException("不支持再次交办");
     }
-    List<String> department;
-    if("0".equals(methodType)){
-      try {
-        List<String> docIdList = this.flowRelationMng.getDraftSonDocIdList(mainDocId, "PROPOSALMOTION", FlowTypeConstant.TO_DO, "1");
-        if(docIdList!=null &&!docIdList.isEmpty()){
-          this.delProposalMotion(docIdList);
-        }
-      }catch (Exception e){
-        throw new BusinessException(e.getMessage());
-      }
-      department = proposal.getUndertakeDepartment();
-      if(department == null || department.size() == 0){
-        throw new BusinessException("请先配置承办单位");
-      }
-    }else {
-      //将新增交办单位添加到承办单位
-      proposal.getUndertakeDepartment().addAll(deptNos);
-      this.proposalDao.updateProposalMotion(proposal);
-      department =deptNos;
-    }
     String dealFormNo = proposal.getDealFormNo();
     if (dealFormNo == null || "".equals(dealFormNo)) {
       throw new BusinessException("阅办单附件不存在");
     }
+    if("0".equals(methodType)){
+
+    }
     SecurityUser securityUser = SecurityUtils.getPrincipal();
     //添加流程关系批次
     String flowVersion = Long.toString(System.currentTimeMillis());
-    for (int i= 0; i<department.size(); i++){
+    for (int i= 0; i<deptNos.size(); i++){
       String targetId =IdUtil.getUID();
       // 添加查阅用户 TODO 提案议案受理人
       HashSet<String> readers = new HashSet<>();
-      UmsOrg umsOrg = userDao.getUmsOrg(department.get(i));
+      UmsOrg umsOrg = userDao.getUmsOrg(deptNos.get(i));
       UmsUser deptProUser = new UmsUser();
       // 得到提案议案受理，根据群组拿到用户
-      UmsGroup umsGroup = userDao.getUmsGroup(department.get(i) + "_" + "PRO", securityUser.getSystemNo());
+      UmsGroup umsGroup = userDao.getUmsGroup(deptNos.get(i) + "_" + "PRO", securityUser.getSystemNo());
       UmsGroupCate umsGroupCate = userDao.getUmsGroupCate("PRO", securityUser.getSystemNo());
       if (umsGroup != null && umsGroupCate != null) {
         List<UmsUser> umsUsers = userDao.listGroupUser(umsGroup.getGroupNo(), securityUser.getSystemNo());
@@ -475,7 +458,7 @@ public class ProposalMngImpl implements ProposalMng {
       proposal.setFlowStatus("0");
       proposal.setDraftUserNo(deptProUser.getUserNo());
       proposal.setDraftUserName(deptProUser.getUserName());
-      proposal.setDraftDeptNo(department.get(i));
+      proposal.setDraftDeptNo(deptNos.get(i));
       proposal.setDraftDept(umsOrg.getOrgName());
       proposal.setDraftDate(new Timestamp(System.currentTimeMillis()));
       proposal.setDraftUnitNo(umsOrg.getUnitNo());
@@ -503,6 +486,13 @@ public class ProposalMngImpl implements ProposalMng {
       //拷贝普通附件
       this.egovAttMng.copyEgovAttByDocId(mainDocId, targetId, "attach", "attach");
       this.egovAttMng.copyEgovAttByDocId(proposal.getDealFormNo(), targetId, "attach", "attach");
+      // 添加数据到solr
+      try {
+        this.solrDataDao.add(proposal.toSolrMap());
+      } catch (Exception e) {
+        e.printStackTrace();
+        throw new BusinessException("solr数据添加失败");
+      }
       //添加流程关系
       FlowRelation flowRelation = new FlowRelation();
       flowRelation.setId(IdUtil.getUID());
@@ -516,29 +506,17 @@ public class ProposalMngImpl implements ProposalMng {
       flowRelation.setCreateUserNo(securityUser.getUserNo());
       flowRelation.setCreateTime(new Timestamp(System.currentTimeMillis()));
       flowRelation.setSonDept(umsOrg.getOrgName());
-      flowRelation.setSonDeptNo(department.get(i));
+      flowRelation.setSonDeptNo(deptNos.get(i));
       flowRelation.setFlowVersion(flowVersion);
       if(i==0 && "0".equals(methodType)){
         flowRelation.setUnitType(UnitTypeConstant.MAIN);
       }else {
         flowRelation.setUnitType(UnitTypeConstant.OTHER);
       }
-      try{
-        if("0".equals(methodType)){
-          flowRelationMng.addFlowRelationToFlow(flowRelation);
-        }else{
-          flowRelationMng.insertFlowRelation(flowRelation);
-        }
-
-      }catch (Exception e) {
-        throw new BusinessException(e.getMessage());
-      }
-      // 添加数据到solr
-      try {
-        this.solrDataDao.add(proposal.toSolrMap());
-      } catch (Exception e) {
-        e.printStackTrace();
-        throw new BusinessException("solr数据添加失败");
+      if("0".equals(methodType)){
+        flowRelationMng.addFlowRelationToFlow(flowRelation);
+      }else{
+        flowRelationMng.insertFlowRelation(flowRelation);
       }
     }
 
@@ -599,7 +577,7 @@ public class ProposalMngImpl implements ProposalMng {
       String buttons =permission.getJSONObject("business").getString("buttons");
       //判断当前环节是否存在分发权限
       if(buttons != null && buttons.indexOf("assist") > -1){
-        this.insertSubProposalMotions(submitParam.getDocId(),submitParam.getAid(),null,"0");
+        this.insertSubProposalMotions(submitParam.getDocId(),submitParam.getAid(),proposal.getUndertakeDepartment(),"0");
       }
       //判断当前环节是否存在汇合权限
       if(buttons != null && buttons.indexOf("converge") > -1){
