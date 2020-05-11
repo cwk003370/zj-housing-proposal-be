@@ -401,13 +401,11 @@ public class ProposalMngImpl implements ProposalMng {
     if("1".equals(proposal.getSubJudge())){
       throw new BusinessException("不支持再次交办");
     }
-    String dealFormNo = proposal.getDealFormNo();
-    if (dealFormNo == null || "".equals(dealFormNo)) {
-      throw new BusinessException("阅办单附件不存在");
-    }
-    if("0".equals(methodType)){
-
-    }
+//    //获取阅办单附件ID
+//    String dealFormNo = proposal.getDealFormNo();
+//    if (dealFormNo == null || "".equals(dealFormNo)) {
+//      throw new BusinessException("阅办单附件不存在");
+//    }
     SecurityUser securityUser = SecurityUtils.getPrincipal();
     //添加流程关系批次
     String flowVersion = Long.toString(System.currentTimeMillis());
@@ -485,7 +483,8 @@ public class ProposalMngImpl implements ProposalMng {
       this.egovAttMng.copyEgovAttByDocId(mainDocId, targetId, "main_doc", "main_doc");
       //拷贝普通附件
       this.egovAttMng.copyEgovAttByDocId(mainDocId, targetId, "attach", "attach");
-      this.egovAttMng.copyEgovAttByDocId(proposal.getDealFormNo(), targetId, "attach", "attach");
+//      //拷贝阅办单附件
+//      this.egovAttMng.copyEgovAttByDocId(proposal.getDealFormNo(), targetId, "attach", "attach");
       // 添加数据到solr
       try {
         this.solrDataDao.add(proposal.toSolrMap());
