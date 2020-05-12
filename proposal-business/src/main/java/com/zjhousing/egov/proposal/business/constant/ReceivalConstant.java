@@ -32,6 +32,7 @@ public class ReceivalConstant {
    *                 resourceId(必填): 源文id
    *                 flowStatus(默认0)
    *                 returnFlag(默认NOT_RETURN)
+   *                 receivalFlowType(收文流程类型 固定值1)
    * @return
    */
   public static final String ID = "id";
@@ -57,4 +58,5 @@ public class ReceivalConstant {
   public static final String SYSTEM_NO = "systemNo";
   public static final String FLOW_STATUS = "flowStatus";
   public static final String RETURN_FLAG = "returnFlag";
+  public static final String RECEIVAL_FLOW_TYPE = "receivalFlowType";
 }
