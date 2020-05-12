@@ -3,6 +3,7 @@ package com.zjhousing.egov.proposal.web.controller.proposal;
 
 import com.alibaba.fastjson.JSONObject;
 import com.rongji.egov.docconfig.business.annotation.DocReadLogAn;
+import com.rongji.egov.flowrelation.business.constant.FlowTypeConstant;
 import com.rongji.egov.flowrelation.business.service.FlowRelationMng;
 import com.rongji.egov.user.business.dao.UserDao;
 import com.rongji.egov.user.business.model.RmsRole;
@@ -295,14 +296,14 @@ public class ProposalController {
    * 子流程-补充协办子流程
    * @param docId   文档ID
    * @param deptNos 交办部门ID集合
-   * @param aid   流程环节ID
+   * @param moduleNo  模块编码
    * @throws Exception
    */
   @GetMapping("/subprocess/addSubProposalMotions")
   public boolean addSubProposalMotions(@RequestParam(name = "docId") String docId,
                                        @RequestParam(name = "moduleNo") String moduleNo,
                                        @RequestParam(name = "deptNos[]") List<String> deptNos) throws Exception {
-    return this.flowRelationMng.insertRedeliveryFlowRelation(docId,moduleNo,deptNos,proposalFlowRelationOperator);
+    return this.flowRelationMng.insertRedeliveryFlowRelation(docId,moduleNo, FlowTypeConstant.TO_DO,deptNos,proposalFlowRelationOperator);
 
   }
 
