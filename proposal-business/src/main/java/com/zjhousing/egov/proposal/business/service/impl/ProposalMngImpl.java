@@ -576,6 +576,12 @@ public class ProposalMngImpl implements ProposalMng {
       String buttons =permission.getJSONObject("business").getString("buttons");
       //判断当前环节是否存在分发权限
       if(buttons != null && buttons.indexOf("assist") > -1){
+        //交办前置判断，如果子流程未作废，阻止交办
+        List<String> docIdList = this.flowRelationMng.getDraftSonDocIdList(submitParam.getDocId(), "PROPOSALMOTION", FlowTypeConstant.TO_DO, "1");
+        if(docIdList!=null &&!docIdList.isEmpty()){
+          //如果子流程未启用流程，删除子流程。
+          this.delProposalMotion(docIdList);
+        }
         this.insertSubProposalMotions(submitParam.getDocId(),submitParam.getAid(),proposal.getUndertakeDepartment(),"0");
       }
       //判断当前环节是否存在汇合权限
