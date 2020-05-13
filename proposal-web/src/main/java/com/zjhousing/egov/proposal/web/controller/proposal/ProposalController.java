@@ -29,7 +29,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -293,7 +292,7 @@ public class ProposalController {
     }
   }
   /**
-   * 子流程-补充协办子流程
+   * 子流程-重新交办
    * @param docId   文档ID
    * @param deptNos 交办部门ID集合
    * @param moduleNo  模块编码

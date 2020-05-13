@@ -19,6 +19,7 @@ import com.rongji.egov.flowrelation.business.constant.FlowTypeConstant;
 import com.rongji.egov.flowrelation.business.model.FlowRelation;
 import com.rongji.egov.flowrelation.business.model.query.FlowRelationQuery;
 import com.rongji.egov.flowrelation.business.service.FlowRelationMng;
+import com.rongji.egov.flowutil.business.service.DocOpinionMng;
 import com.rongji.egov.flowutil.business.service.DocResourceMng;
 import com.rongji.egov.solrData.business.dao.SolrDataDao;
 import com.rongji.egov.user.business.dao.UserDao;
@@ -80,6 +81,9 @@ public class ProposalMngImpl implements ProposalMng {
   private ProposalFlowOperator proposalFlowOperator;
   @Resource
   private DoneTransferMng doneTransferMng;
+  @Resource
+  private DocOpinionMng docOpinionMng;
+
 
   @Override
   public int insertProposalMotion(Proposal proposal) {
@@ -624,21 +628,25 @@ public class ProposalMngImpl implements ProposalMng {
 
   @Override
   @Transactional
-  public boolean setProcessRestart(List<String> docList) throws Exception {
-    List<String> listPid = new ArrayList<>();
-    for(String docId: docList){
-      Proposal proposal = this.getProposalMotionById(docId);
-      listPid.add(proposal.getFlowPid());
-      proposal.setFlowDoneUser("");
-      proposal.setFlowLabel("");
-      proposal.setFlowPid("");
-      proposal.setFlowStatus("");
-      proposal.setFlowVersion("");
-      proposal.setFlowStatus("0");
-      proposal.setDocCate("");
-      proposal.setExtension("");
-      this.updateProposalMotion(proposal);
+  public boolean setProcessRestart(String docId) throws Exception {
+    if (StringUtils.isBlank(docId)){
+      throw  new BusinessException("重启流程文档ID不存在");
     }
+    List<String> listPid = new ArrayList<>();
+    Proposal proposal = this.getProposalMotionById(docId);
+    listPid.add(proposal.getFlowPid());
+    proposal.setFlowDoneUser("");
+    proposal.setFlowLabel("");
+    proposal.setFlowPid("");
+    proposal.setFlowStatus("");
+    proposal.setFlowVersion("");
+    proposal.setFlowStatus("0");
+    proposal.setDocCate("");
+    proposal.setExtension("");
+    this.updateProposalMotion(proposal);
+    //删除意见
+    this.docOpinionMng.deleteDocOpinionByDocId(docId);
+    //流程销毁
     if(this.todoTransferMng.destoryProcess(listPid)){
       return true;
     }else{

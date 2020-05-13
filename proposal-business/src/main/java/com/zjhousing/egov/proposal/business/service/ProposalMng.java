@@ -150,10 +150,10 @@ public interface ProposalMng {
   Boolean submitProcessCancelFinishedUsers(SubmitParam submitParam) throws Exception;
   /**
    * 子流程-流程重启
-   * @param docList 需要重启的文档ID集合
+   * @param docId 文档集合
    * @throws Exception
    */
-  boolean setProcessRestart(List<String> docList) throws Exception;
+  boolean setProcessRestart(String docId) throws Exception;
 
 
 

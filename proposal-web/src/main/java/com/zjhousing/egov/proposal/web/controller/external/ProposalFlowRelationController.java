@@ -1,12 +1,15 @@
 package com.zjhousing.egov.proposal.web.controller.external;
 
 import com.rongji.egov.flowrelation.web.controller.FlowRelationFlowTodoController;
+import com.rongji.egov.utils.exception.BusinessException;
 import com.rongji.egov.wflow.business.service.engine.transfer.AtdoTransferMng;
 import com.rongji.egov.wflow.business.service.engine.transfer.TodoTransferMng;
 import com.zjhousing.egov.proposal.business.model.Proposal;
 import com.zjhousing.egov.proposal.business.service.ProposalFlowOperator;
 import com.zjhousing.egov.proposal.business.service.ProposalMng;
+import org.apache.commons.lang.StringUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
@@ -16,7 +19,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/proposalmotion")
-public class ProposalFlowRelation implements FlowRelationFlowTodoController {
+public class ProposalFlowRelationController implements FlowRelationFlowTodoController {
   @Resource
   ProposalMng proposalMng;
   @Resource
@@ -42,9 +45,10 @@ public class ProposalFlowRelation implements FlowRelationFlowTodoController {
     aidList.add(aid);
     return this.todoTransferMng.revokeTodos(aidList, this.proposalFlowOperator);
   }
+
   @Override
-  public boolean setProcessRestart(List<String> docList) throws Exception {
-    return this.proposalMng.setProcessRestart(docList);
+  public boolean setProcessRestart(@RequestParam(name = "docId") String docId) throws Exception {
+    return this.proposalMng.setProcessRestart(docId);
   }
 
 
