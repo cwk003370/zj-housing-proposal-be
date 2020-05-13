@@ -618,8 +618,32 @@ public class ProposalMngImpl implements ProposalMng {
   public Boolean submitProcessCancelFinishedUsers(SubmitParam submitParam) throws Exception {
     Proposal proposal = this.getProposalMotionById(submitParam.getDocId());
     //更新流程关系
-    this.flowRelationMng.updateFlowRelationCancel(submitParam.getDocId(),"PROPOSALMOTION", FlowTypeConstant.TO_DO,"1");
+    //this.flowRelationMng.updateFlowRelationCancel(submitParam.getDocId(),"PROPOSALMOTION", FlowTypeConstant.TO_DO,"1");
     return this.doneTransferMng.submitProcessCancleFinishedUsers(submitParam.getDocId(), proposal.toMap(), this.proposalFlowOperator, submitParam.getNextStates(), submitParam.getMsgType());
+  }
+
+  @Override
+  @Transactional
+  public boolean setProcessRestart(List<String> docList) throws Exception {
+    List<String> listPid = new ArrayList<>();
+    for(String docId: docList){
+      Proposal proposal = this.getProposalMotionById(docId);
+      listPid.add(proposal.getFlowPid());
+      proposal.setFlowDoneUser("");
+      proposal.setFlowLabel("");
+      proposal.setFlowPid("");
+      proposal.setFlowStatus("");
+      proposal.setFlowVersion("");
+      proposal.setFlowStatus("0");
+      proposal.setDocCate("");
+      proposal.setExtension("");
+      this.updateProposalMotion(proposal);
+    }
+    if(this.todoTransferMng.destoryProcess(listPid)){
+      return true;
+    }else{
+      throw new BusinessException("流程销毁失败");
+    }
   }
 
 

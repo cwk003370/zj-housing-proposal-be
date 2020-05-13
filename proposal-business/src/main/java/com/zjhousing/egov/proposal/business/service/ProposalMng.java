@@ -143,11 +143,17 @@ public interface ProposalMng {
   Boolean updateSubOption(String sonDocId) throws Exception;
 
   /**
-   * 流程-取消办结修改表单
+   * 子流程-取消办结修改表单
    * @param submitParam
    * @throws Exception
    */
   Boolean submitProcessCancelFinishedUsers(SubmitParam submitParam) throws Exception;
+  /**
+   * 子流程-流程重启
+   * @param docList 需要重启的文档ID集合
+   * @throws Exception
+   */
+  boolean setProcessRestart(List<String> docList) throws Exception;
 
 
 
