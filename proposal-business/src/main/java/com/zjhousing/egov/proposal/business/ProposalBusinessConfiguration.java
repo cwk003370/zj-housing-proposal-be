@@ -43,7 +43,6 @@ import org.springframework.web.client.RestTemplate;
 @EnableTransactionManagement
 @EnableCaching
 @EnableAutoConfiguration
-@EnableConfigurationProperties({ProposalBusinessProperties.class})
 @Import({
   MybatisConfiguration.class,
   DocConfigBusinessConfiguration.class,
@@ -60,11 +59,6 @@ public class ProposalBusinessConfiguration {
   public static void main(String[] args) {
     SpringApplication.run(ProposalBusinessConfiguration.class, args);
   }
-
-//  @Bean
-//  EnumBasePackageWrapper docBusinessEnumBasePackageWrapper() {
-//    return new EnumBasePackageWrapper("com.zjhousing.egov.proposal.business.proposal.enums");
-//  }
 
   @Bean
   RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
