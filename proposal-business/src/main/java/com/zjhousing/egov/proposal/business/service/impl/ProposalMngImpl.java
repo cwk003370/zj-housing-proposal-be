@@ -648,7 +648,7 @@ public class ProposalMngImpl implements ProposalMng {
     proposal.setExtension("");
     this.updateProposalMotion(proposal);
     //删除子流程部分流程关联信息，并对子流程进行作废或删除处理
-    this.flowRelationMng.delAllSonFlowRelation(docId,"PROPOSALMOTION",proposalFlowRelationOperator);
+    this.flowRelationMng.delAllSonFlowRelation(docId,"PROPOSALMOTION");
     //删除意见
     this.docOpinionMng.deleteDocOpinionByDocId(docId);
     //流程销毁

@@ -8,6 +8,7 @@ import com.zjhousing.egov.proposal.business.model.Proposal;
 import com.zjhousing.egov.proposal.business.service.ProposalFlowOperator;
 import com.zjhousing.egov.proposal.business.service.ProposalMng;
 import org.apache.commons.lang.StringUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 
 @RestController
@@ -45,6 +47,19 @@ public class ProposalFlowRelationController implements FlowRelationFlowTodoContr
     aidList.add(aid);
     return this.todoTransferMng.revokeTodos(aidList, this.proposalFlowOperator);
   }
+
+  @Override
+  public boolean delDoc(@RequestBody Map<String, Object> map) throws Exception {
+    List<String> docIdList = (List<String>) map.get("docIdList");
+    if(docIdList!=null&& !docIdList.isEmpty()){
+      int res =this.proposalMng.delProposalMotion(docIdList);
+      if(res>0){
+        return true;
+      }
+    }
+    return false;
+  }
+
 
   @Override
   public boolean setProcessRestart(@RequestParam(name = "docId") String docId) throws Exception {
