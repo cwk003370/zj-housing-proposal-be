@@ -39,6 +39,7 @@ import com.zjhousing.egov.proposal.business.dao.ProposalDao;
 import com.zjhousing.egov.proposal.business.model.Proposal;
 import com.zjhousing.egov.proposal.business.query.ProposalAssistQuery;
 import com.zjhousing.egov.proposal.business.service.ProposalFlowOperator;
+import com.zjhousing.egov.proposal.business.service.ProposalFlowRelationOperator;
 import com.zjhousing.egov.proposal.business.service.ProposalMng;
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -83,6 +84,8 @@ public class ProposalMngImpl implements ProposalMng {
   private DoneTransferMng doneTransferMng;
   @Resource
   private DocOpinionMng docOpinionMng;
+  @Resource
+  private ProposalFlowRelationOperator proposalFlowRelationOperator;
 
 
   @Override
@@ -644,6 +647,8 @@ public class ProposalMngImpl implements ProposalMng {
     proposal.setDocCate("");
     proposal.setExtension("");
     this.updateProposalMotion(proposal);
+    //删除子流程部分流程关联信息，并对子流程进行作废或删除处理
+    this.flowRelationMng.delAllSonFlowRelation(docId,"PROPOSALMOTION",proposalFlowRelationOperator);
     //删除意见
     this.docOpinionMng.deleteDocOpinionByDocId(docId);
     //流程销毁

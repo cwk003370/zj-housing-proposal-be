@@ -36,9 +36,6 @@ flyway:
 eureka:
   client:
     enabled: false
-proposal:
-  business:
-    request-prefix: http://192.168.210.158:6069
 ---
 spring:
   profiles: dev
