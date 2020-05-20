@@ -11,6 +11,7 @@ import com.rongji.egov.solrData.business.SolrDataBusinessConfiguration;
 import com.rongji.egov.user.web.UserWebConfiguration;
 import com.rongji.egov.user.web.security.IgnoredPathsWrapper;
 import com.rongji.egov.wflow.web.WflowWebConfiguration;
+import com.rongji.utils.ZjUtilApplication;
 import com.zjhousing.egov.proposal.business.ProposalBusinessConfiguration;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -36,8 +37,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
   DocWebConfiguration.class,
   SolrDataBusinessConfiguration.class,
   CommonSequenceConfiguration.class,
-  FlowRelationWebConfiguration.class
-
+  FlowRelationWebConfiguration.class,
+  ZjUtilApplication.class
 })
 public class ProposalWebConfiguration extends WebMvcConfigurerAdapter {
   public static void main(String[] args) {

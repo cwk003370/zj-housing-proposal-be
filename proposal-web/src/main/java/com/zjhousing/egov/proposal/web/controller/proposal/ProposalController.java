@@ -17,6 +17,8 @@ import com.rongji.egov.utils.spring.validation.UpdateValidate;
 import com.rongji.egov.wflow.business.model.dto.temp.ReadSend;
 import com.rongji.egov.wflow.business.service.engine.manage.ProcessManageMng;
 import com.rongji.egov.wflow.business.service.engine.transfer.TodoTransferMng;
+import com.rongji.utils.dingding.model.DingDingParam;
+import com.rongji.utils.dingding.service.DingDingMng;
 import com.zjhousing.egov.proposal.business.model.Proposal;
 import com.zjhousing.egov.proposal.business.query.ProposalAssistQuery;
 import com.zjhousing.egov.proposal.business.service.ProposalFlowOperator;
@@ -56,6 +58,8 @@ public class ProposalController {
   private FlowRelationMng flowRelationMng;
   @Resource
   private ProposalFlowRelationOperator proposalFlowRelationOperator;
+  @Resource
+  private DingDingMng dingDingMng;
 
 
 
@@ -320,4 +324,11 @@ public class ProposalController {
    public boolean updateProposalOption(String docId,String bureauOpinions,String officeOpinions,String subAssignmentRequirements ,String subLeaderOpinions){
      return this.proposalMng.updateProposalOption(docId,bureauOpinions,officeOpinions,subAssignmentRequirements,subLeaderOpinions);
    }
+  /**
+   * 测试钉钉接口
+   */
+  @PostMapping("/dingding/sendDingDingOnMobile2")
+  public boolean sendDingDingOnMobile2(@RequestBody  DingDingParam dingDingParam) {
+    return this.dingDingMng.sendDingDingOnMobile2(dingDingParam);
+  }
 }
