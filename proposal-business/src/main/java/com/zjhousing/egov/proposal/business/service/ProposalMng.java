@@ -132,8 +132,12 @@ public interface ProposalMng {
    * @throws Exception
    */
   Boolean submitProcessUsers(SubmitParam submitParam) throws Exception;
-
-
+  /**
+   * 子流程-流程办理结束
+   * @param submitParam
+   * @throws Exception
+   */
+  Boolean submitProcessWithoutUsers(SubmitParam submitParam)throws Exception;
   /**
    * 子流程-同步子流程局交办单意见
    * @param  sonDocId

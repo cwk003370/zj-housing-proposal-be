@@ -600,6 +600,21 @@ public class ProposalMngImpl implements ProposalMng {
   }
 
   @Override
+  @Transactional
+  public Boolean submitProcessWithoutUsers(SubmitParam submitParam) throws Exception {
+    Proposal proposal = this.getProposalMotionById(submitParam.getDocId());
+    JSONObject permission = this.todoTransferMng.getProcessPermission(submitParam.getAid(), proposal.toMap());
+    if(permission!=null && !"".equals(permission)){
+      String buttons =permission.getJSONObject("business").getString("buttons");
+      //判断当前环节是否存在汇合权限
+      if(buttons != null && buttons.indexOf("converge") > -1){
+        this.getFlowStatus(submitParam.getDocId());
+      }
+    }
+    return this.todoTransferMng.submitProcessWithoutUsers(submitParam.getAid(), proposal.toMap(), this.proposalFlowOperator);
+  }
+
+  @Override
   public Boolean updateSubOption(String sonDocId) throws Exception {
     FlowRelationQuery flowRelationQuery = new FlowRelationQuery();
     flowRelationQuery.setSonDocId(sonDocId);

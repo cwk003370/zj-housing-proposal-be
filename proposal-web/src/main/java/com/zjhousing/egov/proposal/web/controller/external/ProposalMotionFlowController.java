@@ -118,10 +118,8 @@ public class ProposalMotionFlowController implements FlowTransferController, Flo
 
   @Override
   public Boolean submitProcessWithoutUsers(@RequestBody SubmitParam submitParam) throws Exception {
-    Proposal proposal = this.proposalMng.getProposalMotionById(submitParam.getDocId());
-    return this.todoTransferMng.submitProcessWithoutUsers(submitParam.getAid(), proposal.toMap(), this.proposalFlowOperator);
+    return this.proposalMng.submitProcessWithoutUsers(submitParam);
   }
-
   @Override
   public JSONObject getProcessTransUsers(String aid, String docId) throws Exception {
     Proposal proposal = this.proposalMng.getProposalMotionById(docId);
