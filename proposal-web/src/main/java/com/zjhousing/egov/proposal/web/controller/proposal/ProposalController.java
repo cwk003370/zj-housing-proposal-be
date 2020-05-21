@@ -327,8 +327,8 @@ public class ProposalController {
   /**
    * 测试钉钉接口
    */
-  @PostMapping("/dingding/sendDingDingOnMobile2")
-  public boolean sendDingDingOnMobile2(@RequestBody  DingDingParam dingDingParam) {
-    return this.dingDingMng.sendDingDingOnMobile2(dingDingParam);
+  @PostMapping("/dingding/sendDingDingOnMobile")
+  public boolean sendDingDingOnMobile(@RequestBody  DingDingParam dingDingParam) {
+    return this.dingDingMng.sendDingDingOnMobile(dingDingParam);
   }
 }

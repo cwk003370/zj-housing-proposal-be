@@ -37,8 +37,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter
   DocWebConfiguration.class,
   SolrDataBusinessConfiguration.class,
   CommonSequenceConfiguration.class,
-  FlowRelationWebConfiguration.class,
-  ZjUtilApplication.class
+  FlowRelationWebConfiguration.class
 })
 public class ProposalWebConfiguration extends WebMvcConfigurerAdapter {
   public static void main(String[] args) {
