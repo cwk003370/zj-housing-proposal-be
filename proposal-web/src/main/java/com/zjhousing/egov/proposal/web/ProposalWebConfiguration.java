@@ -49,9 +49,4 @@ public class ProposalWebConfiguration extends WebMvcConfigurerAdapter {
   public void addCorsMappings(CorsRegistry registry) {
     registry.addMapping("/**").allowedOrigins("*").allowedMethods("GET", "POST").allowCredentials(false).maxAge(3600);
   }
-
-  @Bean
-  IgnoredPathsWrapper hsjEgovDocIgnoredPathsWrapper() {
-    return new IgnoredPathsWrapper("/dispatch/signDocumentFromEx");
-  }
 }

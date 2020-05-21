@@ -60,6 +60,12 @@ public class ProposalFlowRelationController implements FlowRelationFlowTodoContr
     return false;
   }
 
+  @Override
+  public Boolean submitProcessWithoutUsers(String aid, String docId) throws Exception {
+    Proposal proposal = this.proposalMng.getProposalMotionById(docId);
+    return this.todoTransferMng.submitProcessWithoutUsers(aid, proposal.toMap(), this.proposalFlowOperator);
+  }
+
 
   @Override
   public boolean setProcessRestart(@RequestParam(name = "docId") String docId) throws Exception {

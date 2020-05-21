@@ -52,8 +52,8 @@
     #{transportId,jdbcType=VARCHAR},
     #{errorId,jdbcType=VARCHAR},
     #{sortNo,jdbcType=INTEGER},
-    #{systemNo,jdbcType=VARCHAR,javaType=java.lang.String }
-    #{mainId,jdbcType=VARCHAR},
+    #{systemNo,jdbcType=VARCHAR,javaType=java.lang.String },
+    #{mainId,jdbcType=VARCHAR}
     )
   </insert>
 
