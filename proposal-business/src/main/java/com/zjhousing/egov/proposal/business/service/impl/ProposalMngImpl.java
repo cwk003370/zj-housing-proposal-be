@@ -39,7 +39,6 @@ import com.zjhousing.egov.proposal.business.dao.ProposalDao;
 import com.zjhousing.egov.proposal.business.model.Proposal;
 import com.zjhousing.egov.proposal.business.query.ProposalAssistQuery;
 import com.zjhousing.egov.proposal.business.service.ProposalFlowOperator;
-import com.zjhousing.egov.proposal.business.service.ProposalFlowRelationOperator;
 import com.zjhousing.egov.proposal.business.service.ProposalMng;
 import org.apache.commons.lang.StringUtils;
 import org.apache.solr.client.solrj.SolrQuery;
@@ -84,8 +83,6 @@ public class ProposalMngImpl implements ProposalMng {
   private DoneTransferMng doneTransferMng;
   @Resource
   private DocOpinionMng docOpinionMng;
-  @Resource
-  private ProposalFlowRelationOperator proposalFlowRelationOperator;
 
 
   @Override
