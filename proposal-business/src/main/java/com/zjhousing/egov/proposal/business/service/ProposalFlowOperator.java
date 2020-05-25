@@ -2,14 +2,11 @@ package com.zjhousing.egov.proposal.business.service;
 
 import com.alibaba.fastjson.JSONObject;
 import com.rongji.egov.attachutil.service.EgovAttMng;
-import com.rongji.egov.doc.business.constant.ExternalToOthersConstant;
-import com.rongji.egov.doc.business.enums.TransferLibraryTypeEnum;
 import com.rongji.egov.docconfig.business.annotation.DocReadLogAn;
 import com.rongji.egov.flowrelation.business.constant.FlowTypeConstant;
 import com.rongji.egov.flowrelation.business.service.FlowRelationMng;
 import com.rongji.egov.user.business.model.SecurityUser;
 import com.rongji.egov.user.business.util.SecurityUtils;
-import com.rongji.egov.utils.exception.BusinessException;
 import com.rongji.egov.wflow.business.service.ModuleOperator;
 import com.rongji.egov.wflow.business.service.engine.manage.ProcessManageMng;
 import com.zjhousing.egov.proposal.business.model.Proposal;
@@ -110,11 +107,6 @@ public class ProposalFlowOperator implements ModuleOperator {
     SecurityUser user = SecurityUtils.getPrincipal();
     readersSet.add(user.getUserNo());
     proposal.setReaders(readersSet);
-    this.proToOthers(pro);
-    // 归历史公文库（转历史公文库类型：办结转）
-    if (TransferLibraryTypeEnum.FILE_DONE_TRANSFER.equals(proposal.getTransferLibraryType())) {
-      proposal.setArchiveFlag("1");
-    }
     //更新流程关系
     if("1".equals(pro.getSubJudge())){
       try {
@@ -128,22 +120,6 @@ public class ProposalFlowOperator implements ModuleOperator {
 
   }
 
-  /**
-   * 流程办结自动归档（转公文库类型：办结转）
-   *
-   * @param proposal
-   */
-  public void proToOthers(Proposal proposal) {
-    if (TransferLibraryTypeEnum.FILE_DONE_TRANSFER.equals(proposal.getTransferLibraryType())) {
-      ProToOthersQuery proToOthersQuery = new ProToOthersQuery();
-      proToOthersQuery.setType(ExternalToOthersConstant.TO_ARCHIVE);
-      proToOthersQuery.setDocId(proposal.getId());
-      proToOthersQuery.setPublicFlag("PUBLIC");
-      Set<String> readers = new HashSet<>();
-      proToOthersQuery.setReaders(readers);
-      this.proToOthersMng.proToOthers(proToOthersQuery);
-    }
-  }
 
   /**
    * 取消办结时更新主表单
@@ -198,12 +174,6 @@ public class ProposalFlowOperator implements ModuleOperator {
       SecurityUser securityUser = SecurityUtils.getPrincipal();
       proposal.setFlowStatus("9");
       proposal.setFlowDoneUser(securityUser.getUserNo());
-
-      // 归历史公文库（转历史公文库类型：办结转）
-      this.proToOthers(proposal);
-      if (TransferLibraryTypeEnum.FILE_DONE_TRANSFER.equals(proposal.getTransferLibraryType())) {
-        proposal.setArchiveFlag("1");
-      }
       //更新流程关系
       if("1".equals(proposal.getSubJudge())){
         try {

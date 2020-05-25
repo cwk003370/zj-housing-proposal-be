@@ -1,21 +1,19 @@
 package com.zjhousing.egov.proposal.business.model;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.rongji.egov.doc.business.enums.ArchiveTypeEnum;
-import com.rongji.egov.doc.business.enums.CleanFlagEnum;
-import com.rongji.egov.doc.business.enums.TransferLibraryTypeEnum;
+import com.rongji.egov.docconfig.business.enums.TransferLibraryTypeEnum;
 import com.rongji.egov.utils.spring.validation.InsertValidate;
 import com.rongji.egov.utils.spring.validation.UpdateValidate;
 import com.rongji.egov.wflow.business.constant.ModuleFiledConst;
 import com.rongji.egov.wflow.business.model.FlowObject;
-
 import com.rongji.utils.constant.ZjConst;
+import com.zjhousing.egov.proposal.business.enums.ArchiveTypeEnum;
+import com.zjhousing.egov.proposal.business.enums.CleanFlagEnum;
 import com.zjhousing.egov.proposal.business.utils.ToSolrMapUtil;
 import org.apache.commons.lang.StringUtils;
 import org.hibernate.validator.constraints.Length;
 import org.hibernate.validator.constraints.NotEmpty;
 import org.springframework.format.annotation.DateTimeFormat;
-
 import java.io.Serializable;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;

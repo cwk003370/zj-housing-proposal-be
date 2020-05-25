@@ -7,12 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.rj.SolrCloudClient.util.ATOMIC;
 import com.rongji.egov.attachutil.model.EgovAtt;
 import com.rongji.egov.attachutil.service.EgovAttMng;
-import com.rongji.egov.doc.business.constant.DocLogConstant;
-import com.rongji.egov.doc.business.external.model.EgovDocUpdateItemLog;
 import com.rongji.egov.doc.business.external.query.DealForm;
-import com.rongji.egov.doc.business.external.service.EgovDocUpdateItemLogMng;
-import com.rongji.egov.doc.business.receival.model.Receival;
-import com.rongji.egov.doc.business.receival.service.ReceivalMng;
 import com.rongji.egov.docconfig.business.service.DocOperatorLogMng;
 import com.rongji.egov.flowrelation.business.constant.UnitTypeConstant;
 import com.rongji.egov.flowrelation.business.constant.FlowTypeConstant;
@@ -68,11 +63,7 @@ public class ProposalMngImpl implements ProposalMng {
   @Resource
   private SolrDataDao solrDataDao;
   @Resource
-  private EgovDocUpdateItemLogMng egovDocUpdateItemLogMng;
-  @Resource
   private DocResourceMng docResourceMng;
-  @Resource
-  private ReceivalMng receivalMng;
   @Resource
   private UserDao userDao;
   @Resource
@@ -140,12 +131,6 @@ public class ProposalMngImpl implements ProposalMng {
       oldProposal.setSubject(StringUtils.trim(oldProposal.getSubject()));
     }
 
-    if (!"0".equals(proposal.getFlowStatus())) {
-      //  操作日志-更新
-      this.operatorLogMng.insertOperatorLog("PROPOSALMOTION", "提案议案", oldProposal.getSubject(), DocLogConstant.LOG_UPDATE, oldProposal.getId());
-      //添加-重要信息修改（异步）
-      this.addProposalUpdateLog(proposal, oldProposal);
-    }
 
     // 添加数据到solr
     try {
@@ -165,15 +150,12 @@ public class ProposalMngImpl implements ProposalMng {
     }
 
     int r = this.proposalDao.delProposalMotion(list);
-    List<Receival> receivalList = new ArrayList<>();
     for (Proposal proposal : proList) {
       String id = proposal.getId();
       if (StringUtils.isNotBlank(proposal.getDocMark())) {
         proposal.setDocMark("");
         this.proposalDao.updateProposalMotion(proposal);
       }
-      //记录提案删除操作
-      this.operatorLogMng.insertOperatorLog("PROPOSALMOTION", "提案议案", proposal.getSubject(), DocLogConstant.LOG_DEL, proposal.getId());
 
       // 从solr中删除数据
       try {
@@ -187,20 +169,6 @@ public class ProposalMngImpl implements ProposalMng {
       this.docResourceMng.deleteDocResourceByDocId(id);
       //删除收文关联
       this.docResourceMng.deleteDocResourceByResourceDocId(id);
-      //删除收文-关联文件字段值
-      String relRecFile = proposal.getRelReceivalMark();
-      if (StringUtils.isNotBlank(relRecFile)) {
-        String[] relRecFileArr = relRecFile.split(";");
-        if (relRecFileArr.length > 1) {
-          String docId = relRecFileArr[1];
-          Receival receival = new Receival(docId, null);
-          receivalList.add(receival);
-        }
-      }
-    }
-    //更新收文-关联文件字段值
-    if (receivalList.size() > 0) {
-      this.receivalMng.batchUpdateReceivalRelDocMark(receivalList);
     }
     return r;
   }
@@ -671,31 +639,4 @@ public class ProposalMngImpl implements ProposalMng {
     }
   }
 
-
-  /**
-   * 添加重要信息修改日志
-   *
-   * @param newProposal
-   * @param oldProposal
-   */
-  private void addProposalUpdateLog(Proposal newProposal, Proposal oldProposal) {
-    if (null != newProposal && null != oldProposal) {
-      SecurityUser user = SecurityUtils.getPrincipal();
-      String docId = newProposal.getId();
-      if (!oldProposal.getId().equals(docId)) {
-        throw new BusinessException("此文件不存在");
-      }
-      List<EgovDocUpdateItemLog> list = new ArrayList<>();
-      String oldSubject = oldProposal.getSubject();
-      String newSubject = newProposal.getSubject();
-      if (!StringUtils.equals(oldSubject, newSubject)) {
-        EgovDocUpdateItemLog egovDocUpdateItemLog = new EgovDocUpdateItemLog(docId, "标题", oldSubject, newSubject, "PROPOSALMOTION");
-        list.add(egovDocUpdateItemLog);
-      }
-
-      if (list.size() > 0) {
-        this.egovDocUpdateItemLogMng.batchInsertEgovDocUpdateItemLog(list, user);
-      }
-    }
-  }
 }

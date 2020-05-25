@@ -1,21 +1,17 @@
 package com.zjhousing.egov.proposal.business;
 
 import com.rongji.egov.commonsequence.CommonSequenceConfiguration;
-import com.rongji.egov.doc.business.constant.ExternalToOthersConstant;
-import com.rongji.egov.docconfig.business.DocConfigBusinessConfiguration;
-import com.rongji.egov.docnum.DocNumConfiguration;
+import com.rongji.egov.doc.business.DocBusinessConfiguration;
 import com.rongji.egov.flowrelation.business.FlowRelationBusinessConfiguration;
 import com.rongji.egov.flowutil.business.FlowUtilBusinessConfiguration;
 import com.rongji.egov.maximunno.EgovMaximunNoConfiguration;
 import com.rongji.egov.solrData.business.SolrDataBusinessConfiguration;
 import com.rongji.egov.user.business.UserBusinessConfiguration;
 import com.rongji.egov.utils.mybatis.configuration.MybatisConfiguration;
-import com.rongji.egov.utils.spring.wrapper.EnumBasePackageWrapper;
 import com.rongji.egov.wflow.business.WflowBusinessConfiguration;
 import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.web.client.RestTemplateBuilder;
 import org.springframework.cache.annotation.EnableCaching;
 import org.springframework.context.annotation.Bean;
@@ -45,12 +41,11 @@ import org.springframework.web.client.RestTemplate;
 @EnableAutoConfiguration
 @Import({
   MybatisConfiguration.class,
-  DocConfigBusinessConfiguration.class,
   FlowUtilBusinessConfiguration.class,
   WflowBusinessConfiguration.class,
   UserBusinessConfiguration.class,
+  DocBusinessConfiguration.class,
   SolrDataBusinessConfiguration.class,
-  DocNumConfiguration.class,
   EgovMaximunNoConfiguration.class,
   CommonSequenceConfiguration.class,
   FlowRelationBusinessConfiguration.class
@@ -63,8 +58,8 @@ public class ProposalBusinessConfiguration {
   @Bean
   RestTemplate restTemplate(RestTemplateBuilder restTemplateBuilder) {
     return restTemplateBuilder
-      .setConnectTimeout(ExternalToOthersConstant.CONNECT_TIMEOUT)
-      .setReadTimeout(ExternalToOthersConstant.READ_TIMEOUT)
+      .setConnectTimeout(5000)
+      .setReadTimeout(5000)
       .build();
   }
 }
