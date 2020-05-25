@@ -517,6 +517,7 @@ public class ProToOthersMngImpl implements ProToOthersMng {
     map.put(ReceivalConstant.DOC_SEQUENCE_NUM,"-1");
     map.put(ReceivalConstant.DOC_SEQUENCE_YEAR,"-1");
     map.put(ReceivalConstant.RECEIVAL_FLOW_TYPE,"1");
+    map.put(ReceivalConstant.RECEIVAL_ASSIST_TYPE,'3');
     map.put(ReceivalConstant.SOURCE_UNIT,proposal.getDraftDept());
 
 

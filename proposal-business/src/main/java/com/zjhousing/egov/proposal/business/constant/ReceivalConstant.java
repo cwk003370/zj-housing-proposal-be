@@ -33,6 +33,7 @@ public class ReceivalConstant {
    *                 flowStatus(默认0)
    *                 returnFlag(默认NOT_RETURN)
    *                 receivalFlowType(收文流程类型 固定值1)
+   *                 receivalAssistType(Integer):(3 表示 提案议案收文； 4 表示 发文转收文）
    * @return
    */
   public static final String ID = "id";
@@ -59,4 +60,5 @@ public class ReceivalConstant {
   public static final String FLOW_STATUS = "flowStatus";
   public static final String RETURN_FLAG = "returnFlag";
   public static final String RECEIVAL_FLOW_TYPE = "receivalFlowType";
+  public static final String RECEIVAL_ASSIST_TYPE = "receivalAssistType";
 }
