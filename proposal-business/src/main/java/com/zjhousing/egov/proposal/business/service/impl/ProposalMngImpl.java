@@ -438,6 +438,8 @@ public class ProposalMngImpl implements ProposalMng {
       proposal.setExtension(null);
       //表示该实例是子流程实例
       proposal.setSubJudge("1");
+      //将局交办单反馈时间给子流程交办反馈时间
+      proposal.setSubRequestDate(proposal.getRequestDate());
 
       if (StringUtils.isBlank(proposal.getDocMark())) {
         proposal.setDocMark("");
