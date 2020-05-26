@@ -1,16 +1,12 @@
 package com.zjhousing.egov.proposal.business.service;
 
 import com.alibaba.fastjson.JSONObject;
-import com.rongji.egov.attachutil.service.EgovAttMng;
 import com.rongji.egov.docconfig.business.annotation.DocReadLogAn;
-import com.rongji.egov.flowrelation.business.constant.FlowTypeConstant;
-import com.rongji.egov.flowrelation.business.service.FlowRelationMng;
 import com.rongji.egov.user.business.model.SecurityUser;
 import com.rongji.egov.user.business.util.SecurityUtils;
 import com.rongji.egov.wflow.business.service.ModuleOperator;
 import com.rongji.egov.wflow.business.service.engine.manage.ProcessManageMng;
 import com.zjhousing.egov.proposal.business.model.Proposal;
-import com.zjhousing.egov.proposal.business.query.ProToOthersQuery;
 import org.apache.commons.lang.StringUtils;
 import org.springframework.stereotype.Service;
 
@@ -24,16 +20,8 @@ public class ProposalFlowOperator implements ModuleOperator {
   private ProposalMng proposalMng;
 
   @Resource
-  private ProToOthersMng proToOthersMng;
-
-  @Resource
   private ProcessManageMng processManageMng;
 
-  @Resource
-  private FlowRelationMng flowRelationMng;
-
-  @Resource
-  private EgovAttMng egovAttMng;
   /**
    * 初始化时更新主表单
    * 1.变更flowStauts
@@ -100,24 +88,13 @@ public class ProposalFlowOperator implements ModuleOperator {
     proposal.setFlowDoneUser(pDoneUser);
     proposal.setId(docId);
     proposal.setFlowStatus("9");
-
     Proposal pro = this.proposalMng.getProposalMotionById(docId);
     // 添加查阅用户
     Set<String> readersSet = pro.getReaders();
     SecurityUser user = SecurityUtils.getPrincipal();
     readersSet.add(user.getUserNo());
     proposal.setReaders(readersSet);
-    //更新流程关系
-    if("1".equals(pro.getSubJudge())){
-      try {
-        this.flowRelationMng.updateFlowRelationMainWhenDone(docId,"PROPOSALMOTION", FlowTypeConstant.TO_DO,"1");
-      } catch (Exception e) {
-        e.printStackTrace();
-      }
-    }
     this.proposalMng.updateProposalMotion(proposal);
-
-
   }
 
 
@@ -174,14 +151,6 @@ public class ProposalFlowOperator implements ModuleOperator {
       SecurityUser securityUser = SecurityUtils.getPrincipal();
       proposal.setFlowStatus("9");
       proposal.setFlowDoneUser(securityUser.getUserNo());
-      //更新流程关系
-      if("1".equals(proposal.getSubJudge())){
-        try {
-          this.flowRelationMng.updateFlowRelationMainWhenDone(docId,"PROPOSALMOTION", FlowTypeConstant.TO_DO,"1");
-        } catch (Exception e) {
-          e.printStackTrace();
-        }
-      }
     }
 
     this.proposalMng.updateProposalMotion(proposal);

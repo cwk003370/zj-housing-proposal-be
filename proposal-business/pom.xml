@@ -79,12 +79,6 @@
       <artifactId>egov-maximun-no</artifactId>
       <version>1.0.1-SNAPSHOT</version>
     </dependency>
-      <!-- 房管才用到的公共类 -->
-      <dependency>
-          <groupId>com.zjhousing.egov</groupId>
-          <artifactId>zj-housing-utils</artifactId>
-          <version>1.0.1-SNAPSHOT</version>
-      </dependency>
   </dependencies>
 
 </project>

@@ -2,6 +2,9 @@ package com.zjhousing.egov.proposal.web.controller.external;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.rongji.egov.flowrelation.business.constant.FlowTypeConstant;
+import com.rongji.egov.flowrelation.business.service.FlowRelationMng;
+import com.rongji.egov.flowrelation.business.service.impl.FlowRelationMngImpl;
 import com.rongji.egov.user.business.model.SecurityUser;
 import com.rongji.egov.user.business.util.SecurityUtils;
 import com.rongji.egov.utils.exception.BusinessException;
@@ -19,6 +22,8 @@ import com.zjhousing.egov.proposal.business.service.ProSequenceMng;
 import com.zjhousing.egov.proposal.business.service.ProposalFlowOperator;
 import com.zjhousing.egov.proposal.business.service.ProposalMng;
 import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -32,6 +37,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/proposalmotion")
 public class ProposalMotionFlowController implements FlowTransferController, FlowRevokeController, FLowRecoverController {
+  private static final Logger logger = LoggerFactory.getLogger(FlowRelationMngImpl.class);
   @Resource
   private TodoTransferMng todoTransferMng;
   @Resource
@@ -46,6 +52,8 @@ public class ProposalMotionFlowController implements FlowTransferController, Flo
   private ProposalFlowOperator proposalFlowOperator;
   @Autowired
   private ProSequenceMng proSequenceMng;
+  @Resource
+  private FlowRelationMng flowRelationMng;
 
 
 
@@ -75,7 +83,22 @@ public class ProposalMotionFlowController implements FlowTransferController, Flo
   }
   @Override
   public boolean setProcessDone(@RequestBody List<String> finishInfo) {
-    return  this.processManageMng.setProcessDone(finishInfo, this.proposalFlowOperator);
+    boolean res =  this.processManageMng.setProcessDone(finishInfo, this.proposalFlowOperator);
+    String docId = null;
+    for (String info : finishInfo) {
+      docId = info.split(";")[1];
+      break;
+    }
+    if(res&&StringUtils.isNotBlank(docId)){
+      Proposal proposal = this.proposalMng.getProposalMotionById(docId);
+      //更新流程关系
+      try {
+        this.flowRelationMng.updateFlowRelationMainWhenDone(proposal.getId(),"PROPOSALMOTION", FlowTypeConstant.TO_DO,"1");
+      } catch (Exception e) {
+        logger.debug("FGJPRO-强制办结调用流程关联办结处理方法报错："+e.getMessage());
+      }
+    }
+    return  res;
   }
 
   @Override
@@ -118,7 +141,16 @@ public class ProposalMotionFlowController implements FlowTransferController, Flo
 
   @Override
   public Boolean submitProcessWithoutUsers(@RequestBody SubmitParam submitParam) throws Exception {
-    return this.proposalMng.submitProcessWithoutUsers(submitParam);
+    Boolean res = this.proposalMng.submitProcessWithoutUsers(submitParam);
+    //更新流程关系
+    if(res){
+      try {
+        this.flowRelationMng.updateFlowRelationMainWhenDone(submitParam.getDocId(),"PROPOSALMOTION", FlowTypeConstant.TO_DO,"1");
+      } catch (Exception e) {
+        logger.debug("FGJPRO-办理完毕调用流程关联办结处理方法报错："+e.getMessage());
+      }
+    }
+    return res;
   }
   @Override
   public JSONObject getProcessTransUsers(String aid, String docId) throws Exception {
