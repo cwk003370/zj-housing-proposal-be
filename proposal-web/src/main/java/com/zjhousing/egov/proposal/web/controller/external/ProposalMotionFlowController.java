@@ -86,14 +86,15 @@ public class ProposalMotionFlowController implements FlowTransferController, Flo
     boolean res =  this.processManageMng.setProcessDone(finishInfo, this.proposalFlowOperator);
     String docId = null;
     for (String info : finishInfo) {
-      docId = info.split(";")[1];
-      break;
+      if(StringUtils.isNotBlank(info.split(";")[1])){
+        docId = info.split(";")[1];
+        break;
+      }
     }
     if(res&&StringUtils.isNotBlank(docId)){
-      Proposal proposal = this.proposalMng.getProposalMotionById(docId);
       //更新流程关系
       try {
-        this.flowRelationMng.updateFlowRelationMainWhenDone(proposal.getId(),"PROPOSALMOTION", FlowTypeConstant.TO_DO,"1");
+        this.flowRelationMng.updateFlowRelationMainWhenDone(docId,"PROPOSALMOTION", FlowTypeConstant.TO_DO,"1");
       } catch (Exception e) {
         logger.debug("FGJPRO-强制办结调用流程关联办结处理方法报错："+e.getMessage());
       }
